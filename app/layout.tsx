@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { fontVariables, inter, syne } from '@/lib/fonts'
-import { Navbar } from '@/components/layout/Navbar'
+import { NavbarWrapper } from '@/components/layout/NavbarWrapper'
 import { CursorGlow } from '@/components/effects/CursorGlow'
 import '@/styles/globals.css'
 
@@ -177,7 +177,7 @@ export default function RootLayout({
         <CursorGlow />
 
         {/* Navigation */}
-        <Navbar />
+        <NavbarWrapper />
 
         {/* Main Content */}
         <main id="main" className="relative min-h-screen">
