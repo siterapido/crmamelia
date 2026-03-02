@@ -1,9 +1,9 @@
 /**
- * Database Schema - SIX Saúde CMS
+ * Database Schema - SIX Saúde CMS + CRM
  * Using Drizzle ORM with Neon PostgreSQL
  */
 
-import { pgTable, uuid, text, timestamp, boolean, integer, varchar } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, text, timestamp, boolean, integer, varchar, uniqueIndex } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 // ==================== USERS ====================
@@ -63,6 +63,111 @@ export const postTags = pgTable('post_tags', {
     tag: varchar('tag', { length: 100 }).notNull(),
 })
 
+// ==================== CRM: CONTACTS ====================
+export const contacts = pgTable('contacts', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: varchar('name', { length: 255 }).notNull(),
+    phone: varchar('phone', { length: 20 }).notNull(),
+    email: varchar('email', { length: 255 }),
+    company: varchar('company', { length: 255 }),
+    cpfCnpj: varchar('cpf_cnpj', { length: 18 }),
+    source: varchar('source', { length: 50 }).default('whatsapp').notNull(),
+    status: varchar('status', { length: 30 }).default('new').notNull(),
+    assignedTo: uuid('assigned_to').references(() => users.id),
+    notes: text('notes'),
+    whatsappId: varchar('whatsapp_id', { length: 50 }),
+    planInterest: varchar('plan_interest', { length: 50 }),
+    livesCount: integer('lives_count'),
+    lastContactAt: timestamp('last_contact_at'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => [
+    uniqueIndex('contacts_phone_idx').on(table.phone),
+])
+
+// ==================== CRM: CONVERSATIONS ====================
+export const conversations = pgTable('conversations', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'cascade' }).notNull(),
+    whatsappConversationId: varchar('whatsapp_conversation_id', { length: 100 }),
+    status: varchar('status', { length: 20 }).default('active').notNull(),
+    aiEnabled: boolean('ai_enabled').default(true).notNull(),
+    lastMessageAt: timestamp('last_message_at'),
+    closedAt: timestamp('closed_at'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+// ==================== CRM: MESSAGES ====================
+export const messages = pgTable('messages', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    conversationId: uuid('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }).notNull(),
+    whatsappMessageId: varchar('whatsapp_message_id', { length: 100 }),
+    direction: varchar('direction', { length: 10 }).notNull(),
+    sender: varchar('sender', { length: 20 }).notNull(),
+    content: text('content').notNull(),
+    messageType: varchar('message_type', { length: 20 }).default('text').notNull(),
+    mediaUrl: text('media_url'),
+    status: varchar('status', { length: 20 }).default('sent').notNull(),
+    aiGenerated: boolean('ai_generated').default(false),
+    metadata: text('metadata'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+// ==================== CRM: PIPELINE STAGES ====================
+export const pipelineStages = pgTable('pipeline_stages', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: varchar('name', { length: 100 }).notNull(),
+    slug: varchar('slug', { length: 100 }).unique().notNull(),
+    color: varchar('color', { length: 7 }),
+    order: integer('order').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+// ==================== CRM: DEALS ====================
+export const deals = pgTable('deals', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'cascade' }).notNull(),
+    stageId: uuid('stage_id').references(() => pipelineStages.id).notNull(),
+    title: varchar('title', { length: 255 }).notNull(),
+    value: integer('value'),
+    planInterest: varchar('plan_interest', { length: 50 }),
+    livesCount: integer('lives_count'),
+    expectedCloseDate: timestamp('expected_close_date'),
+    assignedTo: uuid('assigned_to').references(() => users.id),
+    notes: text('notes'),
+    wonAt: timestamp('won_at'),
+    lostAt: timestamp('lost_at'),
+    lostReason: text('lost_reason'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
+// ==================== CRM: AI INTERACTIONS ====================
+export const aiInteractions = pgTable('ai_interactions', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    conversationId: uuid('conversation_id').references(() => conversations.id, { onDelete: 'cascade' }).notNull(),
+    messageId: uuid('message_id').references(() => messages.id),
+    action: varchar('action', { length: 50 }).notNull(),
+    inputSummary: text('input_summary'),
+    outputSummary: text('output_summary'),
+    confidence: integer('confidence'),
+    model: varchar('model', { length: 100 }),
+    tokensUsed: integer('tokens_used'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+// ==================== CRM: CONTACT FOLLOW-UPS ====================
+export const contactFollowups = pgTable('contact_followups', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'cascade' }).notNull(),
+    conversationId: uuid('conversation_id').references(() => conversations.id),
+    scheduledAt: timestamp('scheduled_at').notNull(),
+    message: text('message').notNull(),
+    sent: boolean('sent').default(false).notNull(),
+    sentAt: timestamp('sent_at'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
 // ==================== RELATIONS ====================
 export const postsRelations = relations(posts, ({ one, many }) => ({
     category: one(categories, {
@@ -91,6 +196,44 @@ export const postTagsRelations = relations(postTags, ({ one }) => ({
     }),
 }))
 
+// ==================== CRM RELATIONS ====================
+export const contactsRelations = relations(contacts, ({ one, many }) => ({
+    assignedUser: one(users, { fields: [contacts.assignedTo], references: [users.id] }),
+    conversations: many(conversations),
+    deals: many(deals),
+    followups: many(contactFollowups),
+}))
+
+export const conversationsRelations = relations(conversations, ({ one, many }) => ({
+    contact: one(contacts, { fields: [conversations.contactId], references: [contacts.id] }),
+    messages: many(messages),
+    aiInteractions: many(aiInteractions),
+}))
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+    conversation: one(conversations, { fields: [messages.conversationId], references: [conversations.id] }),
+}))
+
+export const dealsRelations = relations(deals, ({ one }) => ({
+    contact: one(contacts, { fields: [deals.contactId], references: [contacts.id] }),
+    stage: one(pipelineStages, { fields: [deals.stageId], references: [pipelineStages.id] }),
+    assignedUser: one(users, { fields: [deals.assignedTo], references: [users.id] }),
+}))
+
+export const pipelineStagesRelations = relations(pipelineStages, ({ many }) => ({
+    deals: many(deals),
+}))
+
+export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
+    conversation: one(conversations, { fields: [aiInteractions.conversationId], references: [conversations.id] }),
+    message: one(messages, { fields: [aiInteractions.messageId], references: [messages.id] }),
+}))
+
+export const contactFollowupsRelations = relations(contactFollowups, ({ one }) => ({
+    contact: one(contacts, { fields: [contactFollowups.contactId], references: [contacts.id] }),
+    conversation: one(conversations, { fields: [contactFollowups.conversationId], references: [conversations.id] }),
+}))
+
 // ==================== TYPES ====================
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
@@ -102,3 +245,17 @@ export type Post = typeof posts.$inferSelect
 export type NewPost = typeof posts.$inferInsert
 export type PostTag = typeof postTags.$inferSelect
 export type NewPostTag = typeof postTags.$inferInsert
+export type Contact = typeof contacts.$inferSelect
+export type NewContact = typeof contacts.$inferInsert
+export type Conversation = typeof conversations.$inferSelect
+export type NewConversation = typeof conversations.$inferInsert
+export type Message = typeof messages.$inferSelect
+export type NewMessage = typeof messages.$inferInsert
+export type PipelineStage = typeof pipelineStages.$inferSelect
+export type NewPipelineStage = typeof pipelineStages.$inferInsert
+export type Deal = typeof deals.$inferSelect
+export type NewDeal = typeof deals.$inferInsert
+export type AiInteraction = typeof aiInteractions.$inferSelect
+export type NewAiInteraction = typeof aiInteractions.$inferInsert
+export type ContactFollowup = typeof contactFollowups.$inferSelect
+export type NewContactFollowup = typeof contactFollowups.$inferInsert

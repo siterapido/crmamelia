@@ -3,6 +3,9 @@
  * Run with: npx tsx lib/db/seed.ts
  */
 
+import { config } from 'dotenv'
+config({ path: '.env.local' })
+
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import { hashPassword } from '../auth'
@@ -52,6 +55,23 @@ async function seed() {
         role: 'admin',
     }).onConflictDoNothing()
     console.log('✅ Admin user created (email: admin@sixsaude.com.br, password: admin123)')
+
+    // Create CRM pipeline stages
+    console.log('Creating pipeline stages...')
+    const stagesData = [
+        { name: 'Novo', slug: 'new', color: '#6366F1', order: 0 },
+        { name: 'Contactado', slug: 'contacted', color: '#3B82F6', order: 1 },
+        { name: 'Qualificado', slug: 'qualified', color: '#F5A623', order: 2 },
+        { name: 'Proposta', slug: 'proposal', color: '#F59E0B', order: 3 },
+        { name: 'Negociação', slug: 'negotiation', color: '#EC4899', order: 4 },
+        { name: 'Ganho', slug: 'won', color: '#10D86F', order: 5 },
+        { name: 'Perdido', slug: 'lost', color: '#E63946', order: 6 },
+    ]
+
+    for (const stage of stagesData) {
+        await db.insert(schema.pipelineStages).values(stage).onConflictDoNothing()
+    }
+    console.log('✅ Pipeline stages created')
 
     console.log('')
     console.log('🎉 Database seeded successfully!')

@@ -3,25 +3,20 @@
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { AuthProvider, useAuth } from '@/lib/auth/context'
-import { Sidebar } from '@/components/admin/Sidebar'
+import { CrmSidebar } from '@/components/crm/CrmSidebar'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 
-function AdminLayoutContent({ children }: { children: React.ReactNode }) {
+function CrmLayoutContent({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth()
     const router = useRouter()
     const pathname = usePathname()
-    const isLoginPage = pathname === '/admin/login'
 
     useEffect(() => {
-        if (!loading && !user && !isLoginPage) {
-            router.push('/admin/login')
+        if (!loading && !user) {
+            router.push(`/admin/login?redirect=${encodeURIComponent(pathname)}`)
         }
-    }, [user, loading, router, isLoginPage])
-
-    if (isLoginPage) {
-        return <>{children}</>
-    }
+    }, [user, loading, router, pathname])
 
     if (loading) {
         return (
@@ -32,7 +27,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                     className="flex flex-col items-center gap-4"
                 >
                     <Loader2 className="w-8 h-8 text-gold animate-spin" />
-                    <p className="text-platinum">Carregando...</p>
+                    <p className="text-platinum">Carregando CRM...</p>
                 </motion.div>
             </div>
         )
@@ -44,7 +39,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="min-h-screen bg-black-deep flex">
-            <Sidebar />
+            <CrmSidebar />
             <main className="flex-1 ml-64 p-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -58,14 +53,14 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     )
 }
 
-export default function AdminLayout({
+export default function CrmLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
     return (
         <AuthProvider>
-            <AdminLayoutContent>{children}</AdminLayoutContent>
+            <CrmLayoutContent>{children}</CrmLayoutContent>
         </AuthProvider>
     )
 }

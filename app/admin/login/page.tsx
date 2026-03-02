@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { useAuth } from '@/lib/auth/context'
 
 export default function LoginPage() {
     const router = useRouter()
+    const { login } = useAuth()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [showPassword, setShowPassword] = useState(false)
@@ -20,19 +22,12 @@ export default function LoginPage() {
         setLoading(true)
 
         try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            })
+            const result = await login(email, password)
 
-            const data = await res.json()
-
-            if (res.ok) {
+            if (result.success) {
                 router.push('/admin')
-                router.refresh()
             } else {
-                setError(data.error || 'Erro ao fazer login')
+                setError(result.error || 'Erro ao fazer login')
             }
         } catch {
             setError('Erro de conexão')
@@ -46,7 +41,7 @@ export default function LoginPage() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md"
+                className="w-full max-w-[28rem]"
             >
                 {/* Logo */}
                 <div className="text-center mb-8">

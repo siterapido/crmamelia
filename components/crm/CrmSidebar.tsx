@@ -8,24 +8,23 @@ import { cn } from '@/lib/utils/cn'
 import { motion } from 'framer-motion'
 import {
     LayoutDashboard,
-    FileText,
-    FolderOpen,
-    Sparkles,
+    MessageSquare,
+    UserCheck,
+    LayoutGrid,
     Settings,
     LogOut,
-    PenSquare,
-    ArrowRight,
+    ArrowLeft,
 } from 'lucide-react'
 
-const cmsItems = [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/posts', label: 'Posts', icon: FileText },
-    { href: '/admin/posts/new', label: 'Novo Post', icon: PenSquare },
-    { href: '/admin/categories', label: 'Categorias', icon: FolderOpen },
-    { href: '/admin/ai-generator', label: 'Gerador IA', icon: Sparkles },
+const navItems = [
+    { href: '/crm', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    { href: '/crm/conversations', label: 'Conversas', icon: MessageSquare },
+    { href: '/crm/contacts', label: 'Contatos', icon: UserCheck },
+    { href: '/crm/pipeline', label: 'Pipeline', icon: LayoutGrid },
+    { href: '/crm/settings', label: 'Configuracoes', icon: Settings },
 ]
 
-export function Sidebar() {
+export function CrmSidebar() {
     const pathname = usePathname()
     const { user, logout } = useAuth()
 
@@ -38,27 +37,29 @@ export function Sidebar() {
         <aside className="fixed left-0 top-0 h-screen w-64 bg-charcoal border-r border-white/10 flex flex-col">
             {/* Logo */}
             <div className="p-6 border-b border-white/10">
-                <Link href="/admin" className="flex items-center gap-3">
+                <Link href="/crm" className="flex items-center gap-3">
                     <div className="relative w-28 h-9">
                         <Image
                             src="/Logos/SIX SAÚDE LOGO FINAL - Branca.png"
-                            alt="SIX Saúde"
+                            alt="SIX Saude"
                             fill
                             className="object-contain"
                         />
                     </div>
-                    <p className="text-platinum text-xs">CMS Admin</p>
+                    <p className="text-gold text-xs font-semibold">CRM</p>
                 </Link>
             </div>
 
             {/* Navigation */}
             <nav className="flex-1 py-6 px-4 overflow-y-auto">
-                {/* CMS Section */}
-                <p className="text-platinum/50 text-[10px] uppercase tracking-widest font-semibold px-4 mb-2">Blog CMS</p>
+                <p className="text-platinum/50 text-[10px] uppercase tracking-widest font-semibold px-4 mb-2">
+                    Vendas
+                </p>
                 <ul className="space-y-1">
-                    {cmsItems.map((item) => {
-                        const isActive = pathname === item.href ||
-                            (item.href !== '/admin' && pathname.startsWith(item.href))
+                    {navItems.map((item) => {
+                        const isActive = item.exact
+                            ? pathname === item.href
+                            : pathname.startsWith(item.href)
 
                         return (
                             <li key={item.href}>
@@ -76,7 +77,7 @@ export function Sidebar() {
                                     <span className="font-medium">{item.label}</span>
                                     {isActive && (
                                         <motion.div
-                                            layoutId="activeIndicator"
+                                            layoutId="activeCrmIndicator"
                                             className="ml-auto w-1.5 h-1.5 rounded-full bg-gold"
                                         />
                                     )}
@@ -89,14 +90,13 @@ export function Sidebar() {
                 {/* Divider */}
                 <div className="my-4 mx-4 border-t border-white/10" />
 
-                {/* CRM Link */}
-                <p className="text-platinum/50 text-[10px] uppercase tracking-widest font-semibold px-4 mb-2">CRM</p>
+                {/* Back to Admin */}
                 <Link
-                    href="/crm"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-gold bg-gold/5 border border-gold/10 hover:bg-gold/10 transition-all duration-200"
+                    href="/admin"
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-platinum hover:bg-white/5 transition-colors"
                 >
-                    <ArrowRight className="w-5 h-5" />
-                    <span className="font-medium">Acessar CRM</span>
+                    <ArrowLeft className="w-5 h-5" />
+                    <span className="font-medium">Voltar ao Admin</span>
                 </Link>
             </nav>
 
@@ -114,22 +114,13 @@ export function Sidebar() {
                     </div>
                 </div>
 
-                <div className="flex gap-2">
-                    <Link
-                        href="/admin/settings"
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-white/5 text-platinum hover:bg-white/10 hover:text-white transition-colors"
-                    >
-                        <Settings className="w-4 h-4" />
-                        <span className="text-sm">Config</span>
-                    </Link>
-                    <button
-                        onClick={handleLogout}
-                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
-                    >
-                        <LogOut className="w-4 h-4" />
-                        <span className="text-sm">Sair</span>
-                    </button>
-                </div>
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+                >
+                    <LogOut className="w-4 h-4" />
+                    <span className="text-sm">Sair</span>
+                </button>
             </div>
         </aside>
     )

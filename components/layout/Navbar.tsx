@@ -28,6 +28,7 @@ const navItems: NavItem[] = [
  */
 export const Navbar = () => {
   const pathname = usePathname()
+  const isAdminRoute = pathname.startsWith('/admin')
   const isGoldHero = pathname === '/lp-2'
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -48,6 +49,8 @@ export const Navbar = () => {
       document.body.style.overflow = ''
     }
   }, [isMobileMenuOpen])
+
+  if (isAdminRoute) return null
 
   return (
     <>
