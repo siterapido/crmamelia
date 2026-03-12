@@ -80,8 +80,8 @@ export const PlanSection = () => {
                   </div>
 
                   {/* Unified CTA */}
-                  <div className="w-full flex justify-center">
-                    <MagneticButton strength={0.3} className="w-full max-w-sm">
+                  <div className="w-full flex justify-center mt-2">
+                    <MagneticButton strength={0.3} className="w-full max-w-lg">
                       <Button 
                         variant="black"
                         size="lg" 
