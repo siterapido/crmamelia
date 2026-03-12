@@ -52,97 +52,68 @@ export const PlanSection = () => {
           />
         </div>
 
-        {/* Highlight Features Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 md:mb-24">
-          {[
-            { icon: Clock, label: 'Atendimento Ágil' },
-            { icon: TrendingDown, label: 'Preços competitivos' },
-            { icon: Shield, label: 'Ampla cobertura' }
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="flex items-center gap-4 p-4 rounded-xl bg-gold-primary/10 border border-gold-primary/20"
-            >
-              <div className="w-10 h-10 rounded-lg bg-gold-primary/20 flex items-center justify-center">
-                <item.icon className="w-5 h-5 text-gold-primary" />
-              </div>
-              <span className="font-display font-medium text-lg text-platinum">{item.label}</span>
-            </motion.div>
-          ))}
-        </div>
+        {/* Unified Plan Block */}
+        <div className="max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-100px' }}
+            className="card-premium-float"
+          >
+            <TiltCard maxTilt={3} glareEnabled={false} className="h-full">
+              <Card variant="gold-glass" className="group overflow-hidden">
+                <CardContent className="p-8 md:p-12 relative z-10 flex flex-col items-center text-center">
+                  {/* Decorative Icon Wrapper */}
+                  <div className="mb-8 p-4 rounded-2xl bg-black/5 border border-black/10">
+                    <div className="w-16 h-16 rounded-xl bg-black/10 flex items-center justify-center">
+                      <Shield className="w-8 h-8 text-black" />
+                    </div>
+                  </div>
 
-        {/* Plans Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {plans.map((plan, index) => {
-            const Icon = plan.icon
-            const floatDelayClass = index === 0 ? 'card-premium-float' : 'card-premium-float-delay-2'
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true, margin: '-100px' }}
-                className={`${floatDelayClass} h-full`}
-              >
-                <TiltCard maxTilt={3} glareEnabled={false} className="h-full">
-                  <Card variant="gold-glass" className="group h-full">
-                    <CardContent className="p-6 md:p-8 relative z-10 flex flex-col h-full">
-                      {/* Icon */}
-                      <div className="mb-5">
-                        <div className="w-14 h-14 rounded-xl bg-black/10 border border-black/10 flex items-center justify-center">
-                          <Icon className="w-7 h-7 text-black" />
+                  <h3 className="font-display font-bold text-2xl md:text-3xl text-black mb-4">
+                    Tudo o que você precisa em um só lugar
+                  </h3>
+                  
+                  <p className="text-black/80 text-lg mb-10 max-w-xl">
+                    Soluções completas e atendimento personalizado para garantir sua tranquilidade.
+                  </p>
+
+                  {/* Unified Benefits Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 mb-12 text-left w-full max-w-2xl">
+                    {[
+                      'Atendimento Ágil',
+                      'Preços competitivos',
+                      'Ampla cobertura',
+                      'Plano coletivo por adesão',
+                      'Plano empresarial'
+                    ].map((benefit, idx) => (
+                      <motion.div
+                        key={idx}
+                        className="flex items-center gap-3"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.2 + idx * 0.1 }}
+                        viewport={{ once: true }}
+                      >
+                        <div className="w-6 h-6 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3.5 h-3.5 text-black" />
                         </div>
-                      </div>
+                        <span className="text-black font-medium">{benefit}</span>
+                      </motion.div>
+                    ))}
+                  </div>
 
-                      {/* Badge */}
-                      {plan.badge && (
-                        <span className="inline-block mb-3 px-2.5 py-1 text-xs font-medium bg-black/10 text-black border border-black/20 rounded-xl">
-                          {plan.badge}
-                        </span>
-                      )}
-
-                      {/* Content */}
-                      <h3 className="font-display font-bold text-xl md:text-2xl text-black mb-2">
-                        {plan.title}
-                      </h3>
-                      <p className="text-black/80 text-sm md:text-base mb-6 leading-relaxed">
-                        {plan.description}
-                      </p>
-
-                      {/* Benefits */}
-                      <ul className="space-y-2.5 mb-8 flex-grow">
-                        {plan.benefits.map((benefit, idx) => (
-                          <motion.li
-                            key={idx}
-                            className="flex items-center gap-2.5"
-                            initial={{ opacity: 0, x: -10 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.4, delay: 0.3 + idx * 0.1 }}
-                            viewport={{ once: true }}
-                          >
-                            <Check className="w-4 h-4 text-black flex-shrink-0" />
-                            <span className="text-black/80 text-sm">{benefit}</span>
-                          </motion.li>
-                        ))}
-                      </ul>
-
-                      {/* CTA */}
-                      <MagneticButton strength={0.2} className="w-full mt-auto">
-                        <button className="w-full py-3 px-4 bg-black text-white text-sm font-medium rounded-lg hover:bg-black/90 transition-colors">
-                          {index === 0 ? 'Quero Contratar' : 'Solicitar Cotação'}
-                        </button>
-                      </MagneticButton>
-                    </CardContent>
-                  </Card>
-                </TiltCard>
-              </motion.div>
-            )
-          })}
+                  {/* Unified CTA */}
+                  <MagneticButton strength={0.2} className="w-full max-w-sm">
+                    <button className="w-full py-4 px-8 bg-black text-white text-base font-bold rounded-xl hover:bg-black/90 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-xl">
+                      Solicitar Cotação
+                    </button>
+                  </MagneticButton>
+                </CardContent>
+              </Card>
+            </TiltCard>
+          </motion.div>
         </div>
 
         {/* Help CTA */}
