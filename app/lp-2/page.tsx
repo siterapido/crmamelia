@@ -6,7 +6,6 @@ import { AppSection } from '@/components/sections/AppSection'
 import { SocialProofSection } from '@/components/sections/SocialProofSection'
 import { FAQSection } from '@/components/sections/FAQSection'
 import { CTABanner } from '@/components/sections/CTABanner'
-import { WhyChooseUsSection } from '@/components/sections/HighlightSection'
 import { LatestNewsSection } from '@/components/sections/LatestNewsSection'
 import { Footer } from '@/components/layout/Footer'
 import { AIChatWidget } from '@/components/ui/AIChatWidget'
@@ -29,9 +28,6 @@ export default function LandingPage2() {
 
       {/* Client Self-Service Section */}
       <ClientSection />
-
-      {/* Why Choose Us - Gold Section with Medical Pattern */}
-      <WhyChooseUsSection />
 
       {/* Plans Section */}
       <PlanSection />

@@ -2,13 +2,14 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { User, Building2, Check } from 'lucide-react'
+import { User, Building2, Check, Clock, TrendingDown, Shield } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { TiltCard, MagneticButton } from '@/components/animations'
+import { cn } from '@/lib/utils/cn'
 
 /**
  * Plans Section
@@ -43,12 +44,35 @@ export const PlanSection = () => {
     <section id="plans" className="relative py-24 md:py-32 lg:py-48 glass-section-dark glass-overlay noise-overlay spotlight-gold aurora-dark">
       <Container>
         {/* Section Header */}
-        <div className="mb-16 md:mb-24">
+        <div className="mb-16 md:mb-20">
           <SectionHeader
             title="Planos de saúde feitos"
             highlight="para você"
-            subtitle="Operadoras de confiança, coberturas completas e um time pronto para te ajudar a escolher"
+            subtitle="Saúde de verdade, sem complicação. As melhores operadoras do mercado para lhe proporcionar a melhor experiência em planos de saúde"
           />
+        </div>
+
+        {/* Highlight Features Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 md:mb-24">
+          {[
+            { icon: Clock, label: 'Atendimento Ágil' },
+            { icon: TrendingDown, label: 'Preços competitivos' },
+            { icon: Shield, label: 'Ampla cobertura' }
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-4 p-4 rounded-xl bg-gold-primary/10 border border-gold-primary/20"
+            >
+              <div className="w-10 h-10 rounded-lg bg-gold-primary/20 flex items-center justify-center">
+                <item.icon className="w-5 h-5 text-gold-primary" />
+              </div>
+              <span className="font-display font-medium text-lg text-platinum">{item.label}</span>
+            </motion.div>
+          ))}
         </div>
 
         {/* Plans Grid */}
