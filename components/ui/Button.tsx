@@ -4,7 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils/cn'
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'ghost-gold'
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'ghost-gold' | 'black'
 type ButtonSize = 'sm' | 'base' | 'lg'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -87,6 +87,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         'hover:bg-gold-primary/8 hover:border-gold-primary/45',
         'active:bg-gold-primary/12',
         'disabled:opacity-50 disabled:cursor-not-allowed'
+      ),
+      black: cn(
+        'bg-black text-white border border-white/10',
+        'shadow-[0_10px_30px_rgba(0,0,0,0.5)]',
+        'hover:bg-zinc-900 hover:border-gold-primary/30 hover:text-gold-primary',
+        'hover:-translate-y-0.5 hover:shadow-[0_15px_40px_rgba(0,0,0,0.6)]',
+        'active:scale-[0.98] transition-all duration-300'
       ),
     }
 

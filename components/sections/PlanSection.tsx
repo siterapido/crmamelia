@@ -83,9 +83,10 @@ export const PlanSection = () => {
                   <div className="w-full flex justify-center">
                     <MagneticButton strength={0.3} className="w-full max-w-sm">
                       <Button 
+                        variant="black"
                         size="lg" 
                         fullWidth 
-                        className="!bg-black !text-white !border-none hover:!bg-black/80 shadow-2xl transition-all duration-300 transform hover:scale-[1.02]"
+                        className="shadow-2xl"
                       >
                         Solicitar Cotação
                       </Button>
