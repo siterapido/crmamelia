@@ -16,30 +16,6 @@ import { cn } from '@/lib/utils/cn'
  * Display available health plans with benefits
  */
 export const PlanSection = () => {
-  const plans = [
-    {
-      icon: User,
-      title: 'Plano Coletivo por Adesão',
-      description: 'Preços negociados coletivamente para associações, sindicatos e conselhos profissionais.',
-      badge: 'Melhor Custo-Benefício',
-      benefits: [
-        'A partir de R$ 82,00*',
-        'Parceiros: Nova Saúde, Ônix, Hapvida',
-        'Inclusão de dependentes',
-      ],
-    },
-    {
-      icon: Building2,
-      title: 'Planos Empresariais',
-      description: 'Soluções completas para gestão de saúde da sua empresa.',
-      benefits: [
-        'Gestão 100% digital',
-        'Sem burocracia na contratação',
-        'Suporte especializado para RH',
-      ],
-    },
-  ]
-
   return (
     <section id="plans" className="relative py-24 md:py-32 lg:py-48 glass-section-dark glass-overlay noise-overlay spotlight-gold aurora-dark">
       <Container>
@@ -53,7 +29,7 @@ export const PlanSection = () => {
         </div>
 
         {/* Unified Plan Block */}
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -63,7 +39,7 @@ export const PlanSection = () => {
           >
             <TiltCard maxTilt={3} glareEnabled={false} className="h-full">
               <Card variant="gold-glass" className="group overflow-hidden">
-                <CardContent className="p-8 md:p-12 relative z-10 flex flex-col items-center text-center">
+                <CardContent className="p-8 md:p-14 relative z-10 flex flex-col items-center text-center">
                   {/* Decorative Icon Wrapper */}
                   <div className="mb-8 p-4 rounded-2xl bg-black/5 border border-black/10">
                     <div className="w-16 h-16 rounded-xl bg-black/10 flex items-center justify-center">
@@ -71,16 +47,16 @@ export const PlanSection = () => {
                     </div>
                   </div>
 
-                  <h3 className="font-display font-bold text-2xl md:text-3xl text-black mb-4">
+                  <h3 className="font-display font-bold text-3xl md:text-5xl text-black mb-6 leading-tight">
                     Tudo o que você precisa em um só lugar
                   </h3>
                   
-                  <p className="text-black/80 text-lg mb-10 max-w-xl">
-                    Soluções completas e atendimento personalizado para garantir sua tranquilidade.
+                  <p className="text-black/80 text-lg md:text-xl mb-12 w-full max-w-2xl mx-auto">
+                    Soluções completas e atendimento personalizado para garantir sua tranquilidade e segurança.
                   </p>
 
                   {/* Unified Benefits Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 mb-12 text-left w-full max-w-2xl">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-12 text-left w-full max-w-3xl">
                     {[
                       'Atendimento Ágil',
                       'Preços competitivos',
@@ -96,20 +72,22 @@ export const PlanSection = () => {
                         transition={{ duration: 0.4, delay: 0.2 + idx * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <div className="w-6 h-6 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
-                          <Check className="w-3.5 h-3.5 text-black" />
+                        <div className="w-6 h-6 rounded-full bg-black/15 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-4 h-4 text-black" />
                         </div>
-                        <span className="text-black font-medium">{benefit}</span>
+                        <span className="text-black font-semibold text-base md:text-lg">{benefit}</span>
                       </motion.div>
                     ))}
                   </div>
 
                   {/* Unified CTA */}
-                  <MagneticButton strength={0.2} className="w-full max-w-sm">
-                    <button className="w-full py-4 px-8 bg-black text-white text-base font-bold rounded-xl hover:bg-black/90 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-xl">
-                      Solicitar Cotação
-                    </button>
-                  </MagneticButton>
+                  <div className="w-full flex justify-center">
+                    <MagneticButton strength={0.2} className="w-full max-w-xs md:max-w-sm">
+                      <button className="w-full py-5 px-10 bg-black text-white text-base md:text-lg font-bold rounded-xl hover:bg-black/90 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-2xl whitespace-nowrap">
+                        Solicitar Cotação
+                      </button>
+                    </MagneticButton>
+                  </div>
                 </CardContent>
               </Card>
             </TiltCard>
