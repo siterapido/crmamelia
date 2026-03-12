@@ -2,11 +2,10 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { User, Building2, Check, Clock, TrendingDown, Shield } from 'lucide-react'
+import { Check, Shield } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { TiltCard, MagneticButton } from '@/components/animations'
 import { cn } from '@/lib/utils/cn'
@@ -82,10 +81,14 @@ export const PlanSection = () => {
 
                   {/* Unified CTA */}
                   <div className="w-full flex justify-center">
-                    <MagneticButton strength={0.2} className="w-full max-w-xs md:max-w-sm">
-                      <button className="w-full py-5 px-10 bg-black text-white text-base md:text-lg font-bold rounded-xl hover:bg-black/90 transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-2xl whitespace-nowrap">
+                    <MagneticButton strength={0.3} className="w-full max-w-sm">
+                      <Button 
+                        size="lg" 
+                        fullWidth 
+                        className="!bg-black !text-white !border-none hover:!bg-black/80 shadow-2xl transition-all duration-300 transform hover:scale-[1.02]"
+                      >
                         Solicitar Cotação
-                      </button>
+                      </Button>
                     </MagneticButton>
                   </div>
                 </CardContent>
