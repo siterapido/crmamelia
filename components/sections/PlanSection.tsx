@@ -2,112 +2,92 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Check, Shield } from 'lucide-react'
+import { Zap, DollarSign, Map, Users, Briefcase } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { TiltCard, MagneticButton } from '@/components/animations'
-import { cn } from '@/lib/utils/cn'
 
 /**
  * Plans Section
  * Display available health plans with benefits
  */
 export const PlanSection = () => {
+  const benefits = [
+    { title: 'Atendimento Ágil', icon: <Zap className="w-8 h-8 text-black" /> },
+    { title: 'Preços competitivos', icon: <DollarSign className="w-8 h-8 text-black" /> },
+    { title: 'Ampla cobertura', icon: <Map className="w-8 h-8 text-black" /> },
+    { title: 'Plano coletivo por adesão', icon: <Users className="w-8 h-8 text-black" /> },
+    { title: 'Plano empresarial', icon: <Briefcase className="w-8 h-8 text-black" /> }
+  ]
+
   return (
-    <section id="plans" className="relative py-24 md:py-32 lg:py-48 glass-section-dark glass-overlay noise-overlay spotlight-gold aurora-dark">
+    <section id="plans" className="relative py-24 md:py-32 lg:py-48 glass-section-dark glass-overlay noise-overlay spotlight-gold aurora-dark overflow-hidden">
       <Container>
         {/* Section Header */}
-        <div className="mb-16 md:mb-20">
+        <div className="mb-16 md:mb-24 text-center">
           <SectionHeader
             title="Planos de saúde feitos"
             highlight="para você"
-            subtitle="Saúde de verdade, sem complicação. As melhores operadoras do mercado para lhe proporcionar a melhor experiência em planos de saúde"
+            subtitle="Saúde de verdade, sem complicação"
           />
-        </div>
-
-        {/* Unified Plan Block */}
-        <div className="max-w-4xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.p 
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, margin: '-100px' }}
-            className="card-premium-float"
+            transition={{ duration: 0.6, delay: 0.5 }}
+            viewport={{ once: true }}
+            className="text-platinum mt-6 max-w-2xl mx-auto text-lg md:text-xl px-4"
           >
-            <TiltCard maxTilt={3} glareEnabled={false} className="h-full">
-              <Card variant="gold-glass" className="group overflow-hidden">
-                <CardContent className="p-8 md:p-14 relative z-10 flex flex-col items-center text-center">
-                  {/* Decorative Icon Wrapper */}
-                  <div className="mb-8 p-4 rounded-2xl bg-black/5 border border-black/10">
-                    <div className="w-16 h-16 rounded-xl bg-black/10 flex items-center justify-center">
-                      <Shield className="w-8 h-8 text-black" />
-                    </div>
-                  </div>
-
-                  <h3 className="font-display font-bold text-3xl md:text-5xl text-black mb-6 leading-tight">
-                    Tudo o que você precisa em um só lugar
-                  </h3>
-                  
-                  <p className="text-black/80 text-lg md:text-xl mb-12 w-full max-w-2xl mx-auto">
-                    Soluções completas e atendimento personalizado para garantir sua tranquilidade e segurança.
-                  </p>
-
-                  {/* Unified Benefits Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 mb-12 text-left w-full max-w-3xl">
-                    {[
-                      'Atendimento Ágil',
-                      'Preços competitivos',
-                      'Ampla cobertura',
-                      'Plano coletivo por adesão',
-                      'Plano empresarial'
-                    ].map((benefit, idx) => (
-                      <motion.div
-                        key={idx}
-                        className="flex items-center gap-3"
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: 0.2 + idx * 0.1 }}
-                        viewport={{ once: true }}
-                      >
-                        <div className="w-6 h-6 rounded-full bg-black/15 flex items-center justify-center flex-shrink-0">
-                          <Check className="w-4 h-4 text-black" />
-                        </div>
-                        <span className="text-black font-semibold text-base md:text-lg">{benefit}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Unified CTA */}
-                  <div className="w-full flex justify-center mt-8 md:mt-10">
-                    <Button 
-                      variant="black"
-                      size="lg" 
-                      className="w-[90%] sm:w-auto sm:min-w-[320px] max-w-[400px] shadow-2xl rounded-2xl whitespace-nowrap text-sm sm:text-base px-6 sm:px-10 py-4 sm:py-5 min-h-[52px] sm:min-h-[60px] font-bold"
-                    >
-                      Solicitar Cotação
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TiltCard>
-          </motion.div>
+            As melhores operadoras do mercado para lhe proporcionar a melhor experiência em planos de saúde
+          </motion.p>
         </div>
 
-        {/* Help CTA */}
+        {/* Benefits Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-16 px-4 relative z-10 w-full">
+          {benefits.map((benefit, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 * idx }}
+              viewport={{ once: true, margin: '-50px' }}
+              className="h-full"
+            >
+              <TiltCard maxTilt={5} glareEnabled={false} className="h-full">
+                <Card variant="gold-glass" className="h-full group hover:-translate-y-2 transition-transform duration-300">
+                  <CardContent className="p-6 md:p-8 flex flex-col items-center text-center justify-center min-h-[220px]">
+                    <div className="w-16 h-16 rounded-full bg-black/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-black/15 transition-all duration-300">
+                      {benefit.icon}
+                    </div>
+                    <h3 className="text-black font-semibold text-lg md:text-xl leading-snug">
+                      {benefit.title}
+                    </h3>
+                  </CardContent>
+                </Card>
+              </TiltCard>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA Button */}
         <motion.div
-          className="text-center mt-16 md:mt-24"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true, margin: '-100px' }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          viewport={{ once: true }}
+          className="flex justify-center w-full mt-10 md:mt-16 relative z-10"
         >
-          <p className="text-platinum mb-4">Ainda com dúvidas sobre qual plano escolher?</p>
-          <MagneticButton strength={0.3}>
-            <Button variant="secondary">Fale com um consultor</Button>
-          </MagneticButton>
+          <Button 
+            variant="primary"
+            size="lg" 
+            className="w-[90%] sm:w-auto shadow-gold-sm hover:shadow-gold-glow max-w-[400px] whitespace-nowrap px-8 sm:px-12"
+          >
+            Solicitar Cotação
+          </Button>
         </motion.div>
+
+
       </Container>
     </section>
   )

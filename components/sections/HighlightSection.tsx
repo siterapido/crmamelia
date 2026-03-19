@@ -229,9 +229,8 @@ export const WhyChooseUsSection = () => {
   return (
     <HighlightSection
       variant="medical"
-      badge="Planos de saúde feitos para você"
+      badge="Por que a SIX Saúde?"
       heading="Saúde de verdade, sem complicação"
-      subheading="As melhores operadoras do mercado para lhe proporcionar a melhor experiência em planos de saúde"
       items={items}
       ctaText="Fale com um especialista"
       ctaAction={handleCTA}
