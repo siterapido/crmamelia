@@ -122,7 +122,7 @@ export const Navbar = () => {
                       'transition-colors duration-300',
                       'text-sm font-bold tracking-wider uppercase',
                       isScrolled
-                        ? 'text-black-premium hover:text-black-premium/70'
+                        ? '!text-black-premium hover:!text-black-premium/70'
                         : isGoldHero
                           ? '!text-[#0A0A0A] hover:!text-[#0A0A0A]/70'
                           : 'text-black-premium/80 hover:text-black-premium',
