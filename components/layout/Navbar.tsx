@@ -59,7 +59,7 @@ export const Navbar = () => {
           'fixed top-0 left-0 right-0 z-50',
           'transition-all duration-300 ease-premium',
           isScrolled
-            ? 'bg-black-premium/90 backdrop-blur-xl border-b border-gold-primary/10 shadow-premium'
+            ? 'bg-gold-primary/95 backdrop-blur-xl shadow-premium'
             : 'bg-transparent'
         )}
         initial={{ y: -100 }}
@@ -76,13 +76,13 @@ export const Navbar = () => {
                 className="relative w-32 h-10 md:w-40 md:h-12"
               >
                 <Image
-                  src={
-                    isScrolled
-                      ? '/Logos/SIX SAÚDE LOGO FINAL - Amarela.png'
-                      : isGoldHero
+                    src={
+                      isScrolled
                         ? '/Logos/SIX SAÚDE LOGO FINAL - Preta .png'
-                        : '/Logos/SIX SAÚDE LOGO FINAL - Amarela.png'
-                  }
+                        : isGoldHero
+                          ? '/Logos/SIX SAÚDE LOGO FINAL - Preta .png'
+                          : '/Logos/SIX SAÚDE LOGO FINAL - Amarela.png'
+                    }
                   alt="SIX Saúde"
                   fill
                   className="object-contain"
@@ -101,9 +101,9 @@ export const Navbar = () => {
                     size="sm"
                     className={cn(
                       'uppercase tracking-wider font-bold',
-                      isGoldHero && !isScrolled
-                        ? '!bg-black-premium !text-white hover:!bg-black-premium/90 shadow-md'
-                        : '!bg-gold-primary !text-black-premium hover:!bg-gold-signature shadow-gold-sm'
+                      (isScrolled || isGoldHero && !isScrolled)
+                        ? '!bg-black-premium !bg-none !text-white hover:!bg-black-premium/90 shadow-md'
+                        : '!bg-gold-primary !bg-none !text-black-premium hover:!bg-gold-signature shadow-gold-sm'
                     )}
                     onClick={() => {
                       if (item.href.startsWith('/#')) {
@@ -122,12 +122,12 @@ export const Navbar = () => {
                       'transition-colors duration-300',
                       'text-sm font-bold tracking-wider uppercase',
                       isScrolled
-                        ? 'text-platinum hover:text-white'
+                        ? 'text-black-premium hover:text-black-premium/70'
                         : isGoldHero
                           ? '!text-[#0A0A0A] hover:!text-[#0A0A0A]/70'
                           : 'text-black-premium/80 hover:text-black-premium',
                       'relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5',
-                      isGoldHero && !isScrolled ? 'after:bg-black-premium' : 'after:bg-gold-signature',
+                      (isScrolled || isGoldHero && !isScrolled) ? 'after:bg-black-premium' : 'after:bg-gold-signature',
                       'after:transition-all after:duration-300',
                       'hover:after:w-full'
                     )}
@@ -143,7 +143,7 @@ export const Navbar = () => {
               className="lg:hidden relative z-50 p-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <Menu className={cn("w-6 h-6", (isScrolled || isMobileMenuOpen) ? "text-white" : "text-black-premium")} />
+              <Menu className={cn("w-6 h-6", isMobileMenuOpen ? "text-white" : "text-black-premium")} />
 
             </button>
           </nav>

@@ -38,7 +38,7 @@ export const PlanSection = () => {
       icon: <Briefcase className="w-5 h-5 text-black" /> 
     },
     { 
-      title: 'Grandes Parceiros', 
+      title: 'Planos Corporativos', 
       description: 'Planos com Nova Saúde, Ônix e Hapvida Notredame.',
       icon: <Heart className="w-5 h-5 text-black" /> 
     }
