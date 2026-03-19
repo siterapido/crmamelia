@@ -80,17 +80,14 @@ export const PlanSection = () => {
                   </div>
 
                   {/* Unified CTA */}
-                  <div className="w-full flex justify-center mt-2">
-                    <MagneticButton strength={0.3} className="w-full max-w-lg">
-                      <Button 
-                        variant="black"
-                        size="lg" 
-                        fullWidth 
-                        className="shadow-2xl"
-                      >
-                        Solicitar Cotação
-                      </Button>
-                    </MagneticButton>
+                  <div className="w-full flex justify-center mt-8 md:mt-10">
+                    <Button 
+                      variant="black"
+                      size="lg" 
+                      className="w-[90%] sm:w-auto sm:min-w-[320px] max-w-[400px] shadow-2xl rounded-2xl whitespace-nowrap text-sm sm:text-base px-6 sm:px-10 py-4 sm:py-5 min-h-[52px] sm:min-h-[60px] font-bold"
+                    >
+                      Solicitar Cotação
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
