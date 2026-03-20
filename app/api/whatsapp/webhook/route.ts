@@ -10,7 +10,7 @@ import { contacts, conversations, messages } from '@/lib/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { sendTextMessage } from '@/lib/whatsapp/evolution-client'
 import { processSDRMessage } from '@/lib/ai/sdr-agent'
-import { executeSDRActions } from '@/lib/ai/sdr-actions'
+import { executeSDRActions, ensureDeal } from '@/lib/ai/sdr-actions'
 
 const FALLBACK_MESSAGE = 'Olá! Desculpe, estou com uma instabilidade temporária. Um atendente humano vai te responder em breve. 🙏'
 
@@ -138,6 +138,13 @@ async function handleInboundMessage(
             .returning()
         contact = newContact
         console.log(`[Handler] Created contact ID: ${contact.id}`)
+
+        // Auto-create deal in pipeline for new contacts
+        try {
+            await ensureDeal(contact)
+        } catch (err) {
+            console.error(`[Handler] Failed to create deal for new contact:`, err)
+        }
     } else {
         console.log(`[Handler] Found contact ID: ${contact.id}. Updating last contact info...`)
         await db
@@ -148,6 +155,13 @@ async function handleInboundMessage(
                 ...(senderName !== phone && senderName !== 'WhatsApp User' ? { name: senderName } : {}),
             })
             .where(eq(contacts.id, contact.id))
+
+        // Ensure deal exists for returning contacts too
+        try {
+            await ensureDeal(contact)
+        } catch (err) {
+            console.error(`[Handler] Failed to ensure deal:`, err)
+        }
     }
 
     // 2. Find or create active conversation
@@ -196,6 +210,14 @@ async function handleInboundMessage(
     console.log(`[Handler] AI enabled: ${conversation.aiEnabled}`)
     if (conversation.aiEnabled) {
         try {
+            // Auto-move to "contacted" if still "new"
+            if (contact.status === 'new') {
+                await db.update(contacts).set({ status: 'contacted', updatedAt: new Date() }).where(eq(contacts.id, contact.id))
+                const { executeSDRActions: exec } = await import('@/lib/ai/sdr-actions')
+                await exec([{ type: 'update_stage', stage: 'contacted' }], contact, conversation.id)
+                console.log(`[CRM] Auto-moved contact ${contact.id} from "new" → "contacted"`)
+            }
+
             console.log(`[AI] Processing message with agent...`)
             const history = await db
                 .select()
@@ -204,18 +226,21 @@ async function handleInboundMessage(
                 .orderBy(desc(messages.createdAt))
                 .limit(20)
 
+            // Re-fetch contact to get latest data (may have been updated by previous interactions)
+            const [freshContact] = await db.select().from(contacts).where(eq(contacts.id, contact.id)).limit(1)
+
             const result = await processSDRMessage(
                 conversation.id,
                 messageContent,
                 history.reverse(),
-                contact
+                freshContact || contact
             )
 
             console.log(`[AI] Agent reply: ${result.reply ? 'YES' : 'NO'} | Actions: ${result.actions.length}`)
 
             if (result.actions.length > 0) {
                 console.log(`[AI] Executing ${result.actions.length} actions...`)
-                await executeSDRActions(result.actions, contact, conversation.id)
+                await executeSDRActions(result.actions, freshContact || contact, conversation.id)
             }
 
             if (result.reply) {

@@ -60,14 +60,7 @@ export async function sendTextMessage(phone: string, message: string): Promise<a
         method: 'POST',
         body: {
             number: normalizePhone(phone),
-            options: {
-                delay: 1200,
-                presence: 'composing',
-                linkPreview: false
-            },
-            textMessage: {
-                text: message
-            }
+            text: message,
         },
     })
 }
@@ -86,16 +79,10 @@ export async function sendMediaMessage(
         method: 'POST',
         body: {
             number: normalizePhone(phone),
-            options: {
-                delay: 1200,
-                presence: 'composing'
-            },
-            mediaMessage: {
-                mediatype: mediaType,
-                caption: caption || '',
-                media: mediaUrl,
-                fileName: fileName || 'file'
-            }
+            mediatype: mediaType,
+            caption: caption || '',
+            media: mediaUrl,
+            fileName: fileName || 'file',
         },
     })
 }
