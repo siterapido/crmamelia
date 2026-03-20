@@ -1,64 +1,76 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Settings, MessageSquare, Sparkles, CheckCircle, XCircle, Copy, ExternalLink, Wifi, WifiOff, QrCode, RefreshCw } from 'lucide-react'
+import { Settings, MessageSquare, Sparkles, CheckCircle, XCircle, Copy, Wifi, WifiOff, QrCode, RefreshCw, LogOut } from 'lucide-react'
+import Link from 'next/link'
 
-interface ConnectionStatus {
+interface QRStatus {
     connected: boolean
-    smartphoneConnected?: boolean
-    phone?: string
+    status: string
     qrCode?: string | null
+    phone?: string | null
+    profilePicture?: string | null
     error?: string
 }
 
 export default function CRMSettingsPage() {
-    const [testing, setTesting] = useState(false)
-    const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null)
+    const [qrStatus, setQrStatus] = useState<QRStatus | null>(null)
+    const [loadingQr, setLoadingQr] = useState(true)
+    const [disconnecting, setDisconnecting] = useState(false)
     const [copied, setCopied] = useState(false)
-    const [status, setStatus] = useState<ConnectionStatus | null>(null)
-    const [loadingStatus, setLoadingStatus] = useState(true)
+    const pollingRef = useRef<NodeJS.Timeout | null>(null)
 
     const webhookUrl = typeof window !== 'undefined'
         ? `${window.location.origin}/api/whatsapp/webhook`
         : '/api/whatsapp/webhook'
 
-    const fetchStatus = async () => {
-        setLoadingStatus(true)
+    const fetchQRStatus = async () => {
         try {
-            const res = await fetch('/api/crm/whatsapp/test')
+            const res = await fetch('/api/crm/whatsapp/qrcode')
             const data = await res.json()
-            setStatus(data)
+            setQrStatus(data)
+            return data
         } catch {
-            setStatus({ connected: false, error: 'Erro ao verificar status' })
+            setQrStatus({ connected: false, status: 'error', error: 'Erro ao verificar status' })
+            return null
         } finally {
-            setLoadingStatus(false)
+            setLoadingQr(false)
         }
     }
 
     useEffect(() => {
-        fetchStatus()
+        fetchQRStatus()
     }, [])
 
-    const handleTestConnection = async () => {
-        setTesting(true)
-        setTestResult(null)
-        try {
-            const res = await fetch('/api/crm/whatsapp/test', { method: 'POST' })
-            const data = await res.json()
-            setTestResult({
-                success: data.success,
-                message: data.success
-                    ? `Conectado! Numero: ${data.phone}`
-                    : data.error || 'Falha na conexao',
-            })
-            if (data.success) {
-                setStatus({ connected: true, phone: data.phone })
+    // Polling: 3s when disconnected (waiting for QR scan), 30s when connected
+    useEffect(() => {
+        if (pollingRef.current) clearInterval(pollingRef.current)
+
+        const interval = qrStatus?.connected ? 30000 : 3000
+
+        pollingRef.current = setInterval(async () => {
+            const data = await fetchQRStatus()
+            // Stop fast polling once connected
+            if (data?.connected && pollingRef.current) {
+                clearInterval(pollingRef.current)
+                pollingRef.current = setInterval(fetchQRStatus, 30000)
             }
-        } catch {
-            setTestResult({ success: false, message: 'Erro ao testar conexao' })
+        }, interval)
+
+        return () => {
+            if (pollingRef.current) clearInterval(pollingRef.current)
+        }
+    }, [qrStatus?.connected])
+
+    const handleDisconnect = async () => {
+        if (!confirm('Desconectar o WhatsApp desta instância?')) return
+        setDisconnecting(true)
+        try {
+            await fetch('/api/crm/whatsapp/qrcode', { method: 'DELETE' })
+            await fetchQRStatus()
         } finally {
-            setTesting(false)
+            setDisconnecting(false)
         }
     }
 
@@ -71,156 +83,145 @@ export default function CRMSettingsPage() {
     return (
         <div className="space-y-6 max-w-3xl">
             <div>
-                <h1 className="text-3xl font-bold text-white">Configuracoes CRM</h1>
-                <p className="text-platinum mt-1">Z-API WhatsApp e Agente IA SDR</p>
+                <h1 className="text-3xl font-bold text-white">Configurações CRM</h1>
+                <p className="text-platinum mt-1">WhatsApp via Evolution API · Agente IA SDR</p>
             </div>
 
-            {/* Connection Status */}
+            {/* WhatsApp Connection Card */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-charcoal rounded-2xl p-6 border border-white/10"
             >
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-6">
-                    {status?.connected ? (
+                    {qrStatus?.connected ? (
                         <Wifi className="w-5 h-5 text-green-400" />
                     ) : (
                         <WifiOff className="w-5 h-5 text-red-400" />
                     )}
-                    Status da Conexao WhatsApp
+                    Conexão WhatsApp
                 </h2>
 
-                {loadingStatus ? (
+                {loadingQr ? (
                     <div className="flex items-center gap-3 text-platinum">
                         <RefreshCw className="w-5 h-5 animate-spin" />
-                        Verificando conexao...
+                        Verificando conexão...
                     </div>
-                ) : status?.connected ? (
-                    <div className="space-y-3">
+                ) : qrStatus?.connected ? (
+                    <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
-                            <span className="text-green-400 font-medium">Conectado</span>
-                            {status.phone && (
-                                <span className="text-platinum text-sm">({status.phone})</span>
+                            <span className="text-green-400 font-semibold">Conectado</span>
+                            {qrStatus.phone && (
+                                <span className="text-platinum text-sm">({qrStatus.phone})</span>
                             )}
                         </div>
-                        <button
-                            onClick={fetchStatus}
-                            className="text-platinum text-sm hover:text-white flex items-center gap-2 transition-colors"
-                        >
-                            <RefreshCw className="w-4 h-4" />
-                            Atualizar status
-                        </button>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={fetchQRStatus}
+                                className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors text-sm flex items-center gap-2"
+                            >
+                                <RefreshCw className="w-4 h-4" />
+                                Atualizar
+                            </button>
+                            <button
+                                onClick={handleDisconnect}
+                                disabled={disconnecting}
+                                className="px-4 py-2 bg-red-500/10 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                {disconnecting ? 'Desconectando...' : 'Desconectar'}
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <div className="w-3 h-3 rounded-full bg-red-400" />
                             <span className="text-red-400 font-medium">Desconectado</span>
+                            <span className="text-platinum/50 text-sm">
+                                {qrStatus?.status === 'close' ? '— escaneie o QR Code abaixo' : `(${qrStatus?.status || 'verificando...'})`}
+                            </span>
                         </div>
 
-                        {status?.qrCode && (
-                            <div className="bg-white rounded-xl p-4 inline-block">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <QrCode className="w-5 h-5 text-gray-600" />
-                                    <span className="text-gray-700 font-medium text-sm">Escaneie com o WhatsApp</span>
+                        {qrStatus?.qrCode ? (
+                            <div className="space-y-3">
+                                <div className="bg-white rounded-2xl p-5 inline-block">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <QrCode className="w-5 h-5 text-gray-600" />
+                                        <span className="text-gray-700 font-medium text-sm">Escaneie com o WhatsApp</span>
+                                    </div>
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={`data:image/png;base64,${qrStatus.qrCode}`}
+                                        alt="QR Code WhatsApp"
+                                        className="w-64 h-64"
+                                    />
                                 </div>
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={`data:image/png;base64,${status.qrCode}`}
-                                    alt="QR Code WhatsApp"
-                                    className="w-64 h-64"
-                                />
+                                <p className="text-platinum/50 text-sm flex items-center gap-2">
+                                    <RefreshCw className="w-3 h-3 animate-spin" />
+                                    Atualizando automaticamente a cada 3 segundos...
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                <p className="text-platinum text-sm">
+                                    Nenhum QR code disponível. Clique em Atualizar ou verifique se a Evolution API está rodando.
+                                </p>
+                                <button
+                                    onClick={fetchQRStatus}
+                                    className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors text-sm flex items-center gap-2"
+                                >
+                                    <RefreshCw className="w-4 h-4" />
+                                    Tentar novamente
+                                </button>
                             </div>
                         )}
 
-                        <div className="flex gap-3">
-                            <button
-                                onClick={fetchStatus}
-                                className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors text-sm flex items-center gap-2"
-                            >
-                                <RefreshCw className="w-4 h-4" />
-                                Atualizar QR Code
-                            </button>
-                        </div>
+                        {qrStatus?.error && (
+                            <div className="p-3 bg-red-500/10 rounded-xl border border-red-500/20">
+                                <p className="text-red-400 text-sm">{qrStatus.error}</p>
+                            </div>
+                        )}
                     </div>
                 )}
             </motion.div>
 
-            {/* Z-API Configuration */}
+            {/* Webhook URL */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 }}
                 className="bg-charcoal rounded-2xl p-6 border border-white/10"
             >
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-6">
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-4">
                     <MessageSquare className="w-5 h-5 text-green-400" />
-                    Z-API WhatsApp
+                    Webhook Evolution API
                 </h2>
-
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-platinum text-sm mb-1">Webhook URL (ReceivedCallback)</label>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                readOnly
-                                value={webhookUrl}
-                                className="flex-1 px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-platinum text-sm font-mono"
-                            />
-                            <button
-                                onClick={copyWebhookUrl}
-                                className="px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors"
-                            >
-                                {copied ? <CheckCircle className="w-5 h-5 text-green-400" /> : <Copy className="w-5 h-5" />}
-                            </button>
-                        </div>
-                        <p className="text-platinum/50 text-xs mt-1">
-                            Configure esta URL no painel Z-API como webhook de &quot;Received&quot; e &quot;Message Status&quot;
-                        </p>
-                    </div>
-
-                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                        <h3 className="text-white font-medium text-sm mb-3">Variaveis de Ambiente</h3>
-                        <div className="space-y-2 font-mono text-xs">
-                            <EnvVar name="ZAPI_INSTANCE_ID" desc="ID da instancia Z-API" />
-                            <EnvVar name="ZAPI_TOKEN" desc="Token da instancia Z-API" />
-                            <EnvVar name="ZAPI_SECURITY_TOKEN" desc="Client-Token para validacao de webhooks" />
-                            <EnvVar name="OPENROUTER_API_KEY" desc="Chave API do OpenRouter (para IA SDR)" />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
+                <div>
+                    <label className="block text-platinum text-sm mb-1">URL do Webhook</label>
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            readOnly
+                            value={webhookUrl}
+                            className="flex-1 px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-platinum text-sm font-mono"
+                        />
                         <button
-                            onClick={handleTestConnection}
-                            disabled={testing}
-                            className="px-5 py-2.5 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
+                            onClick={copyWebhookUrl}
+                            className="px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors"
                         >
-                            {testing ? 'Testando...' : 'Testar Conexao'}
+                            {copied ? <CheckCircle className="w-5 h-5 text-green-400" /> : <Copy className="w-5 h-5" />}
                         </button>
-
-                        {testResult && (
-                            <div className={`flex items-center gap-2 text-sm ${testResult.success ? 'text-green-400' : 'text-red-400'}`}>
-                                {testResult.success ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                                {testResult.message}
-                            </div>
-                        )}
                     </div>
-
-                    <a
-                        href="https://app.z-api.io"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-gold text-sm hover:underline"
-                    >
-                        <ExternalLink className="w-4 h-4" />
-                        Abrir Painel Z-API
-                    </a>
+                    <p className="text-platinum/50 text-xs mt-2">
+                        Configure esta URL no painel Evolution API como webhook para os eventos MESSAGES_UPSERT e MESSAGES_UPDATE
+                    </p>
                 </div>
             </motion.div>
 
-            {/* AI Agent Configuration */}
+            {/* AI Agent Config */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -238,19 +239,19 @@ export default function CRMSettingsPage() {
                         <ul className="text-platinum text-sm space-y-2">
                             <li className="flex items-start gap-2">
                                 <span className="text-gold mt-1">1.</span>
-                                <span><strong>Qualifica</strong> leads perguntando sobre empresa, plano atual e numero de vidas</span>
+                                <span><strong>Qualifica</strong> leads coletando nome, cidade e número de vidas</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-gold mt-1">2.</span>
-                                <span><strong>Informa</strong> sobre planos SIX Saude (Essencial, Completo, Premium)</span>
+                                <span><strong>Aplica</strong> metodologia SPIN Selling para entender necessidades</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-gold mt-1">3.</span>
-                                <span><strong>Transfere</strong> para humano quando necessario (precos, reclamacoes, proposta)</span>
+                                <span><strong>Transfere</strong> para humano quando necessário (preços, reclamações, proposta)</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-gold mt-1">4.</span>
-                                <span><strong>Agenda</strong> follow-ups automaticos</span>
+                                <span><strong>Agenda</strong> follow-ups automáticos</span>
                             </li>
                         </ul>
                     </div>
@@ -265,35 +266,52 @@ export default function CRMSettingsPage() {
                     <div className="bg-white/5 rounded-xl p-4 border border-white/10">
                         <h3 className="text-white font-medium text-sm mb-2">Triggers de Handoff</h3>
                         <ul className="text-platinum text-sm space-y-1">
-                            <li>Contato pede explicitamente por humano</li>
-                            <li>Negociacao detalhada de precos/contratos</li>
-                            <li>Reclamacoes ou cancelamentos</li>
-                            <li>Lead qualificado pronto para proposta</li>
+                            <li>• Contato pede explicitamente por humano</li>
+                            <li>• Negociação detalhada de preços/contratos</li>
+                            <li>• Reclamações ou cancelamentos</li>
+                            <li>• Lead qualificado pronto para proposta</li>
                         </ul>
                     </div>
                 </div>
             </motion.div>
 
-            {/* Setup Guide */}
+            {/* Quick Links */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.15 }}
                 className="bg-charcoal rounded-2xl p-6 border border-white/10"
             >
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-6">
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-4">
                     <Settings className="w-5 h-5 text-gold" />
-                    Guia de Configuracao
+                    Configurações Avançadas
                 </h2>
-
-                <ol className="space-y-4 text-sm">
-                    <Step n={1} title="Criar conta na Z-API" desc="Acesse z-api.io e crie uma conta. Crie uma instancia para seu numero." />
-                    <Step n={2} title="Conectar WhatsApp" desc="No painel Z-API, escaneie o QR Code com o WhatsApp do numero de atendimento." />
-                    <Step n={3} title="Copiar credenciais" desc="Copie o Instance ID, Token e Security Token do painel Z-API." />
-                    <Step n={4} title="Configurar variaveis" desc="Adicione ZAPI_INSTANCE_ID, ZAPI_TOKEN e ZAPI_SECURITY_TOKEN no Vercel." />
-                    <Step n={5} title="Configurar webhooks" desc="No painel Z-API, configure a URL de webhook (Received e Message Status) com a URL acima." />
-                    <Step n={6} title="Testar" desc="Use o botao 'Testar Conexao' acima e envie uma mensagem de teste para o numero." />
-                </ol>
+                <div className="grid grid-cols-2 gap-3">
+                    <Link
+                        href="/crm/settings/users"
+                        className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/20 transition-all"
+                    >
+                        <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center">
+                            <span className="text-gold text-lg">👥</span>
+                        </div>
+                        <div>
+                            <p className="text-white text-sm font-medium">Atendentes</p>
+                            <p className="text-platinum text-xs">Gerenciar usuários</p>
+                        </div>
+                    </Link>
+                    <Link
+                        href="/crm/settings/templates"
+                        className="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/20 transition-all"
+                    >
+                        <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center">
+                            <span className="text-gold text-lg">⚡</span>
+                        </div>
+                        <div>
+                            <p className="text-white text-sm font-medium">Templates</p>
+                            <p className="text-platinum text-xs">Respostas rápidas</p>
+                        </div>
+                    </Link>
+                </div>
             </motion.div>
         </div>
     )
@@ -305,19 +323,5 @@ function EnvVar({ name, desc }: { name: string; desc: string }) {
             <code className="text-gold bg-gold/10 px-2 py-0.5 rounded">{name}</code>
             <span className="text-platinum/70">{desc}</span>
         </div>
-    )
-}
-
-function Step({ n, title, desc }: { n: number; title: string; desc: string }) {
-    return (
-        <li className="flex items-start gap-3">
-            <span className="w-7 h-7 rounded-full bg-gold/10 text-gold flex items-center justify-center flex-shrink-0 font-semibold text-sm">
-                {n}
-            </span>
-            <div>
-                <p className="text-white font-medium">{title}</p>
-                <p className="text-platinum mt-0.5">{desc}</p>
-            </div>
-        </li>
     )
 }

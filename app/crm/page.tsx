@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Users, MessageSquare, UserCheck, TrendingUp, LayoutGrid, Target, Sparkles, Plus } from 'lucide-react'
+import { Users, MessageSquare, UserCheck, TrendingUp, LayoutGrid, Target, Sparkles, Plus, Bell } from 'lucide-react'
 import Link from 'next/link'
+
+interface Followup {
+    id: string
+    scheduledAt: string
+    message: string
+    contact: { id: string; name: string; phone: string } | null
+}
 
 interface CRMStats {
     totalContacts: number
@@ -27,11 +34,17 @@ interface CRMStats {
 export default function CRMDashboard() {
     const [stats, setStats] = useState<CRMStats | null>(null)
     const [loading, setLoading] = useState(true)
+    const [followups, setFollowups] = useState<Followup[]>([])
 
     useEffect(() => {
-        fetch('/api/crm/stats')
-            .then(res => res.json())
-            .then(setStats)
+        Promise.all([
+            fetch('/api/crm/stats').then(r => r.json()),
+            fetch('/api/crm/followups').then(r => r.json()),
+        ])
+            .then(([statsData, followupsData]) => {
+                setStats(statsData)
+                setFollowups(followupsData.data || [])
+            })
             .catch(console.error)
             .finally(() => setLoading(false))
     }, [])
@@ -192,6 +205,54 @@ export default function CRMDashboard() {
                         <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
                             <span className="text-platinum text-sm">Interações IA hoje</span>
                             <span className="text-gold font-semibold">{stats.aiInteractionsToday}</span>
+                        </div>
+                    )}
+                </motion.div>
+
+                {/* Follow-ups Widget */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                    className="bg-charcoal rounded-2xl p-6 border border-white/10"
+                >
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                            <Bell className="w-5 h-5 text-gold" />
+                            Follow-ups Pendentes
+                        </h2>
+                        <span className="text-platinum text-sm">{followups.length} pendentes</span>
+                    </div>
+
+                    {loading ? (
+                        <div className="space-y-3">
+                            {[1, 2].map(i => (
+                                <div key={i} className="animate-pulse h-14 bg-white/5 rounded-xl" />
+                            ))}
+                        </div>
+                    ) : followups.length > 0 ? (
+                        <div className="space-y-3">
+                            {followups.slice(0, 5).map(f => (
+                                <div key={f.id} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+                                    <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
+                                        <Bell className="w-4 h-4 text-gold" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-white text-sm font-medium truncate">
+                                            {f.contact?.name || 'Contato'}
+                                        </p>
+                                        <p className="text-platinum text-xs truncate">{f.message}</p>
+                                        <p className="text-gold text-xs mt-0.5">
+                                            {new Date(f.scheduledAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8">
+                            <Bell className="w-12 h-12 text-platinum/50 mx-auto mb-3" />
+                            <p className="text-platinum">Nenhum follow-up pendente</p>
                         </div>
                     )}
                 </motion.div>

@@ -79,6 +79,7 @@ export const contacts = pgTable('contacts', {
     planInterest: varchar('plan_interest', { length: 50 }),
     livesCount: integer('lives_count'),
     address: text('address'),
+    profilePictureUrl: text('profile_picture_url'),
     lastContactAt: timestamp('last_contact_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -93,6 +94,7 @@ export const conversations = pgTable('conversations', {
     whatsappConversationId: varchar('whatsapp_conversation_id', { length: 100 }),
     status: varchar('status', { length: 20 }).default('active').notNull(),
     aiEnabled: boolean('ai_enabled').default(true).notNull(),
+    assignedTo: uuid('assigned_to').references(() => users.id),
     lastMessageAt: timestamp('last_message_at'),
     closedAt: timestamp('closed_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -141,6 +143,40 @@ export const deals = pgTable('deals', {
     lostReason: text('lost_reason'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
+// ==================== CRM: CONTACT TAGS ====================
+export const contactTags = pgTable('contact_tags', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'cascade' }).notNull(),
+    tag: varchar('tag', { length: 100 }).notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => [
+    uniqueIndex('contact_tags_unique').on(table.contactId, table.tag),
+])
+
+// ==================== CRM: QUICK REPLIES ====================
+export const quickReplies = pgTable('quick_replies', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    title: varchar('title', { length: 100 }).notNull(),
+    shortcut: varchar('shortcut', { length: 50 }).unique().notNull(),
+    content: text('content').notNull(),
+    category: varchar('category', { length: 50 }),
+    createdBy: uuid('created_by').references(() => users.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
+// ==================== CRM: CONTACT ACTIVITIES ====================
+export const contactActivities = pgTable('contact_activities', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'cascade' }).notNull(),
+    userId: uuid('user_id').references(() => users.id),
+    type: varchar('type', { length: 30 }).notNull(),
+    title: varchar('title', { length: 255 }).notNull(),
+    description: text('description'),
+    metadata: text('metadata'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 // ==================== CRM: AI INTERACTIONS ====================
@@ -203,12 +239,28 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
     conversations: many(conversations),
     deals: many(deals),
     followups: many(contactFollowups),
+    tags: many(contactTags),
+    activities: many(contactActivities),
 }))
 
 export const conversationsRelations = relations(conversations, ({ one, many }) => ({
     contact: one(contacts, { fields: [conversations.contactId], references: [contacts.id] }),
+    assignedUser: one(users, { fields: [conversations.assignedTo], references: [users.id] }),
     messages: many(messages),
     aiInteractions: many(aiInteractions),
+}))
+
+export const contactTagsRelations = relations(contactTags, ({ one }) => ({
+    contact: one(contacts, { fields: [contactTags.contactId], references: [contacts.id] }),
+}))
+
+export const quickRepliesRelations = relations(quickReplies, ({ one }) => ({
+    createdByUser: one(users, { fields: [quickReplies.createdBy], references: [users.id] }),
+}))
+
+export const contactActivitiesRelations = relations(contactActivities, ({ one }) => ({
+    contact: one(contacts, { fields: [contactActivities.contactId], references: [contacts.id] }),
+    user: one(users, { fields: [contactActivities.userId], references: [users.id] }),
 }))
 
 export const messagesRelations = relations(messages, ({ one }) => ({
@@ -260,3 +312,9 @@ export type AiInteraction = typeof aiInteractions.$inferSelect
 export type NewAiInteraction = typeof aiInteractions.$inferInsert
 export type ContactFollowup = typeof contactFollowups.$inferSelect
 export type NewContactFollowup = typeof contactFollowups.$inferInsert
+export type ContactTag = typeof contactTags.$inferSelect
+export type NewContactTag = typeof contactTags.$inferInsert
+export type QuickReply = typeof quickReplies.$inferSelect
+export type NewQuickReply = typeof quickReplies.$inferInsert
+export type ContactActivity = typeof contactActivities.$inferSelect
+export type NewContactActivity = typeof contactActivities.$inferInsert

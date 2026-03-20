@@ -14,6 +14,8 @@ import {
     Settings,
     LogOut,
     ArrowLeft,
+    Users,
+    Zap,
 } from 'lucide-react'
 
 const navItems = [
@@ -21,7 +23,12 @@ const navItems = [
     { href: '/crm/conversations', label: 'Conversas', icon: MessageSquare },
     { href: '/crm/contacts', label: 'Contatos', icon: UserCheck },
     { href: '/crm/pipeline', label: 'Pipeline', icon: LayoutGrid },
-    { href: '/crm/settings', label: 'Configuracoes', icon: Settings },
+    { href: '/crm/settings', label: 'Configurações', icon: Settings, exact: true },
+]
+
+const adminNavItems = [
+    { href: '/crm/settings/users', label: 'Atendentes', icon: Users },
+    { href: '/crm/settings/templates', label: 'Templates', icon: Zap },
 ]
 
 export function CrmSidebar() {
@@ -86,6 +93,44 @@ export function CrmSidebar() {
                         )
                     })}
                 </ul>
+
+                {/* Admin Items */}
+                {user?.role === 'admin' && (
+                    <>
+                        <div className="my-4 mx-4 border-t border-white/10" />
+                        <p className="text-platinum/50 text-[10px] uppercase tracking-widest font-semibold px-4 mb-2">
+                            Administração
+                        </p>
+                        <ul className="space-y-1">
+                            {adminNavItems.map((item) => {
+                                const isActive = pathname.startsWith(item.href)
+                                return (
+                                    <li key={item.href}>
+                                        <Link
+                                            href={item.href}
+                                            className={cn(
+                                                'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
+                                                'hover:bg-white/5',
+                                                isActive
+                                                    ? 'bg-gold/10 text-gold border border-gold/20'
+                                                    : 'text-platinum'
+                                            )}
+                                        >
+                                            <item.icon className="w-5 h-5" />
+                                            <span className="font-medium">{item.label}</span>
+                                            {isActive && (
+                                                <motion.div
+                                                    layoutId="activeCrmIndicator"
+                                                    className="ml-auto w-1.5 h-1.5 rounded-full bg-gold"
+                                                />
+                                            )}
+                                        </Link>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </>
+                )}
 
                 {/* Divider */}
                 <div className="my-4 mx-4 border-t border-white/10" />

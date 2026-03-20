@@ -2,9 +2,23 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, X, Send, MessageCircle } from 'lucide-react'
-import { useChat, type UIMessage } from '@ai-sdk/react'
-import { DefaultChatTransport } from 'ai'
+import { Sparkles, X, Send, MessageCircle, UserCheck } from 'lucide-react'
+
+type ChatMsg = { id: string; role: 'user' | 'assistant'; text: string }
+
+function generateId() {
+    return Math.random().toString(36).slice(2)
+}
+
+function getOrCreateSessionId(): string {
+    const key = 'six_chat_session'
+    let id = localStorage.getItem(key)
+    if (!id) {
+        id = crypto.randomUUID ? crypto.randomUUID() : generateId()
+        localStorage.setItem(key, id)
+    }
+    return id
+}
 
 /**
  * AI Chat Widget - SIX Saúde Design System
@@ -13,17 +27,22 @@ import { DefaultChatTransport } from 'ai'
  * - Yellow theme matching brand colors
  * - AI icon with pulse animation
  * - Expandable chat panel
- * - Streaming AI responses
+ * - SDR Agent responses via CRM
  * - WhatsApp handoff option
  */
 export const AIChatWidget = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [input, setInput] = useState('')
+    const [msgs, setMsgs] = useState<ChatMsg[]>([])
+    const [loading, setLoading] = useState(false)
+    const [sessionId, setSessionId] = useState<string | null>(null)
+    const [conversationId, setConversationId] = useState<string | null>(null)
+    const [handoff, setHandoff] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
-    const { messages, sendMessage, status } = useChat({
-        transport: new DefaultChatTransport({ api: '/api/chat/support' }),
-    })
+    useEffect(() => {
+        setSessionId(getOrCreateSessionId())
+    }, [])
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -31,13 +50,51 @@ export const AIChatWidget = () => {
 
     useEffect(() => {
         scrollToBottom()
-    }, [messages])
+    }, [msgs, loading])
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (input.trim() && status !== 'streaming') {
-            sendMessage({ role: 'user', parts: [{ type: 'text', text: input }] })
-            setInput('')
+        if (!input.trim() || loading || !sessionId) return
+
+        const userText = input.trim()
+        setInput('')
+        setMsgs((prev) => [...prev, { id: generateId(), role: 'user', text: userText }])
+        setLoading(true)
+
+        try {
+            const res = await fetch('/api/chat/website', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userText, sessionId, conversationId }),
+            })
+
+            if (!res.ok) throw new Error('Request failed')
+
+            const data = await res.json()
+
+            if (data.conversationId && !conversationId) {
+                setConversationId(data.conversationId)
+            }
+
+            if (data.handoff) {
+                setHandoff(true)
+            }
+
+            setMsgs((prev) => [
+                ...prev,
+                { id: generateId(), role: 'assistant', text: data.reply },
+            ])
+        } catch {
+            setMsgs((prev) => [
+                ...prev,
+                {
+                    id: generateId(),
+                    role: 'assistant',
+                    text: 'Desculpe, ocorreu um erro. Tente novamente em instantes.',
+                },
+            ])
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -46,13 +103,6 @@ export const AIChatWidget = () => {
             'Olá! Vim pelo chat do site da SIX Saúde e gostaria de falar com um especialista.'
         )
         window.open(`https://wa.me/5511999999999?text=${message}`, '_blank', 'noopener,noreferrer')
-    }
-
-    const getMessageText = (msg: UIMessage): string => {
-        return msg.parts
-            .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
-            .map((p) => p.text)
-            .join('')
     }
 
     return (
@@ -172,7 +222,7 @@ export const AIChatWidget = () => {
                         {/* Messages */}
                         <div className="flex-1 overflow-y-auto p-4 space-y-3">
                             {/* Welcome message */}
-                            {messages.length === 0 && (
+                            {msgs.length === 0 && (
                                 <div className="bg-[#1A1A1A] rounded-lg p-3 text-sm text-gray-300">
                                     <p className="mb-2">
                                         👋 Olá! Sou o assistente virtual da <strong className="text-[#F6C200]">SIX Saúde</strong>.
@@ -181,7 +231,7 @@ export const AIChatWidget = () => {
                                 </div>
                             )}
 
-                            {messages.map((msg) => (
+                            {msgs.map((msg) => (
                                 <div
                                     key={msg.id}
                                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -192,12 +242,13 @@ export const AIChatWidget = () => {
                                             : 'bg-[#1A1A1A] text-gray-200'
                                             }`}
                                     >
-                                        {getMessageText(msg)}
+                                        {msg.text}
                                     </div>
                                 </div>
                             ))}
 
-                            {status === 'streaming' && (
+                            {/* Loading indicator */}
+                            {loading && (
                                 <div className="flex justify-start">
                                     <div className="bg-[#1A1A1A] rounded-lg px-3 py-2">
                                         <motion.div
@@ -225,16 +276,25 @@ export const AIChatWidget = () => {
                             <div ref={messagesEndRef} />
                         </div>
 
-                        {/* WhatsApp Button */}
-                        <div className="px-4 pb-2">
-                            <button
-                                onClick={handleWhatsAppClick}
-                                className="w-full flex items-center justify-center gap-2 py-2 text-xs text-gray-400 hover:text-[#25D366] transition-colors"
-                            >
-                                <MessageCircle size={14} />
-                                Prefere falar com um humano? Clique aqui
-                            </button>
-                        </div>
+                        {/* Handoff banner or WhatsApp button */}
+                        {handoff ? (
+                            <div className="px-4 pb-2">
+                                <div className="flex items-center gap-2 py-2 px-3 bg-[#1A1A1A] border border-[#F6C200]/30 rounded-lg text-xs text-[#F6C200]">
+                                    <UserCheck size={14} className="shrink-0" />
+                                    <span>Atendimento humano ativo — nossa equipe responderá em breve</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="px-4 pb-2">
+                                <button
+                                    onClick={handleWhatsAppClick}
+                                    className="w-full flex items-center justify-center gap-2 py-2 text-xs text-gray-400 hover:text-[#25D366] transition-colors"
+                                >
+                                    <MessageCircle size={14} />
+                                    Prefere falar com um humano? Clique aqui
+                                </button>
+                            </div>
+                        )}
 
                         {/* Input */}
                         <form onSubmit={handleSubmit} className="p-3 border-t border-white/10">
@@ -245,11 +305,11 @@ export const AIChatWidget = () => {
                                     onChange={(e) => setInput(e.target.value)}
                                     placeholder="Digite sua mensagem..."
                                     className="flex-1 bg-[#1A1A1A] border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#F6C200]/50 transition-colors"
-                                    disabled={status === 'streaming'}
+                                    disabled={loading}
                                 />
                                 <button
                                     type="submit"
-                                    disabled={!input.trim() || status === 'streaming'}
+                                    disabled={!input.trim() || loading}
                                     className="px-3 py-2 bg-[#F6C200] text-black rounded-lg hover:bg-[#E5B400] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     aria-label="Enviar mensagem"
                                 >

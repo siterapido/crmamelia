@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { contacts, conversations, messages } from '@/lib/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
-import { sendTextMessage } from '@/lib/whatsapp/evolution-client'
+import { sendTextMessage, fetchProfilePicture } from '@/lib/whatsapp/evolution-client'
 import { processSDRMessage } from '@/lib/ai/sdr-agent'
 import { executeSDRActions, ensureDeal } from '@/lib/ai/sdr-actions'
 
@@ -145,6 +145,17 @@ async function handleInboundMessage(
         } catch (err) {
             console.error(`[Handler] Failed to create deal for new contact:`, err)
         }
+
+        // Fetch profile picture for new contact
+        try {
+            const picUrl = await fetchProfilePicture(phone)
+            if (picUrl) {
+                await db.update(contacts).set({ profilePictureUrl: picUrl }).where(eq(contacts.id, contact.id))
+                contact = { ...contact, profilePictureUrl: picUrl }
+            }
+        } catch {
+            // Non-critical, ignore
+        }
     } else {
         console.log(`[Handler] Found contact ID: ${contact.id}. Updating last contact info...`)
         await db
@@ -161,6 +172,19 @@ async function handleInboundMessage(
             await ensureDeal(contact)
         } catch (err) {
             console.error(`[Handler] Failed to ensure deal:`, err)
+        }
+
+        // Fetch profile picture if missing
+        if (!contact.profilePictureUrl) {
+            try {
+                const picUrl = await fetchProfilePicture(phone)
+                if (picUrl) {
+                    await db.update(contacts).set({ profilePictureUrl: picUrl }).where(eq(contacts.id, contact.id))
+                    contact = { ...contact, profilePictureUrl: picUrl }
+                }
+            } catch {
+                // Non-critical, ignore
+            }
         }
     }
 

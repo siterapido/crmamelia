@@ -10,10 +10,13 @@ import { messages, conversations, contacts } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
 import { eq, asc, gte, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { sendTextMessage } from '@/lib/whatsapp/evolution-client'
+import { sendTextMessage, sendMediaMessage } from '@/lib/whatsapp/evolution-client'
 
 const sendMessageSchema = z.object({
     content: z.string().min(1, 'Mensagem é obrigatória'),
+    messageType: z.enum(['text', 'image', 'video', 'document', 'audio']).optional().default('text'),
+    mediaUrl: z.string().url().optional(),
+    fileName: z.string().optional(),
 })
 
 type RouteContext = { params: Promise<{ id: string }> }
@@ -87,10 +90,22 @@ export async function POST(request: NextRequest, context: RouteContext) {
         // Send via WhatsApp
         let whatsappMessageId: string | null = null
         let messageStatus = 'sent'
+        const { content, messageType = 'text', mediaUrl, fileName } = result.data
 
         try {
             if (conversation.contactPhone) {
-                const waResponse = await sendTextMessage(conversation.contactPhone, result.data.content)
+                let waResponse
+                if (messageType !== 'text' && mediaUrl) {
+                    waResponse = await sendMediaMessage(
+                        conversation.contactPhone,
+                        mediaUrl,
+                        messageType as 'image' | 'video' | 'document' | 'audio',
+                        content,
+                        fileName
+                    )
+                } else {
+                    waResponse = await sendTextMessage(conversation.contactPhone, content)
+                }
                 whatsappMessageId = waResponse.key?.id ?? null
             }
         } catch (waError) {
@@ -106,8 +121,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
                 whatsappMessageId,
                 direction: 'outbound',
                 sender: 'agent',
-                content: result.data.content,
-                messageType: 'text',
+                content,
+                messageType,
+                mediaUrl: mediaUrl || null,
                 status: messageStatus,
                 aiGenerated: false,
             })

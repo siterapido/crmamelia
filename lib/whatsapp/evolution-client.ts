@@ -119,6 +119,27 @@ export async function getInstanceStatus(): Promise<any> {
 }
 
 /**
+ * Get QR code for connecting WhatsApp
+ */
+export async function getQRCode(): Promise<any> {
+    return callEvolutionApi('/instance/connect/{instance}')
+}
+
+/**
+ * Restart the Evolution API instance
+ */
+export async function restartInstance(): Promise<any> {
+    return callEvolutionApi('/instance/restart/{instance}', { method: 'PUT' })
+}
+
+/**
+ * Disconnect / logout from WhatsApp
+ */
+export async function logoutInstance(): Promise<any> {
+    return callEvolutionApi('/instance/logout/{instance}', { method: 'DELETE' })
+}
+
+/**
  * Test Evolution API connection
  */
 export async function testConnection(): Promise<{ success: boolean; status?: string; error?: string }> {
@@ -130,5 +151,41 @@ export async function testConnection(): Promise<{ success: boolean; status?: str
         }
     } catch (error) {
         return { success: false, error: String(error) }
+    }
+}
+
+// ==================== PROFILE & PRESENCE ====================
+
+/**
+ * Fetch a contact's profile picture URL
+ */
+export async function fetchProfilePicture(phone: string): Promise<string | null> {
+    try {
+        const result = await callEvolutionApi<any>(
+            `/chat/fetchProfilePictureUrl/{instance}?number=${normalizePhone(phone)}`
+        )
+        return result?.profilePictureUrl || result?.url || null
+    } catch {
+        return null
+    }
+}
+
+/**
+ * Send typing / recording presence indicator
+ */
+export async function sendPresence(
+    phone: string,
+    presence: 'composing' | 'recording' | 'paused'
+): Promise<void> {
+    try {
+        await callEvolutionApi('/chat/sendPresence/{instance}', {
+            method: 'POST',
+            body: {
+                number: normalizePhone(phone),
+                options: { presence },
+            },
+        })
+    } catch (err) {
+        console.error('Failed to send presence:', err)
     }
 }

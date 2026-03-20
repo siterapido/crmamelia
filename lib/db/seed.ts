@@ -73,6 +73,57 @@ async function seed() {
     }
     console.log('✅ Pipeline stages created')
 
+    // Create agent user
+    console.log('Creating agent user...')
+    const agentPassword = await hashPassword('agent123')
+    await db.insert(schema.users).values({
+        email: 'atendente@sixsaude.com.br',
+        passwordHash: agentPassword,
+        name: 'Atendente SIX',
+        role: 'agent',
+    }).onConflictDoNothing()
+    console.log('✅ Agent user created (email: atendente@sixsaude.com.br, password: agent123)')
+
+    // Create quick replies
+    console.log('Creating quick replies...')
+    const quickRepliesData = [
+        {
+            title: 'Saudação',
+            shortcut: '/oi',
+            content: 'Olá! Tudo bem? Sou da equipe SIX Saúde. Como posso te ajudar hoje? 😊',
+            category: 'saudacao',
+        },
+        {
+            title: 'Aguardar',
+            shortcut: '/aguarda',
+            content: 'Um momento, por favor! Vou verificar as informações e te retorno em instantes. ⏳',
+            category: 'geral',
+        },
+        {
+            title: 'Encaminhamento',
+            shortcut: '/especialista',
+            content: 'Vou encaminhar você para um de nossos especialistas em planos de saúde para te atender melhor. Em breve entraremos em contato! 👥',
+            category: 'handoff',
+        },
+        {
+            title: 'Proposta',
+            shortcut: '/proposta',
+            content: 'Ótimo! Com base nas informações que coletei, vou preparar uma proposta personalizada para você. Aguarde nosso contato em breve! 📋',
+            category: 'vendas',
+        },
+        {
+            title: 'Obrigado',
+            shortcut: '/obrigado',
+            content: 'Obrigado pelo contato! Foi um prazer te atender. Qualquer dúvida, estamos à disposição. Tenha um ótimo dia! 🌟',
+            category: 'encerramento',
+        },
+    ]
+
+    for (const qr of quickRepliesData) {
+        await db.insert(schema.quickReplies).values(qr).onConflictDoNothing()
+    }
+    console.log('✅ Quick replies created')
+
     console.log('')
     console.log('🎉 Database seeded successfully!')
     console.log('')

@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { conversations, contacts, messages } from '@/lib/db/schema'
+import { conversations, contacts, messages, users } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
 import { eq, desc, and, sql } from 'drizzle-orm'
 
@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '30')
         const status = searchParams.get('status')
         const aiFilter = searchParams.get('ai')
+        const assignedFilter = searchParams.get('assignedTo')
         const offset = (page - 1) * limit
 
         const conditions = []
@@ -35,6 +36,14 @@ export async function GET(request: NextRequest) {
             conditions.push(and(eq(conversations.aiEnabled, false), eq(conversations.status, 'active')))
         }
 
+        if (assignedFilter === 'me') {
+            conditions.push(eq(conversations.assignedTo, user.userId))
+        } else if (assignedFilter === 'unassigned') {
+            conditions.push(sql`${conversations.assignedTo} IS NULL`)
+        } else if (assignedFilter && assignedFilter !== 'all') {
+            conditions.push(eq(conversations.assignedTo, assignedFilter))
+        }
+
         const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
         const [conversationsData, countResult] = await Promise.all([
@@ -43,6 +52,7 @@ export async function GET(request: NextRequest) {
                     id: conversations.id,
                     status: conversations.status,
                     aiEnabled: conversations.aiEnabled,
+                    assignedTo: conversations.assignedTo,
                     lastMessageAt: conversations.lastMessageAt,
                     createdAt: conversations.createdAt,
                     contact: {
@@ -51,6 +61,11 @@ export async function GET(request: NextRequest) {
                         phone: contacts.phone,
                         company: contacts.company,
                         status: contacts.status,
+                        profilePictureUrl: contacts.profilePictureUrl,
+                    },
+                    assignedUser: {
+                        id: users.id,
+                        name: users.name,
                     },
                     unreadCount: sql<number>`(
                         SELECT count(*) FROM messages
@@ -66,6 +81,7 @@ export async function GET(request: NextRequest) {
                 })
                 .from(conversations)
                 .leftJoin(contacts, eq(conversations.contactId, contacts.id))
+                .leftJoin(users, eq(conversations.assignedTo, users.id))
                 .where(whereClause)
                 .orderBy(desc(conversations.lastMessageAt))
                 .limit(limit)
@@ -82,6 +98,7 @@ export async function GET(request: NextRequest) {
             data: conversationsData.map(c => ({
                 ...c,
                 unreadCount: Number(c.unreadCount),
+                assignedUser: c.assignedUser?.id ? c.assignedUser : null,
             })),
             total,
             page,

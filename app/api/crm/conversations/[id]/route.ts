@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { conversations, contacts, messages } from '@/lib/db/schema'
+import { conversations, contacts, messages, users } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
 import { eq, asc } from 'drizzle-orm'
 import { z } from 'zod'
@@ -14,6 +14,7 @@ import { z } from 'zod'
 const updateConversationSchema = z.object({
     aiEnabled: z.boolean().optional(),
     status: z.enum(['active', 'closed', 'archived']).optional(),
+    assignedTo: z.string().uuid().nullable().optional(),
 })
 
 type RouteContext = { params: Promise<{ id: string }> }
@@ -32,6 +33,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
                 id: conversations.id,
                 status: conversations.status,
                 aiEnabled: conversations.aiEnabled,
+                assignedTo: conversations.assignedTo,
                 lastMessageAt: conversations.lastMessageAt,
                 closedAt: conversations.closedAt,
                 createdAt: conversations.createdAt,
@@ -43,10 +45,16 @@ export async function GET(request: NextRequest, context: RouteContext) {
                     company: contacts.company,
                     status: contacts.status,
                     planInterest: contacts.planInterest,
+                    profilePictureUrl: contacts.profilePictureUrl,
+                },
+                assignedUser: {
+                    id: users.id,
+                    name: users.name,
                 },
             })
             .from(conversations)
             .leftJoin(contacts, eq(conversations.contactId, contacts.id))
+            .leftJoin(users, eq(conversations.assignedTo, users.id))
             .where(eq(conversations.id, id))
             .limit(1)
 
@@ -62,6 +70,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
         return NextResponse.json({
             ...conversation,
+            assignedUser: conversation.assignedUser?.id ? conversation.assignedUser : null,
             messages: conversationMessages,
         })
     } catch (error) {
