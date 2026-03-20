@@ -53,8 +53,8 @@ export default function Home() {
         ctaText="Falar com especialista"
       />
 
-      {/* Mobile App Section */}
-      <AppSection />
+      {/* FAQ Section */}
+      <FAQSection />
 
       {/* CTA Banner - Engagement #2 (Gold with Pulse Pattern) */}
       <CTABanner
@@ -68,9 +68,6 @@ export default function Home() {
 
       {/* Social Proof Section */}
       <SocialProofSection />
-
-      {/* FAQ Section */}
-      <FAQSection />
 
       {/* Footer */}
       <Footer />

@@ -40,15 +40,42 @@ export async function processSDRMessage(
     history: Message[],
     contact: Contact
 ): Promise<SDRResponse> {
+    // Pre-flight check
+    if (!process.env.OPENROUTER_API_KEY) {
+        throw new Error('OPENROUTER_API_KEY is not set. Cannot process AI messages.')
+    }
+
     const systemPrompt = buildSDRPrompt(contact, history)
 
-    const { text, usage } = await generateText({
-        model: openrouter('google/gemini-2.5-flash-preview'),
-        system: systemPrompt,
-        prompt: inboundMessage,
-        maxOutputTokens: 500,
-        temperature: 0.7,
-    })
+    console.log(`[SDR] Calling OpenRouter (google/gemini-2.0-flash-001) for conversation ${conversationId}...`)
+
+    let text: string
+    let usage: { inputTokens?: number; outputTokens?: number } | undefined
+    try {
+        const result = await generateText({
+            model: openrouter('google/gemini-2.0-flash-001'),
+            system: systemPrompt,
+            prompt: inboundMessage,
+            maxOutputTokens: 500,
+            temperature: 0.7,
+        })
+        text = result.text
+        usage = result.usage as { inputTokens?: number; outputTokens?: number } | undefined
+        console.log(`[SDR] OpenRouter responded. Tokens: ${(usage?.inputTokens || 0) + (usage?.outputTokens || 0)}`)
+    } catch (apiError) {
+        const msg = apiError instanceof Error ? apiError.message : String(apiError)
+        console.error(`[SDR] ❌ OpenRouter API call failed: ${msg}`)
+        if (msg.includes('401') || msg.includes('Unauthorized')) {
+            throw new Error('OpenRouter API key is invalid or expired. Check OPENROUTER_API_KEY.')
+        }
+        if (msg.includes('429') || msg.includes('rate limit')) {
+            throw new Error('OpenRouter rate limit exceeded. Try again later or upgrade plan.')
+        }
+        if (msg.includes('402') || msg.includes('insufficient')) {
+            throw new Error('OpenRouter account has no credits. Add credits at openrouter.ai.')
+        }
+        throw new Error(`OpenRouter API error: ${msg}`)
+    }
 
     // Parse structured response
     let reply = ''
@@ -85,7 +112,7 @@ export async function processSDRMessage(
         inputSummary: inboundMessage.slice(0, 500),
         outputSummary: reply.slice(0, 500),
         confidence: actions.length > 0 ? 80 : 60,
-        model: 'google/gemini-2.5-flash-preview',
+        model: 'google/gemini-2.0-flash-001',
         tokensUsed: (usage?.inputTokens || 0) + (usage?.outputTokens || 0),
     })
 

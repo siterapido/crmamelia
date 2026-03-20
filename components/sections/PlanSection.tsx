@@ -93,9 +93,12 @@ export const PlanSection = () => {
               <div className="w-12 h-12 rounded-2xl border border-black/10 flex items-center justify-center mb-6 bg-transparent">
                 {benefit.icon}
               </div>
-              <h3 className="text-black font-semibold text-xl">
+              <h3 className="text-black font-semibold text-xl mb-2">
                 {benefit.title}
               </h3>
+              <p className="text-black/70 text-sm leading-relaxed">
+                {benefit.description}
+              </p>
             </motion.div>
           ))}
         </div>

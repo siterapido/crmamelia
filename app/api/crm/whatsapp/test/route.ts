@@ -1,12 +1,12 @@
 /**
  * WhatsApp Connection Test API Route
- * POST /api/crm/whatsapp/test - Test Meta Cloud API connection
+ * POST /api/crm/whatsapp/test - Test Evolution API connection
  * GET  /api/crm/whatsapp/test - Get connection status
  */
 
 import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
-import { testConnection, getPhoneInfo } from '@/lib/whatsapp/client'
+import { testConnection, getInstanceStatus } from '@/lib/whatsapp/evolution-client'
 
 export async function POST() {
     try {
@@ -33,12 +33,11 @@ export async function GET() {
         }
 
         try {
-            const info = await getPhoneInfo()
+            const info = await getInstanceStatus()
             return NextResponse.json({
-                connected: true,
-                phoneNumber: info.display_phone_number,
-                verifiedName: info.verified_name,
-                qualityRating: info.quality_rating,
+                connected: info.instance?.state === 'open',
+                status: info.instance?.state || 'unknown',
+                instanceName: info.instance?.instanceName,
             })
         } catch (error) {
             return NextResponse.json({

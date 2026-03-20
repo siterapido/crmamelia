@@ -10,7 +10,7 @@ import { messages, conversations, contacts } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
 import { eq, asc, gte, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { sendTextMessage } from '@/lib/whatsapp/client'
+import { sendTextMessage } from '@/lib/whatsapp/evolution-client'
 
 const sendMessageSchema = z.object({
     content: z.string().min(1, 'Mensagem é obrigatória'),
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
         try {
             if (conversation.contactPhone) {
                 const waResponse = await sendTextMessage(conversation.contactPhone, result.data.content)
-                whatsappMessageId = waResponse.messages?.[0]?.id ?? null
+                whatsappMessageId = waResponse.key?.id ?? null
             }
         } catch (waError) {
             console.error('WhatsApp send error:', waError)

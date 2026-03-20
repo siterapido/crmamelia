@@ -1,121 +1,122 @@
 /**
- * Meta WhatsApp Cloud API Webhook
- * GET  - Webhook verification challenge from Meta
- * POST - Receive messages and status updates from Meta
- * https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks
+ * Evolution API Webhook Handler
+ * Processes incoming messages and status updates from Evolution API
+ * Documentation: https://doc.evolution-api.com/
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { contacts, conversations, messages } from '@/lib/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
-import { verifyWebhookChallenge, verifyWebhookSignature } from '@/lib/whatsapp/verify'
-import { markMessageAsRead, sendTextMessage } from '@/lib/whatsapp/client'
+import { sendTextMessage } from '@/lib/whatsapp/evolution-client'
 import { processSDRMessage } from '@/lib/ai/sdr-agent'
 import { executeSDRActions } from '@/lib/ai/sdr-actions'
-import type {
-    MetaWebhookPayload,
-    MetaWebhookMessage,
-    MetaWebhookStatus,
-} from '@/lib/whatsapp/types'
+
+const FALLBACK_MESSAGE = 'Olá! Desculpe, estou com uma instabilidade temporária. Um atendente humano vai te responder em breve. 🙏'
+
+// Validate critical env vars at module load
+const REQUIRED_ENV_VARS = ['EVOLUTION_API_URL', 'EVOLUTION_API_KEY', 'EVOLUTION_INSTANCE_NAME', 'OPENROUTER_API_KEY'] as const
+for (const envVar of REQUIRED_ENV_VARS) {
+    if (!process.env[envVar]) {
+        console.error(`[Webhook] ⚠️ CRITICAL: Missing environment variable ${envVar} — the AI agent will NOT work.`)
+    }
+}
+if (process.env.EVOLUTION_API_URL?.includes('localhost')) {
+    console.warn('[Webhook] ⚠️ WARNING: EVOLUTION_API_URL points to localhost. This will NOT work in production/Vercel.')
+}
 
 // ==================== GET: Webhook verification ====================
-
-export async function GET(request: NextRequest) {
-    const { searchParams } = new URL(request.url)
-    const mode = searchParams.get('hub.mode')
-    const token = searchParams.get('hub.verify_token')
-    const challenge = searchParams.get('hub.challenge')
-
-    const verified = verifyWebhookChallenge(mode, token, challenge)
-    if (verified) {
-        return new NextResponse(verified, { status: 200 })
-    }
-
-    console.error('Webhook verification failed', { mode, token })
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+// Note: Evolution API typically doesn't require a challenge for verification 
+// like Meta, but we'll keep it for compatibility if needed.
+export async function GET() {
+    return NextResponse.json({ status: 'Evolution API webhook active' })
 }
 
 // ==================== POST: Receive messages ====================
 
 export async function POST(request: NextRequest) {
     try {
-        const rawBody = await request.text()
+        const payload = await request.json()
+        const eventType = payload.event
+        const instance = payload.instance
 
-        // Verify Meta signature
-        const signature = request.headers.get('x-hub-signature-256')
-        if (!verifyWebhookSignature(rawBody, signature)) {
-            console.error('Invalid webhook signature')
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        console.log(`[Webhook] Received event: ${eventType} | Instance: ${instance}`)
+
+        if (eventType === 'messages.upsert') {
+            const messageData = payload.data
+            const message = messageData.message
+            const pushName = messageData.pushName || 'WhatsApp User'
+            const key = messageData.key
+            const remoteJid = key.remoteJid
+            const phone = remoteJid.split('@')[0]
+
+            console.log(`[Webhook] Message from ${phone} (${pushName}): ${JSON.stringify(message).slice(0, 100)}`)
+
+            if (key.fromMe) {
+                 console.log(`[Webhook] Ignoring outbound message from ${phone}`)
+                 return NextResponse.json({ status: 'ignored_outbound' })
+            }
+
+            const messageContent = extractEvolutionMessageContent(message)
+            const messageType = message.imageMessage ? 'image' : 
+                                message.videoMessage ? 'video' : 
+                                message.documentMessage ? 'document' : 'text'
+
+            console.log(`[Webhook] Content: ${messageContent.slice(0, 50)}... | Type: ${messageType}`)
+
+            // For debugging, we await this. In production with high volume, consider background task.
+            try {
+                await handleInboundMessage(phone, remoteJid, pushName, messageContent, messageType, key.id)
+                console.log(`[Webhook] Successfully processed message from ${phone}`)
+            } catch (err) {
+                console.error(`[Webhook] Error processing message from ${phone}:`, err)
+            }
         }
 
-        const payload: MetaWebhookPayload = JSON.parse(rawBody)
+        if (eventType === 'messages.update') {
+            const data = payload.data
+            console.log(`[Webhook] Message update: ${data.key.id} | Status: ${data.status}`)
+            const statusMap: Record<string, string> = {
+                'PENDING': 'sent',
+                'SERVER_ACK': 'delivered',
+                'DELIVERY_ACK': 'delivered',
+                'READ': 'read',
+                'PLAYED': 'read',
+                'ERROR': 'failed'
+            }
 
-        // Only process whatsapp_business_account events
-        if (payload.object !== 'whatsapp_business_account') {
-            return NextResponse.json({ status: 'ok' })
-        }
+            const statusId = data.key.id
+            const newStatus = statusMap[data.status] || data.status
 
-        // Process each entry and change
-        for (const entry of payload.entry) {
-            for (const change of entry.changes) {
-                if (change.field !== 'messages') continue
-
-                const value = change.value
-
-                // Handle inbound messages
-                if (value.messages?.length) {
-                    for (const msg of value.messages) {
-                        const contact = value.contacts?.find(c => c.wa_id === msg.from)
-                        const senderName = contact?.profile.name || msg.from
-
-                        // Process async to avoid webhook timeout
-                        handleInboundMessage(msg, senderName).catch(err =>
-                            console.error('Error processing inbound message:', err)
-                        )
-                    }
-                }
-
-                // Handle message status updates
-                if (value.statuses?.length) {
-                    for (const status of value.statuses) {
-                        handleStatusUpdate(status).catch(err =>
-                            console.error('Error handling status update:', err)
-                        )
-                    }
-                }
+            if (statusId) {
+                await db
+                    .update(messages)
+                    .set({ status: newStatus })
+                    .where(eq(messages.whatsappMessageId, statusId))
             }
         }
 
         return NextResponse.json({ status: 'ok' })
     } catch (error) {
-        console.error('Webhook error:', error)
-        return NextResponse.json({ status: 'ok' }) // Always 200 to Meta
+        console.error('[Webhook] Major error:', error)
+        return NextResponse.json({ status: 'error' }, { status: 500 })
     }
 }
 
 // ==================== Handlers ====================
 
-async function handleStatusUpdate(status: MetaWebhookStatus) {
-    const statusMap: Record<string, string> = {
-        sent: 'sent',
-        delivered: 'delivered',
-        read: 'read',
-        failed: 'failed',
-    }
-
-    await db
-        .update(messages)
-        .set({ status: statusMap[status.status] || status.status })
-        .where(eq(messages.whatsappMessageId, status.id))
-}
-
-async function handleInboundMessage(msg: MetaWebhookMessage, senderName: string) {
-    const phone = msg.from
-    const messageContent = extractMessageContent(msg)
-    const messageType = msg.type === 'unknown' ? 'text' : msg.type
-
+async function handleInboundMessage(
+    phone: string, 
+    whatsappId: string, 
+    senderName: string, 
+    messageContent: string, 
+    messageType: string,
+    whatsappMessageId: string
+) {
+    console.log(`[Handler] Processing ${phone} | MsgId: ${whatsappMessageId}`)
+    
     // 1. Upsert contact
+    console.log(`[Handler] Finding contact for ${phone}...`)
     let [contact] = await db
         .select()
         .from(contacts)
@@ -123,30 +124,34 @@ async function handleInboundMessage(msg: MetaWebhookMessage, senderName: string)
         .limit(1)
 
     if (!contact) {
+        console.log(`[Handler] Contact not found. Creating new contact for ${senderName} (${phone})...`)
         const [newContact] = await db
             .insert(contacts)
             .values({
                 name: senderName,
                 phone,
-                whatsappId: phone,
+                whatsappId,
                 source: 'whatsapp',
                 status: 'new',
                 lastContactAt: new Date(),
             })
             .returning()
         contact = newContact
+        console.log(`[Handler] Created contact ID: ${contact.id}`)
     } else {
+        console.log(`[Handler] Found contact ID: ${contact.id}. Updating last contact info...`)
         await db
             .update(contacts)
             .set({
                 lastContactAt: new Date(),
                 updatedAt: new Date(),
-                ...(senderName !== phone ? { name: senderName } : {}),
+                ...(senderName !== phone && senderName !== 'WhatsApp User' ? { name: senderName } : {}),
             })
             .where(eq(contacts.id, contact.id))
     }
 
     // 2. Find or create active conversation
+    console.log(`[Handler] Finding active conversation for contact ${contact.id}...`)
     let [conversation] = await db
         .select()
         .from(conversations)
@@ -155,6 +160,7 @@ async function handleInboundMessage(msg: MetaWebhookMessage, senderName: string)
         .limit(1)
 
     if (!conversation) {
+        console.log(`[Handler] Active conversation not found. Creating new one...`)
         const [newConv] = await db
             .insert(conversations)
             .values({
@@ -165,7 +171,9 @@ async function handleInboundMessage(msg: MetaWebhookMessage, senderName: string)
             })
             .returning()
         conversation = newConv
+        console.log(`[Handler] Created conversation ID: ${conversation.id}`)
     } else {
+        console.log(`[Handler] Found conversation ID: ${conversation.id}`)
         await db
             .update(conversations)
             .set({ lastMessageAt: new Date() })
@@ -173,26 +181,22 @@ async function handleInboundMessage(msg: MetaWebhookMessage, senderName: string)
     }
 
     // 3. Save inbound message
+    console.log(`[Handler] Saving message: ${messageContent.slice(0, 30)}...`)
     await db.insert(messages).values({
         conversationId: conversation.id,
-        whatsappMessageId: msg.id,
+        whatsappMessageId: whatsappMessageId,
         direction: 'inbound',
         sender: 'contact',
         content: messageContent,
         messageType,
-        status: 'sent',
+        status: 'read',
     })
 
-    // 4. Mark as read
-    try {
-        await markMessageAsRead(msg.id)
-    } catch {
-        // Non-critical
-    }
-
-    // 5. Route to AI agent if enabled
+    // 4. Route to AI agent if enabled
+    console.log(`[Handler] AI enabled: ${conversation.aiEnabled}`)
     if (conversation.aiEnabled) {
         try {
+            console.log(`[AI] Processing message with agent...`)
             const history = await db
                 .select()
                 .from(messages)
@@ -207,57 +211,76 @@ async function handleInboundMessage(msg: MetaWebhookMessage, senderName: string)
                 contact
             )
 
+            console.log(`[AI] Agent reply: ${result.reply ? 'YES' : 'NO'} | Actions: ${result.actions.length}`)
+
             if (result.actions.length > 0) {
+                console.log(`[AI] Executing ${result.actions.length} actions...`)
                 await executeSDRActions(result.actions, contact, conversation.id)
             }
 
             if (result.reply) {
-                const waResponse = await sendTextMessage(phone, result.reply)
-                const wamid = waResponse.messages?.[0]?.id ?? null
-
-                await db.insert(messages).values({
-                    conversationId: conversation.id,
-                    whatsappMessageId: wamid,
-                    direction: 'outbound',
-                    sender: 'ai',
-                    content: result.reply,
-                    messageType: 'text',
-                    status: 'sent',
-                    aiGenerated: true,
-                })
-
-                await db
-                    .update(conversations)
-                    .set({ lastMessageAt: new Date() })
-                    .where(eq(conversations.id, conversation.id))
+                await sendAndSaveReply(phone, result.reply, conversation.id, true)
             }
         } catch (aiError) {
-            console.error('AI agent error:', aiError)
+            console.error('[AI] ❌ Agent error:', aiError instanceof Error ? aiError.message : aiError)
+            console.error('[AI] Stack:', aiError instanceof Error ? aiError.stack : 'N/A')
+
+            // Send fallback message so the user isn't left without a response
+            try {
+                console.log(`[AI] Sending fallback message to ${phone}...`)
+                await sendAndSaveReply(phone, FALLBACK_MESSAGE, conversation.id, true)
+            } catch (fallbackError) {
+                console.error('[AI] ❌ Even fallback message failed:', fallbackError instanceof Error ? fallbackError.message : fallbackError)
+                console.error('[AI] This likely means EVOLUTION_API_URL is unreachable. Current URL:', process.env.EVOLUTION_API_URL)
+            }
         }
     }
 }
 
-function extractMessageContent(msg: MetaWebhookMessage): string {
-    switch (msg.type) {
-        case 'text':
-            return msg.text?.body ?? '[Mensagem]'
-        case 'image':
-            return msg.image?.caption ? msg.image.caption : '[Imagem]'
-        case 'document':
-            return msg.document?.caption ?? `[Documento: ${msg.document?.filename ?? 'arquivo'}]`
-        case 'audio':
-            return '[Áudio]'
-        case 'video':
-            return msg.video?.caption ? msg.video.caption : '[Vídeo]'
-        case 'location':
-            return `[Localização: ${msg.location?.name ?? `${msg.location?.latitude},${msg.location?.longitude}`}]`
-        case 'contacts':
-            return `[Contato: ${msg.contacts?.[0]?.name.formatted_name ?? 'Contato'}]`
-        case 'sticker':
-            return '[Figurinha]'
-        case 'interactive':
-            return msg.interactive?.button_reply?.title ?? msg.interactive?.list_reply?.title ?? '[Interação]'
-        default:
-            return '[Mensagem]'
-    }
+/**
+ * Helper: send a message and save it to the DB in one step
+ */
+async function sendAndSaveReply(
+    phone: string,
+    text: string,
+    conversationId: string,
+    aiGenerated: boolean
+) {
+    console.log(`[Send] Sending to ${phone} via Evolution API (${process.env.EVOLUTION_API_URL})...`)
+    const response = await sendTextMessage(phone, text)
+    console.log(`[Send] Evolution API response: ${JSON.stringify(response)}`)
+    const wamid = response?.key?.id || null
+
+    await db.insert(messages).values({
+        conversationId,
+        whatsappMessageId: wamid,
+        direction: 'outbound',
+        sender: aiGenerated ? 'ai' : 'agent',
+        content: text,
+        messageType: 'text',
+        status: 'sent',
+        aiGenerated,
+    })
+
+    await db
+        .update(conversations)
+        .set({ lastMessageAt: new Date() })
+        .where(eq(conversations.id, conversationId))
+}
+
+function extractEvolutionMessageContent(message: any): string {
+    if (!message) return '[Mensagem]'
+
+    // Support text, images, videos, etc based on Evolution API structure
+    if (message.conversation) return message.conversation
+    if (message.extendedTextMessage) return message.extendedTextMessage.text
+    if (message.imageMessage) return message.imageMessage.caption || '[Imagem]'
+    if (message.videoMessage) return message.videoMessage.caption || '[Vídeo]'
+    if (message.documentMessage) return message.documentMessage.caption || `[Documento: ${message.documentMessage.fileName || 'arquivo'}]`
+    if (message.audioMessage) return '[Áudio]'
+    if (message.stickerMessage) return '[Figurinha]'
+    if (message.contactMessage) return `[Contato: ${message.contactMessage.displayName}]`
+    if (message.locationMessage) return `[Localização: ${message.locationMessage.degreesLatitude}, ${message.locationMessage.degreesLongitude}]`
+    
+    return '[Mensagem]'
 }

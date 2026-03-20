@@ -42,6 +42,9 @@ async function handleQualify(contact: Contact, action: SDRAction) {
     const updateData: Record<string, unknown> = { updatedAt: new Date() }
 
     switch (action.field) {
+        case 'name':
+            updateData.name = action.value
+            break
         case 'lives_count':
             updateData.livesCount = parseInt(action.value) || null
             break
@@ -50,6 +53,9 @@ async function handleQualify(contact: Contact, action: SDRAction) {
             break
         case 'company':
             updateData.company = action.value
+            break
+        case 'address':
+            updateData.address = action.value
             break
         default:
             return

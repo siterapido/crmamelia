@@ -78,6 +78,7 @@ export const contacts = pgTable('contacts', {
     whatsappId: varchar('whatsapp_id', { length: 50 }),
     planInterest: varchar('plan_interest', { length: 50 }),
     livesCount: integer('lives_count'),
+    address: text('address'),
     lastContactAt: timestamp('last_contact_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),

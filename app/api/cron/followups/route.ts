@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { contactFollowups, contacts, conversations, messages } from '@/lib/db/schema'
 import { eq, and, lte } from 'drizzle-orm'
-import { sendTextMessage } from '@/lib/whatsapp/client'
+import { sendTextMessage } from '@/lib/whatsapp/evolution-client'
 
 export async function GET(request: NextRequest) {
     // Verify cron secret
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
                 if (followup.conversationId) {
                     await db.insert(messages).values({
                         conversationId: followup.conversationId,
-                        whatsappMessageId: waResponse.messages?.[0]?.id ?? null,
+                        whatsappMessageId: waResponse.key?.id ?? null,
                         direction: 'outbound',
                         sender: 'ai',
                         content: followup.message,

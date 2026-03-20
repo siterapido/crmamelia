@@ -30,7 +30,7 @@ export const LatestNewsSection = async () => {
                             Conteúdo & Saúde
                         </span>
                         <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white font-bold leading-tight">
-                            Fique por dentro das <span className="text-gold-primary/60">nossas novidades</span>
+                            Tudo sobre <span className="text-gold-primary/60">saúde e bem estar</span>
                         </h2>
                     </div>
 
