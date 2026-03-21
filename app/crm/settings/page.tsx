@@ -1,78 +1,16 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Settings, MessageSquare, Sparkles, CheckCircle, XCircle, Copy, Wifi, WifiOff, QrCode, RefreshCw, LogOut } from 'lucide-react'
+import { Settings, MessageSquare, Sparkles, CheckCircle, Copy } from 'lucide-react'
 import Link from 'next/link'
 
-interface QRStatus {
-    connected: boolean
-    status: string
-    qrCode?: string | null
-    phone?: string | null
-    profilePicture?: string | null
-    error?: string
-}
-
 export default function CRMSettingsPage() {
-    const [qrStatus, setQrStatus] = useState<QRStatus | null>(null)
-    const [loadingQr, setLoadingQr] = useState(true)
-    const [disconnecting, setDisconnecting] = useState(false)
     const [copied, setCopied] = useState(false)
-    const pollingRef = useRef<NodeJS.Timeout | null>(null)
 
     const webhookUrl = typeof window !== 'undefined'
         ? `${window.location.origin}/api/whatsapp/webhook`
         : '/api/whatsapp/webhook'
-
-    const fetchQRStatus = async () => {
-        try {
-            const res = await fetch('/api/crm/whatsapp/qrcode')
-            const data = await res.json()
-            setQrStatus(data)
-            return data
-        } catch {
-            setQrStatus({ connected: false, status: 'error', error: 'Erro ao verificar status' })
-            return null
-        } finally {
-            setLoadingQr(false)
-        }
-    }
-
-    useEffect(() => {
-        fetchQRStatus()
-    }, [])
-
-    // Polling: 3s when disconnected (waiting for QR scan), 30s when connected
-    useEffect(() => {
-        if (pollingRef.current) clearInterval(pollingRef.current)
-
-        const interval = qrStatus?.connected ? 30000 : 3000
-
-        pollingRef.current = setInterval(async () => {
-            const data = await fetchQRStatus()
-            // Stop fast polling once connected
-            if (data?.connected && pollingRef.current) {
-                clearInterval(pollingRef.current)
-                pollingRef.current = setInterval(fetchQRStatus, 30000)
-            }
-        }, interval)
-
-        return () => {
-            if (pollingRef.current) clearInterval(pollingRef.current)
-        }
-    }, [qrStatus?.connected])
-
-    const handleDisconnect = async () => {
-        if (!confirm('Desconectar o WhatsApp desta instância?')) return
-        setDisconnecting(true)
-        try {
-            await fetch('/api/crm/whatsapp/qrcode', { method: 'DELETE' })
-            await fetchQRStatus()
-        } finally {
-            setDisconnecting(false)
-        }
-    }
 
     const copyWebhookUrl = () => {
         navigator.clipboard.writeText(webhookUrl)
@@ -86,107 +24,6 @@ export default function CRMSettingsPage() {
                 <h1 className="text-3xl font-bold text-white">Configurações CRM</h1>
                 <p className="text-platinum mt-1">WhatsApp via Evolution API · Agente IA SDR</p>
             </div>
-
-            {/* WhatsApp Connection Card */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-charcoal rounded-2xl p-6 border border-white/10"
-            >
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-6">
-                    {qrStatus?.connected ? (
-                        <Wifi className="w-5 h-5 text-green-400" />
-                    ) : (
-                        <WifiOff className="w-5 h-5 text-red-400" />
-                    )}
-                    Conexão WhatsApp
-                </h2>
-
-                {loadingQr ? (
-                    <div className="flex items-center gap-3 text-platinum">
-                        <RefreshCw className="w-5 h-5 animate-spin" />
-                        Verificando conexão...
-                    </div>
-                ) : qrStatus?.connected ? (
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
-                            <span className="text-green-400 font-semibold">Conectado</span>
-                            {qrStatus.phone && (
-                                <span className="text-platinum text-sm">({qrStatus.phone})</span>
-                            )}
-                        </div>
-
-                        <div className="flex gap-3">
-                            <button
-                                onClick={fetchQRStatus}
-                                className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors text-sm flex items-center gap-2"
-                            >
-                                <RefreshCw className="w-4 h-4" />
-                                Atualizar
-                            </button>
-                            <button
-                                onClick={handleDisconnect}
-                                disabled={disconnecting}
-                                className="px-4 py-2 bg-red-500/10 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
-                            >
-                                <LogOut className="w-4 h-4" />
-                                {disconnecting ? 'Desconectando...' : 'Desconectar'}
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 rounded-full bg-red-400" />
-                            <span className="text-red-400 font-medium">Desconectado</span>
-                            <span className="text-platinum/50 text-sm">
-                                {qrStatus?.status === 'close' ? '— escaneie o QR Code abaixo' : `(${qrStatus?.status || 'verificando...'})`}
-                            </span>
-                        </div>
-
-                        {qrStatus?.qrCode ? (
-                            <div className="space-y-3">
-                                <div className="bg-white rounded-2xl p-5 inline-block">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <QrCode className="w-5 h-5 text-gray-600" />
-                                        <span className="text-gray-700 font-medium text-sm">Escaneie com o WhatsApp</span>
-                                    </div>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
-                                        src={`data:image/png;base64,${qrStatus.qrCode}`}
-                                        alt="QR Code WhatsApp"
-                                        className="w-64 h-64"
-                                    />
-                                </div>
-                                <p className="text-platinum/50 text-sm flex items-center gap-2">
-                                    <RefreshCw className="w-3 h-3 animate-spin" />
-                                    Atualizando automaticamente a cada 3 segundos...
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="space-y-3">
-                                <p className="text-platinum text-sm">
-                                    Nenhum QR code disponível. Clique em Atualizar ou verifique se a Evolution API está rodando.
-                                </p>
-                                <button
-                                    onClick={fetchQRStatus}
-                                    className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors text-sm flex items-center gap-2"
-                                >
-                                    <RefreshCw className="w-4 h-4" />
-                                    Tentar novamente
-                                </button>
-                            </div>
-                        )}
-
-                        {qrStatus?.error && (
-                            <div className="p-3 bg-red-500/10 rounded-xl border border-red-500/20">
-                                <p className="text-red-400 text-sm">{qrStatus.error}</p>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </motion.div>
 
             {/* Webhook URL */}
             <motion.div
