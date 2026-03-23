@@ -6,9 +6,9 @@
 import { normalizePhone } from './client'
 
 function getConfig() {
-    const apiUrl = process.env.EVOLUTION_API_URL
-    const apiKey = process.env.EVOLUTION_API_KEY
-    const instanceName = process.env.EVOLUTION_INSTANCE_NAME
+    const apiUrl = (process.env.EVOLUTION_API_URL || '').trim()
+    const apiKey = (process.env.EVOLUTION_API_KEY || '').trim()
+    const instanceName = (process.env.EVOLUTION_INSTANCE_NAME || '').trim()
 
     if (!apiUrl || !apiKey || !instanceName) {
         throw new Error(
