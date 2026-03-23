@@ -59,8 +59,9 @@ export async function POST(request: NextRequest) {
             const phone = remoteJid.split('@')[0]
 
             console.log(`[Webhook] Message from ${phone} (${pushName}) | Key ID: ${key.id}`)
+    console.log(`[Webhook] Env check: EVOLUTION_API_URL=`, !!process.env.EVOLUTION_API_URL, '| EVOLUTION_API_KEY=', !!process.env.EVOLUTION_API_KEY)
 
-            if (key.fromMe) {
+    if (key.fromMe) {
                 console.log(`[Webhook] Ignoring outbound message from ${phone}`)
                 return NextResponse.json({ status: 'ignored_outbound' })
             }
