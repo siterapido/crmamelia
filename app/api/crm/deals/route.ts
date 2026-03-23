@@ -65,6 +65,8 @@ export async function GET(request: NextRequest) {
                     name: contacts.name,
                     phone: contacts.phone,
                     company: contacts.company,
+                    profilePictureUrl: contacts.profilePictureUrl,
+                    leadScore: contacts.leadScore,
                 },
                 stage: {
                     id: pipelineStages.id,

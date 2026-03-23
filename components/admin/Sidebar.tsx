@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/auth/context'
 import { cn } from '@/lib/utils/cn'
+import { canAccess, ROLE_LABELS, type UserRole } from '@/lib/auth/rbac'
 import { motion } from 'framer-motion'
 import {
     LayoutDashboard,
@@ -86,18 +87,20 @@ export function Sidebar() {
                     })}
                 </ul>
 
-                {/* Divider */}
-                <div className="my-4 mx-4 border-t border-white/10" />
-
-                {/* CRM Link */}
-                <p className="text-platinum/50 text-[10px] uppercase tracking-widest font-semibold px-4 mb-2">CRM</p>
-                <Link
-                    href="/crm"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-gold bg-gold/5 border border-gold/10 hover:bg-gold/10 transition-all duration-200"
-                >
-                    <ArrowRight className="w-5 h-5" />
-                    <span className="font-medium">Acessar CRM</span>
-                </Link>
+                {/* CRM Link - only for roles with CRM access */}
+                {user && canAccess(user, 'crm') && (
+                    <>
+                        <div className="my-4 mx-4 border-t border-white/10" />
+                        <p className="text-platinum/50 text-[10px] uppercase tracking-widest font-semibold px-4 mb-2">CRM</p>
+                        <Link
+                            href="/crm"
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gold bg-gold/5 border border-gold/10 hover:bg-gold/10 transition-all duration-200"
+                        >
+                            <ArrowRight className="w-5 h-5" />
+                            <span className="font-medium">Acessar CRM</span>
+                        </Link>
+                    </>
+                )}
             </nav>
 
             {/* User Section */}
@@ -110,7 +113,9 @@ export function Sidebar() {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-white text-sm font-medium truncate">{user?.name}</p>
-                        <p className="text-platinum text-xs truncate">{user?.email}</p>
+                        <p className="text-gold/70 text-[10px] uppercase tracking-wider font-semibold">
+                            {ROLE_LABELS[user?.role as UserRole] || user?.role}
+                        </p>
                     </div>
                 </div>
 

@@ -48,7 +48,7 @@ export async function GET() {
         const instance = process.env.EVOLUTION_INSTANCE_NAME
 
         if (apiUrl && apiKey && instance) {
-            const url = `${apiUrl.replace(/\/$/, '')}/instance/connectionStatus/${instance}`
+            const url = `${apiUrl.replace(/\/$/, '')}/instance/connectionState/${instance}`
             const res = await fetch(url, {
                 headers: { 'apikey': apiKey },
                 signal: AbortSignal.timeout(5000),

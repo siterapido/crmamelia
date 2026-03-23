@@ -45,6 +45,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
                     company: contacts.company,
                     status: contacts.status,
                     planInterest: contacts.planInterest,
+                    leadScore: contacts.leadScore,
                     profilePictureUrl: contacts.profilePictureUrl,
                 },
                 assignedUser: {

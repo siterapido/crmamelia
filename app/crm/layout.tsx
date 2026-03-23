@@ -3,9 +3,10 @@
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { AuthProvider, useAuth } from '@/lib/auth/context'
+import { canAccess } from '@/lib/auth/rbac'
 import { CrmSidebar } from '@/components/crm/CrmSidebar'
 import { motion } from 'framer-motion'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ShieldX } from 'lucide-react'
 
 function CrmLayoutContent({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth()
@@ -15,6 +16,9 @@ function CrmLayoutContent({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (!loading && !user) {
             router.push(`/admin/login?redirect=${encodeURIComponent(pathname)}`)
+        }
+        if (!loading && user && !canAccess(user, 'crm')) {
+            router.push('/admin')
         }
     }, [user, loading, router, pathname])
 
@@ -37,14 +41,27 @@ function CrmLayoutContent({ children }: { children: React.ReactNode }) {
         return null
     }
 
+    if (!canAccess(user, 'crm')) {
+        return (
+            <div className="min-h-screen bg-black-deep flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4 text-center">
+                    <ShieldX className="w-12 h-12 text-red-400" />
+                    <h2 className="text-xl font-bold text-white">Acesso Negado</h2>
+                    <p className="text-platinum">Você não tem permissão para acessar o CRM.</p>
+                </div>
+            </div>
+        )
+    }
+
     return (
-        <div className="min-h-screen bg-black-deep flex">
+        <div className="h-screen bg-black-deep flex overflow-hidden">
             <CrmSidebar />
-            <main className="flex-1 ml-64 p-8">
+            <main className="flex-1 ml-64 p-8 overflow-hidden flex flex-col">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
+                    className="flex-1 min-h-0"
                 >
                     {children}
                 </motion.div>

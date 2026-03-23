@@ -295,7 +295,7 @@ export default function ConversationsPage() {
                                     <button
                                         onClick={handleSend}
                                         disabled={!newMessage.trim() || sending}
-                                        className="px-4 py-3 bg-gradient-to-r from-gold to-gold-light text-black rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                                        className="px-4 py-3 bg-gold-primary text-black rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                                     >
                                         <Send className="w-5 h-5" />
                                     </button>

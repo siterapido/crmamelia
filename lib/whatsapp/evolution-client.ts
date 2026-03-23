@@ -115,7 +115,7 @@ export async function markAsRead(remoteJid: string): Promise<void> {
  * Get instance connection status
  */
 export async function getInstanceStatus(): Promise<any> {
-    return callEvolutionApi('/instance/connectionStatus/{instance}')
+    return callEvolutionApi('/instance/connectionState/{instance}')
 }
 
 /**

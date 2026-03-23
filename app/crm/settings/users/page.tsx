@@ -121,7 +121,7 @@ export default function UsersPage() {
                 </div>
                 <button
                     onClick={openCreate}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
                 >
                     <Plus className="w-5 h-5" />
                     Novo Atendente
@@ -284,7 +284,7 @@ export default function UsersPage() {
                                 <button
                                     onClick={handleSave}
                                     disabled={saving}
-                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
                                 >
                                     <Save className="w-4 h-4" />
                                     {saving ? 'Salvando...' : 'Salvar'}

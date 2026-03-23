@@ -13,7 +13,7 @@ interface User {
 interface AuthContextType {
     user: User | null
     loading: boolean
-    login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+    login: (email: string, password: string) => Promise<{ success: boolean; error?: string; user?: User }>
     logout: () => Promise<void>
     checkAuth: () => Promise<void>
 }
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             if (res.ok) {
                 setUser(data.user)
-                return { success: true }
+                return { success: true, user: data.user }
             }
 
             return { success: false, error: data.error || 'Erro ao fazer login' }

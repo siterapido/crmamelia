@@ -98,7 +98,7 @@ export default function ContactsPage() {
                 </div>
                 <button
                     onClick={() => setShowNewForm(true)}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
                 >
                     <Plus className="w-5 h-5" />
                     Novo Contato
@@ -383,7 +383,7 @@ function NewContactModal({ onClose, onCreated }: { onClose: () => void; onCreate
                         <button
                             type="submit"
                             disabled={saving}
-                            className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-gold to-gold-light text-black font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                            className="flex-1 px-4 py-3 rounded-xl bg-gold-primary text-black font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                         >
                             {saving ? 'Salvando...' : 'Criar Contato'}
                         </button>

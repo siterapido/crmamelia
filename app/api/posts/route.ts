@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { posts, categories, authors, postTags } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
+import { canAccess } from '@/lib/auth/rbac'
 import { eq, desc, ilike, or, and, sql } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -148,13 +149,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     try {
-        // Check auth
+        // Check auth + role
         const user = await getCurrentUser()
         if (!user) {
-            return NextResponse.json(
-                { error: 'Não autorizado' },
-                { status: 401 }
-            )
+            return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+        }
+        if (!canAccess(user, 'blog')) {
+            return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
         }
 
         const body = await request.json()

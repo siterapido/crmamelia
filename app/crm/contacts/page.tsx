@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
-import { UserCheck, Plus, Search, Phone, Building2, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { UserCheck, Plus, Search, Phone, Building2, X, Mail, User, Tag, FileText, ExternalLink, Calendar, Layers, Users, Star } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils/cn'
 
@@ -16,6 +16,7 @@ interface Contact {
     status: string
     planInterest: string | null
     livesCount: number | null
+    leadScore: number | null
     lastContactAt: string | null
     createdAt: string
     assignedUser: { id: string; name: string } | null
@@ -56,6 +57,7 @@ export default function ContactsPage() {
     const [totalPages, setTotalPages] = useState(1)
     const [total, setTotal] = useState(0)
     const [showNewForm, setShowNewForm] = useState(false)
+    const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
 
     const loadContacts = useCallback(async () => {
         setLoading(true)
@@ -98,7 +100,7 @@ export default function ContactsPage() {
                 </div>
                 <button
                     onClick={() => setShowNewForm(true)}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
                 >
                     <Plus className="w-5 h-5" />
                     Novo Contato
@@ -160,6 +162,7 @@ export default function ContactsPage() {
                                 <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden md:table-cell">Empresa</th>
                                 <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden lg:table-cell">Fonte</th>
                                 <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4">Status</th>
+                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden md:table-cell">Score</th>
                                 <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden lg:table-cell">Último Contato</th>
                             </tr>
                         </thead>
@@ -167,23 +170,25 @@ export default function ContactsPage() {
                             {loading ? (
                                 Array.from({ length: 5 }).map((_, i) => (
                                     <tr key={i} className="border-b border-white/5">
-                                        <td className="px-6 py-4" colSpan={6}>
+                                        <td className="px-6 py-4" colSpan={7}>
                                             <div className="animate-pulse h-5 bg-white/10 rounded w-3/4" />
                                         </td>
                                     </tr>
                                 ))
                             ) : contacts.length > 0 ? (
                                 contacts.map(contact => (
-                                    <tr key={contact.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                    <tr
+                                        key={contact.id}
+                                        onClick={() => setSelectedContact(contact)}
+                                        className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer"
+                                    >
                                         <td className="px-6 py-4">
-                                            <Link href={`/crm/contacts/${contact.id}`} className="group">
-                                                <p className="text-white font-medium group-hover:text-gold transition-colors">
-                                                    {contact.name}
-                                                </p>
-                                                {contact.email && (
-                                                    <p className="text-platinum text-sm">{contact.email}</p>
-                                                )}
-                                            </Link>
+                                            <p className="text-white font-medium hover:text-gold transition-colors">
+                                                {contact.name}
+                                            </p>
+                                            {contact.email && (
+                                                <p className="text-platinum text-sm">{contact.email}</p>
+                                            )}
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className="text-platinum flex items-center gap-2">
@@ -211,6 +216,13 @@ export default function ContactsPage() {
                                                 {statusLabels[contact.status] || contact.status}
                                             </span>
                                         </td>
+                                        <td className="px-6 py-4 hidden md:table-cell">
+                                            {contact.leadScore ? (
+                                                <LeadScoreBadge score={contact.leadScore} />
+                                            ) : (
+                                                <span className="text-platinum/30 text-sm">-</span>
+                                            )}
+                                        </td>
                                         <td className="px-6 py-4 hidden lg:table-cell">
                                             <span className="text-platinum text-sm">
                                                 {contact.lastContactAt
@@ -222,7 +234,7 @@ export default function ContactsPage() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center">
+                                    <td colSpan={7} className="px-6 py-12 text-center">
                                         <UserCheck className="w-12 h-12 text-platinum/50 mx-auto mb-3" />
                                         <p className="text-platinum">Nenhum contato encontrado</p>
                                     </td>
@@ -265,6 +277,245 @@ export default function ContactsPage() {
                     onCreated={() => { setShowNewForm(false); loadContacts() }}
                 />
             )}
+
+            {/* Contact Detail Modal */}
+            <AnimatePresence>
+                {selectedContact && (
+                    <ContactDetailModal
+                        contact={selectedContact}
+                        onClose={() => setSelectedContact(null)}
+                    />
+                )}
+            </AnimatePresence>
+        </div>
+    )
+}
+
+interface ContactFullDetail extends Contact {
+    notes: string | null
+    cpfCnpj: string | null
+    tags: string[]
+    conversations: { id: string; status: string }[]
+    deals: { id: string; title: string; value: number | null; planInterest: string | null; stage: { name: string; color: string | null } | null }[]
+}
+
+function ContactDetailModal({ contact: initialContact, onClose }: { contact: Contact; onClose: () => void }) {
+    const [detail, setDetail] = useState<ContactFullDetail | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        Promise.all([
+            fetch(`/api/crm/contacts/${initialContact.id}`).then(r => r.json()),
+            fetch(`/api/crm/contacts/${initialContact.id}/tags`).then(r => r.json()),
+        ])
+            .then(([contactData, tagsData]) => {
+                if (!contactData.error) {
+                    const tags = (tagsData.data || []).map((t: { tag: string }) => t.tag)
+                    setDetail({ ...contactData, tags })
+                }
+            })
+            .catch(() => null)
+            .finally(() => setLoading(false))
+    }, [initialContact.id])
+
+    const c = detail || initialContact
+
+    return (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+        >
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                transition={{ duration: 0.15 }}
+                className="bg-[#161616] rounded-2xl border border-white/10 w-full max-w-lg overflow-hidden shadow-2xl"
+            >
+                {/* Header */}
+                <div className="flex items-start justify-between p-5 border-b border-white/8">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ring-2 ring-white/10 bg-gradient-to-br from-gold/30 to-gold/10 text-gold">
+                            {c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-white font-semibold text-lg leading-tight">{c.name}</p>
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${statusColors[c.status] || 'bg-white/10 text-platinum border-white/10'}`}>
+                                    {statusLabels[c.status] || c.status}
+                                </span>
+                                {c.leadScore && <LeadScoreBadge score={c.leadScore} size="sm" />}
+                                <span className="text-platinum/50 text-xs">{sourceLabels[c.source] || c.source}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="text-platinum/60 hover:text-white transition-colors flex-shrink-0 ml-2">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <div className="p-5 space-y-4 max-h-[65vh] overflow-y-auto">
+                    {/* Contact Info */}
+                    <div className="space-y-2.5">
+                        <div className="flex items-center gap-2.5">
+                            <Phone className="w-4 h-4 text-platinum/40 flex-shrink-0" />
+                            <span className="text-white/80 text-sm">{c.phone}</span>
+                        </div>
+                        {c.email && (
+                            <div className="flex items-center gap-2.5">
+                                <Mail className="w-4 h-4 text-platinum/40 flex-shrink-0" />
+                                <span className="text-white/80 text-sm">{c.email}</span>
+                            </div>
+                        )}
+                        {c.company && (
+                            <div className="flex items-center gap-2.5">
+                                <Building2 className="w-4 h-4 text-platinum/40 flex-shrink-0" />
+                                <span className="text-white/80 text-sm">{c.company}</span>
+                            </div>
+                        )}
+                        {detail?.cpfCnpj && (
+                            <div className="flex items-center gap-2.5">
+                                <User className="w-4 h-4 text-platinum/40 flex-shrink-0" />
+                                <span className="text-platinum/60 text-sm">CPF/CNPJ: {detail.cpfCnpj}</span>
+                            </div>
+                        )}
+                        <div className="flex items-center gap-2.5">
+                            <Calendar className="w-4 h-4 text-platinum/40 flex-shrink-0" />
+                            <span className="text-platinum/60 text-sm">
+                                Criado em {new Date(c.createdAt).toLocaleDateString('pt-BR')}
+                                {c.lastContactAt && ` · Último contato ${new Date(c.lastContactAt).toLocaleDateString('pt-BR')}`}
+                            </span>
+                        </div>
+                        {c.assignedUser && (
+                            <div className="flex items-center gap-2.5">
+                                <User className="w-4 h-4 text-platinum/40 flex-shrink-0" />
+                                <span className="text-platinum/60 text-sm">Atendente: {c.assignedUser.name}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Interesse & Score */}
+                    {(c.planInterest || c.livesCount || c.leadScore) && (
+                        <div className="grid grid-cols-2 gap-3 pt-1">
+                            {c.leadScore && (
+                                <div className={cn(
+                                    'rounded-xl p-3 border col-span-2',
+                                    scoreConfig[c.leadScore]?.bg || 'bg-white/5',
+                                    scoreConfig[c.leadScore]?.border || 'border-white/8'
+                                )}>
+                                    <p className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold mb-1">Lead Score</p>
+                                    <div className="flex items-center gap-2">
+                                        <LeadScoreBadge score={c.leadScore} size="md" />
+                                    </div>
+                                </div>
+                            )}
+                            {c.planInterest && (
+                                <div className="bg-gold/8 border border-gold/15 rounded-xl p-3">
+                                    <p className="text-gold/60 text-[10px] uppercase tracking-wider font-semibold mb-1">Plano</p>
+                                    <p className="text-gold font-semibold text-sm">{c.planInterest}</p>
+                                </div>
+                            )}
+                            {c.livesCount && (
+                                <div className="bg-white/5 border border-white/8 rounded-xl p-3">
+                                    <p className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold mb-1">Vidas</p>
+                                    <p className="text-white font-semibold text-sm">{c.livesCount}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Tags */}
+                    {loading ? (
+                        <div className="animate-pulse h-6 bg-white/10 rounded w-1/2" />
+                    ) : detail?.tags && detail.tags.length > 0 ? (
+                        <div className="flex items-start gap-2">
+                            <Tag className="w-4 h-4 text-platinum/40 flex-shrink-0 mt-0.5" />
+                            <div className="flex flex-wrap gap-1.5">
+                                {detail.tags.map(tag => (
+                                    <span key={tag} className="text-xs px-2.5 py-0.5 bg-white/8 rounded-full text-platinum/70 border border-white/10">{tag}</span>
+                                ))}
+                            </div>
+                        </div>
+                    ) : null}
+
+                    {/* Notes */}
+                    {detail?.notes && (
+                        <div className="flex items-start gap-2.5">
+                            <FileText className="w-4 h-4 text-platinum/40 flex-shrink-0 mt-0.5" />
+                            <p className="text-platinum/60 text-sm leading-relaxed">{detail.notes}</p>
+                        </div>
+                    )}
+
+                    {/* Deals */}
+                    {detail?.deals && detail.deals.length > 0 && (
+                        <div>
+                            <p className="text-platinum/50 text-xs uppercase tracking-wider font-semibold mb-2.5">Deals</p>
+                            <div className="space-y-2">
+                                {detail.deals.map(deal => (
+                                    <div key={deal.id} className="flex items-center justify-between bg-white/5 border border-white/8 rounded-xl px-3.5 py-2.5">
+                                        <div>
+                                            <p className="text-white/90 text-sm font-medium">{deal.title}</p>
+                                            {deal.stage && (
+                                                <span
+                                                    className="text-[10px] font-medium"
+                                                    style={{ color: deal.stage.color || '#888' }}
+                                                >
+                                                    {deal.stage.name}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {deal.value != null && (
+                                            <span className="text-emerald-400 text-sm font-bold">
+                                                {(deal.value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })}
+                                            </span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-5 py-4 border-t border-white/8 flex gap-3">
+                    <Link
+                        href={`/crm/contacts/${initialContact.id}`}
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-platinum/80 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
+                    >
+                        <ExternalLink className="w-4 h-4" />
+                        Ver perfil completo
+                    </Link>
+                    <Link
+                        href={`/crm/conversations?contact=${initialContact.id}`}
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gold/10 border border-gold/20 text-gold hover:bg-gold/15 transition-all text-sm font-medium"
+                    >
+                        Ver conversa
+                    </Link>
+                </div>
+            </motion.div>
+        </div>
+    )
+}
+
+const scoreConfig: Record<number, { label: string; color: string; bg: string; border: string }> = {
+    1: { label: 'Muito Frio', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    2: { label: 'Frio', color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
+    3: { label: 'Morno', color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+    4: { label: 'Quente', color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+    5: { label: 'Hot Lead', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
+}
+
+function LeadScoreBadge({ score, size = 'sm' }: { score: number; size?: 'sm' | 'md' }) {
+    const config = scoreConfig[score] || scoreConfig[1]
+    return (
+        <div className={cn(
+            'inline-flex items-center gap-1 rounded-full border font-medium',
+            config.bg, config.border, config.color,
+            size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-3 py-1 text-xs'
+        )}>
+            <Star className={size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'} fill="currentColor" />
+            <span>{score}/5</span>
+            {size === 'md' && <span className="ml-0.5 opacity-70">· {config.label}</span>}
         </div>
     )
 }
@@ -383,7 +634,7 @@ function NewContactModal({ onClose, onCreated }: { onClose: () => void; onCreate
                         <button
                             type="submit"
                             disabled={saving}
-                            className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-gold to-gold-light text-black font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                            className="flex-1 px-4 py-3 rounded-xl bg-gold-primary text-black font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                         >
                             {saving ? 'Salvando...' : 'Criar Contato'}
                         </button>

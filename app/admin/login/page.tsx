@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '@/lib/auth/context'
+import { getDefaultRedirect } from '@/lib/auth/rbac'
 
 export default function LoginPage() {
     const router = useRouter()
@@ -24,8 +25,10 @@ export default function LoginPage() {
         try {
             const result = await login(email, password)
 
-            if (result.success) {
-                router.push('/admin')
+            if (result.success && result.user) {
+                const params = new URLSearchParams(window.location.search)
+                const redirect = params.get('redirect')
+                router.push(redirect || getDefaultRedirect(result.user.role))
             } else {
                 setError(result.error || 'Erro ao fazer login')
             }
@@ -121,7 +124,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 px-4 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center justify-center gap-2"
+                            className="w-full py-3 px-4 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity flex items-center justify-center gap-2"
                         >
                             {loading ? (
                                 <>

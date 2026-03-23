@@ -11,13 +11,14 @@ import { aiInteractions } from '@/lib/db/schema'
 import type { Contact, Message } from '@/lib/db/schema'
 
 export interface SDRAction {
-    type: 'qualify' | 'update_stage' | 'handoff' | 'schedule_followup'
+    type: 'qualify' | 'update_stage' | 'handoff' | 'schedule_followup' | 'score_lead'
     field?: string
     value?: string
     stage?: string
     reason?: string
     delay_hours?: number
     message?: string
+    score?: number
 }
 
 export interface SDRResponse {

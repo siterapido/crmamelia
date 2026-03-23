@@ -75,6 +75,7 @@ export async function GET(request: NextRequest) {
                     status: contacts.status,
                     planInterest: contacts.planInterest,
                     livesCount: contacts.livesCount,
+                    leadScore: contacts.leadScore,
                     lastContactAt: contacts.lastContactAt,
                     createdAt: contacts.createdAt,
                     assignedUser: {

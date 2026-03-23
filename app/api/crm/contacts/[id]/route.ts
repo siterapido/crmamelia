@@ -24,6 +24,7 @@ const updateContactSchema = z.object({
     notes: z.string().optional().or(z.null()),
     planInterest: z.string().optional().or(z.null()),
     livesCount: z.number().int().positive().optional().or(z.null()),
+    leadScore: z.number().int().min(1).max(5).optional().or(z.null()),
 })
 
 type RouteContext = { params: Promise<{ id: string }> }
@@ -51,6 +52,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
                 whatsappId: contacts.whatsappId,
                 planInterest: contacts.planInterest,
                 livesCount: contacts.livesCount,
+                leadScore: contacts.leadScore,
                 lastContactAt: contacts.lastContactAt,
                 createdAt: contacts.createdAt,
                 updatedAt: contacts.updatedAt,

@@ -79,6 +79,7 @@ export const contacts = pgTable('contacts', {
     planInterest: varchar('plan_interest', { length: 50 }),
     livesCount: integer('lives_count'),
     address: text('address'),
+    leadScore: integer('lead_score'),
     profilePictureUrl: text('profile_picture_url'),
     lastContactAt: timestamp('last_contact_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),

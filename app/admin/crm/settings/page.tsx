@@ -93,7 +93,7 @@ export default function CRMSettingsPage() {
                         <button
                             onClick={handleTestConnection}
                             disabled={testing}
-                            className="px-5 py-2.5 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
+                            className="px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
                         >
                             {testing ? 'Testando...' : 'Testar Conexão'}
                         </button>

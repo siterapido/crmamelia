@@ -7,7 +7,7 @@ import {
     ArrowLeft, Phone, Mail, Building2, FileText, MessageSquare,
     Target, Calendar, User, Sparkles, Edit2, Save, X, Tag,
     Plus, Trash2, Clock, PhoneCall, Video, AtSign, CheckSquare,
-    Bell
+    Bell, Star
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils/cn'
@@ -25,6 +25,7 @@ interface ContactDetail {
     whatsappId: string | null
     planInterest: string | null
     livesCount: number | null
+    leadScore: number | null
     address: string | null
     profilePictureUrl: string | null
     lastContactAt: string | null
@@ -292,9 +293,23 @@ export default function ContactDetailPage() {
                         <p className="text-platinum">{contact.phone}</p>
                     </div>
                 </div>
-                <span className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[contact.status] || 'bg-white/10 text-platinum border-white/10'}`}>
-                    {statusLabels[contact.status] || contact.status}
-                </span>
+                <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[contact.status] || 'bg-white/10 text-platinum border-white/10'}`}>
+                        {statusLabels[contact.status] || contact.status}
+                    </span>
+                    {contact.leadScore && (
+                        <span className={cn(
+                            'inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium border',
+                            contact.leadScore >= 4 ? 'text-orange-400 bg-orange-500/10 border-orange-500/20' :
+                            contact.leadScore >= 3 ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
+                            contact.leadScore >= 2 ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20' :
+                            'text-blue-400 bg-blue-500/10 border-blue-500/20'
+                        )}>
+                            <Star className="w-3.5 h-3.5" fill="currentColor" />
+                            {contact.leadScore}/5
+                        </span>
+                    )}
+                </div>
             </div>
 
             {/* Tags */}
@@ -506,7 +521,7 @@ export default function ContactDetailPage() {
                                         <button
                                             onClick={addActivity}
                                             disabled={savingActivity || !activityForm.title.trim()}
-                                            className="px-4 py-2 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl text-sm hover:opacity-90 disabled:opacity-50"
+                                            className="px-4 py-2 bg-gold-primary text-black font-semibold rounded-xl text-sm hover:opacity-90 disabled:opacity-50"
                                         >
                                             {savingActivity ? 'Salvando...' : 'Salvar'}
                                         </button>
@@ -605,7 +620,7 @@ export default function ContactDetailPage() {
                                         <button
                                             onClick={addFollowup}
                                             disabled={savingFollowup || !followupForm.message.trim() || !followupForm.scheduledAt}
-                                            className="px-4 py-2 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl text-sm hover:opacity-90 disabled:opacity-50"
+                                            className="px-4 py-2 bg-gold-primary text-black font-semibold rounded-xl text-sm hover:opacity-90 disabled:opacity-50"
                                         >
                                             {savingFollowup ? 'Salvando...' : 'Agendar'}
                                         </button>

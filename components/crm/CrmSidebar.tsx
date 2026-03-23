@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/auth/context'
 import { cn } from '@/lib/utils/cn'
+import { canAccess, ROLE_LABELS, type UserRole } from '@/lib/auth/rbac'
 import { motion } from 'framer-motion'
 import {
     LayoutDashboard,
@@ -95,7 +96,7 @@ export function CrmSidebar() {
                 </ul>
 
                 {/* Admin Items */}
-                {user?.role === 'admin' && (
+                {user && canAccess(user, 'settings') && (
                     <>
                         <div className="my-4 mx-4 border-t border-white/10" />
                         <p className="text-platinum/50 text-[10px] uppercase tracking-widest font-semibold px-4 mb-2">
@@ -132,17 +133,19 @@ export function CrmSidebar() {
                     </>
                 )}
 
-                {/* Divider */}
-                <div className="my-4 mx-4 border-t border-white/10" />
-
-                {/* Back to Admin */}
-                <Link
-                    href="/admin"
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-platinum hover:bg-white/5 transition-colors"
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                    <span className="font-medium">Voltar ao Admin</span>
-                </Link>
+                {/* Back to Admin - only for roles with blog access */}
+                {user && canAccess(user, 'blog') && (
+                    <>
+                        <div className="my-4 mx-4 border-t border-white/10" />
+                        <Link
+                            href="/admin"
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg text-platinum hover:bg-white/5 transition-colors"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                            <span className="font-medium">Voltar ao Admin</span>
+                        </Link>
+                    </>
+                )}
             </nav>
 
             {/* User Section */}
@@ -155,7 +158,9 @@ export function CrmSidebar() {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-white text-sm font-medium truncate">{user?.name}</p>
-                        <p className="text-platinum text-xs truncate">{user?.email}</p>
+                        <p className="text-gold/70 text-[10px] uppercase tracking-wider font-semibold">
+                            {ROLE_LABELS[user?.role as UserRole] || user?.role}
+                        </p>
                     </div>
                 </div>
 

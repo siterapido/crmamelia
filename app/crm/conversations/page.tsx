@@ -6,7 +6,7 @@ import {
     MessageSquare, Sparkles, Send, ToggleLeft, ToggleRight, X,
     Check, CheckCheck, AlertCircle, Paperclip, Image as ImageIcon,
     FileText, Mic, Video, MapPin, User, ChevronDown, UserCheck,
-    Zap
+    Zap, Star
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useAuth } from '@/lib/auth/context'
@@ -62,6 +62,7 @@ interface ConversationDetail {
         company: string | null
         status: string
         planInterest: string | null
+        leadScore: number | null
         profilePictureUrl: string | null
     } | null
     messages: Message[]
@@ -510,7 +511,20 @@ export default function ConversationsPage() {
                                         profilePictureUrl={activeConv.contact?.profilePictureUrl}
                                     />
                                     <div className="min-w-0">
-                                        <p className="text-white font-medium truncate">{activeConv.contact?.name}</p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-white font-medium truncate">{activeConv.contact?.name}</p>
+                                            {activeConv.contact?.leadScore && (
+                                                <span className={cn(
+                                                    'inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-md border flex-shrink-0',
+                                                    activeConv.contact.leadScore >= 4 ? 'text-orange-400 bg-orange-500/10 border-orange-500/20' :
+                                                    activeConv.contact.leadScore >= 3 ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
+                                                    'text-blue-400 bg-blue-500/10 border-blue-500/20'
+                                                )}>
+                                                    <Star className="w-2.5 h-2.5" fill="currentColor" />
+                                                    {activeConv.contact.leadScore}/5
+                                                </span>
+                                            )}
+                                        </div>
                                         <p className="text-platinum text-sm">{activeConv.contact?.phone}</p>
                                     </div>
                                 </div>
@@ -692,7 +706,7 @@ export default function ConversationsPage() {
                                     <button
                                         onClick={() => handleSend()}
                                         disabled={!newMessage.trim() || sending}
-                                        className="px-4 py-3 bg-gradient-to-r from-gold to-gold-light text-black rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                                        className="px-4 py-3 bg-gold-primary text-black rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                                     >
                                         <Send className="w-5 h-5" />
                                     </button>

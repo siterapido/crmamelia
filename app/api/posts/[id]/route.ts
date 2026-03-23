@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { posts, categories, authors, postTags } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
+import { canAccess } from '@/lib/auth/rbac'
 import { eq, or } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -102,10 +103,10 @@ export async function PUT(
     try {
         const user = await getCurrentUser()
         if (!user) {
-            return NextResponse.json(
-                { error: 'Não autorizado' },
-                { status: 401 }
-            )
+            return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+        }
+        if (!canAccess(user, 'blog')) {
+            return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
         }
 
         const { id } = await context.params
@@ -198,10 +199,10 @@ export async function DELETE(
     try {
         const user = await getCurrentUser()
         if (!user) {
-            return NextResponse.json(
-                { error: 'Não autorizado' },
-                { status: 401 }
-            )
+            return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+        }
+        if (!canAccess(user, 'blog')) {
+            return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
         }
 
         const { id } = await context.params

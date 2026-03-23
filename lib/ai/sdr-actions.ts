@@ -5,7 +5,7 @@
  */
 
 import { db } from '@/lib/db'
-import { contacts, conversations, deals, pipelineStages, contactFollowups } from '@/lib/db/schema'
+import { contacts, conversations, deals, pipelineStages, contactFollowups, contactActivities } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import type { Contact } from '@/lib/db/schema'
 import type { SDRAction } from './sdr-agent'
@@ -112,6 +112,9 @@ export async function executeSDRActions(
                 case 'handoff':
                     await handleHandoff(contact, conversationId, action)
                     break
+                case 'score_lead':
+                    await handleScoreLead(contact, action)
+                    break
                 case 'schedule_followup':
                     await handleScheduleFollowup(contact, conversationId, action)
                     break
@@ -139,6 +142,9 @@ async function handleQualify(contact: Contact, action: SDRAction) {
             break
         case 'company':
             updateData.company = action.value
+            break
+        case 'cpf_cnpj':
+            updateData.cpfCnpj = action.value
             break
         case 'address':
             updateData.address = action.value
@@ -216,6 +222,36 @@ async function handleHandoff(contact: Contact, conversationId: string, action: S
     await moveDealToStage(contact.id, 'proposal')
 
     console.log(`[CRM] Handoff triggered for ${contact.name}: ${action.reason || 'No reason given'} → moved to "Proposta"`)
+}
+
+async function handleScoreLead(contact: Contact, action: SDRAction) {
+    const score = action.score
+    if (!score || score < 1 || score > 5) return
+
+    // Update contact lead score
+    await db
+        .update(contacts)
+        .set({ leadScore: score, updatedAt: new Date() })
+        .where(eq(contacts.id, contact.id))
+
+    // Log as activity
+    await db.insert(contactActivities).values({
+        contactId: contact.id,
+        type: 'note',
+        title: `Lead Score: ${score}/5`,
+        description: action.reason || `Avaliação automática do agente IA: ${score}/5`,
+    })
+
+    // Update deal with lead score info in notes
+    const [deal] = await db.select().from(deals).where(eq(deals.contactId, contact.id)).limit(1)
+    if (deal) {
+        const scoreNote = `Lead Score: ${score}/5 - ${action.reason || 'Avaliação IA'}`
+        const existingNotes = deal.notes || ''
+        const newNotes = existingNotes ? `${scoreNote}\n${existingNotes}` : scoreNote
+        await db.update(deals).set({ notes: newNotes, updatedAt: new Date() }).where(eq(deals.id, deal.id))
+    }
+
+    console.log(`[CRM] Lead score for ${contact.name}: ${score}/5 — ${action.reason || 'No reason'}`)
 }
 
 async function handleScheduleFollowup(contact: Contact, conversationId: string, action: SDRAction) {

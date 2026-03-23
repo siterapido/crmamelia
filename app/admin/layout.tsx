@@ -3,9 +3,10 @@
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { AuthProvider, useAuth } from '@/lib/auth/context'
+import { canAccess } from '@/lib/auth/rbac'
 import { Sidebar } from '@/components/admin/Sidebar'
 import { motion } from 'framer-motion'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ShieldX } from 'lucide-react'
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth()
@@ -16,6 +17,9 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (!loading && !user && !isLoginPage) {
             router.push('/admin/login')
+        }
+        if (!loading && user && !isLoginPage && !canAccess(user, 'blog')) {
+            router.push('/crm')
         }
     }, [user, loading, router, isLoginPage])
 
@@ -40,6 +44,18 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
     if (!user) {
         return null
+    }
+
+    if (!canAccess(user, 'blog')) {
+        return (
+            <div className="min-h-screen bg-black-deep flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4 text-center">
+                    <ShieldX className="w-12 h-12 text-red-400" />
+                    <h2 className="text-xl font-bold text-white">Acesso Negado</h2>
+                    <p className="text-platinum">Você não tem permissão para acessar esta área.</p>
+                </div>
+            </div>
+        )
     }
 
     return (

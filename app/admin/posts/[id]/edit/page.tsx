@@ -382,7 +382,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                     <button
                         type="submit"
                         disabled={saving}
-                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gold to-gold-light text-black font-semibold rounded-xl hover:opacity-90 disabled:opacity-50 transition-opacity"
+                        className="flex items-center gap-2 px-6 py-3 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 disabled:opacity-50 transition-opacity"
                     >
                         {saving ? (
                             <>
