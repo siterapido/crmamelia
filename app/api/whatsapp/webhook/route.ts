@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
             const remoteJid = key.remoteJid
             const phone = remoteJid.split('@')[0]
 
-            console.log(`[Webhook] Message from ${phone} (${pushName})`)
+            console.log(`[Webhook] Message from ${phone} (${pushName}) | Key ID: ${key.id}`)
 
             if (key.fromMe) {
                 console.log(`[Webhook] Ignoring outbound message from ${phone}`)
@@ -80,9 +80,9 @@ export async function POST(request: NextRequest) {
             const processingPromise = handleInboundMessage(phone, remoteJid, pushName, messageContent, messageType, key.id)
 
             await Promise.race([processingPromise, timeoutPromise])
-                .then(() => console.log(`[Webhook] Successfully processed message from ${phone}`))
+                .then((result) => console.log(`[Webhook] ✅ Processed message from ${phone} | Result:`, result))
                 .catch(err => {
-                    console.error(`[Webhook] Error processing message (timeout or error):`, err.message)
+                    console.error(`[Webhook] ❌ Error processing message from ${phone}:`, err.message)
                     // Don't fail the webhook - Evolution API will retry if needed
                 })
         }
