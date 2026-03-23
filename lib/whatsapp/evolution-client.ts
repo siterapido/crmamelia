@@ -23,6 +23,8 @@ function getConfig() {
     }
 }
 
+const EVOLUTION_TIMEOUT_MS = 5000
+
 async function callEvolutionApi<T = unknown>(
     path: string,
     options: { method?: string; body?: Record<string, unknown> } = {}
@@ -32,7 +34,7 @@ async function callEvolutionApi<T = unknown>(
 
     const url = `${apiUrl}${path.replace('{instance}', instanceName)}`
 
-    const response = await fetch(url, {
+    const fetchPromise = fetch(url, {
         method,
         headers: {
             'apikey': apiKey,
@@ -40,6 +42,18 @@ async function callEvolutionApi<T = unknown>(
         },
         ...(body ? { body: JSON.stringify(body) } : {}),
     })
+
+    const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Evolution API timeout')), EVOLUTION_TIMEOUT_MS)
+    )
+
+    let response: Response
+    try {
+        response = await Promise.race([fetchPromise, timeoutPromise]) as Response
+    } catch (err) {
+        console.error('Evolution API error:', err instanceof Error ? err.message : 'Request timeout')
+        throw new Error(`Evolution API timeout after ${EVOLUTION_TIMEOUT_MS}ms`)
+    }
 
     if (!response.ok) {
         const error = await response.text()

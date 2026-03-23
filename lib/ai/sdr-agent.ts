@@ -35,31 +35,38 @@ const openrouter = createOpenAI({
     },
 })
 
+const SDR_TIMEOUT_MS = 6000
+
 export async function processSDRMessage(
     conversationId: string,
     inboundMessage: string,
     history: Message[],
     contact: Contact
 ): Promise<SDRResponse> {
-    // Pre-flight check
     if (!process.env.OPENROUTER_API_KEY) {
         throw new Error('OPENROUTER_API_KEY is not set. Cannot process AI messages.')
     }
 
     const systemPrompt = buildSDRPrompt(contact, history)
-
     console.log(`[SDR] Calling OpenRouter (google/gemini-2.0-flash-001) for conversation ${conversationId}...`)
 
     let text: string
     let usage: { inputTokens?: number; outputTokens?: number } | undefined
+
+    const aiPromise = generateText({
+        model: openrouter('google/gemini-2.0-flash-001'),
+        system: systemPrompt,
+        prompt: inboundMessage,
+        maxOutputTokens: 500,
+        temperature: 0.7,
+    })
+
+    const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('SDR processing timeout')), SDR_TIMEOUT_MS)
+    )
+
     try {
-        const result = await generateText({
-            model: openrouter('google/gemini-2.0-flash-001'),
-            system: systemPrompt,
-            prompt: inboundMessage,
-            maxOutputTokens: 500,
-            temperature: 0.7,
-        })
+        const result = await Promise.race([aiPromise, timeoutPromise]) as Awaited<ReturnType<typeof generateText>>
         text = result.text
         usage = result.usage as { inputTokens?: number; outputTokens?: number } | undefined
         console.log(`[SDR] OpenRouter responded. Tokens: ${(usage?.inputTokens || 0) + (usage?.outputTokens || 0)}`)
@@ -74,6 +81,9 @@ export async function processSDRMessage(
         }
         if (msg.includes('402') || msg.includes('insufficient')) {
             throw new Error('OpenRouter account has no credits. Add credits at openrouter.ai.')
+        }
+        if (msg.includes('timeout')) {
+            throw new Error('OpenRouter timeout - try again later')
         }
         throw new Error(`OpenRouter API error: ${msg}`)
     }
