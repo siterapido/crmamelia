@@ -7,7 +7,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { conversations, contacts, messages, users } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
-import { eq, desc, and, sql } from 'drizzle-orm'
+import { canViewAllCRMData } from '@/lib/auth/rbac'
+import { eq, desc, and, sql, or } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
     try {
@@ -36,7 +37,22 @@ export async function GET(request: NextRequest) {
             conditions.push(and(eq(conversations.aiEnabled, false), eq(conversations.status, 'active')))
         }
 
-        if (assignedFilter === 'me') {
+        // Vendedores só veem conversas atribuídas a eles (ou não atribuídas)
+        if (!canViewAllCRMData(user)) {
+            if (assignedFilter === 'unassigned') {
+                conditions.push(sql`${conversations.assignedTo} IS NULL`)
+            } else if (assignedFilter && assignedFilter !== 'all') {
+                conditions.push(eq(conversations.assignedTo, assignedFilter))
+            } else {
+                // Por padrão, vendedor vê suas conversas + não atribuídas
+                conditions.push(
+                    or(
+                        eq(conversations.assignedTo, user.userId),
+                        sql`${conversations.assignedTo} IS NULL`
+                    )
+                )
+            }
+        } else if (assignedFilter === 'me') {
             conditions.push(eq(conversations.assignedTo, user.userId))
         } else if (assignedFilter === 'unassigned') {
             conditions.push(sql`${conversations.assignedTo} IS NULL`)

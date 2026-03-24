@@ -76,7 +76,7 @@ export default function ContactDetailPage() {
                 setContact(data)
                 setEditForm({ name: data.name, phone: data.phone, email: data.email, company: data.company, notes: data.notes, planInterest: data.planInterest })
             })
-            .catch(() => router.push('/admin/crm/contacts'))
+            .catch(() => router.push('/admin/cms/crm/contacts'))
             .finally(() => setLoading(false))
     }, [params.id, router])
 
@@ -127,7 +127,7 @@ export default function ContactDetailPage() {
             {/* Header */}
             <div className="flex items-center gap-4">
                 <Link
-                    href="/admin/crm/contacts"
+                    href="/admin/cms/crm/contacts"
                     className="p-2 rounded-lg bg-white/5 text-platinum hover:bg-white/10 hover:text-white transition-colors"
                 >
                     <ArrowLeft className="w-5 h-5" />

@@ -8,7 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { deals, contacts, pipelineStages, users } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
-import { eq, desc, sql } from 'drizzle-orm'
+import { canViewAllCRMData } from '@/lib/auth/rbac'
+import { eq, desc, sql, or } from 'drizzle-orm'
 import { z } from 'zod'
 
 const createDealSchema = z.object({
@@ -46,6 +47,26 @@ export async function GET(request: NextRequest) {
             }
         }
 
+        const assignedFilter = searchParams.get('assignedTo')
+        
+        // Vendedores só veem deals atribuídos a eles
+        if (!canViewAllCRMData(user)) {
+            if (assignedFilter === 'me' || assignedFilter === 'unassigned' || !assignedFilter) {
+                conditions.push(
+                    or(
+                        eq(deals.assignedTo, user.userId),
+                        sql`${deals.assignedTo} IS NULL`
+                    )
+                )
+            }
+        } else if (assignedFilter === 'me') {
+            conditions.push(eq(deals.assignedTo, user.userId))
+        } else if (assignedFilter === 'unassigned') {
+            conditions.push(sql`${deals.assignedTo} IS NULL`)
+        } else if (assignedFilter && assignedFilter !== 'all') {
+            conditions.push(eq(deals.assignedTo, assignedFilter))
+        }
+
         const dealsData = await db
             .select({
                 id: deals.id,
@@ -65,6 +86,7 @@ export async function GET(request: NextRequest) {
                     name: contacts.name,
                     phone: contacts.phone,
                     company: contacts.company,
+                    cpfCnpj: contacts.cpfCnpj,
                     profilePictureUrl: contacts.profilePictureUrl,
                     leadScore: contacts.leadScore,
                 },

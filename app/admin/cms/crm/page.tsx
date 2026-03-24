@@ -59,7 +59,7 @@ export default function CRMDashboard() {
                     <p className="text-platinum mt-1">Gestão de leads e vendas</p>
                 </div>
                 <Link
-                    href="/admin/crm/contacts?new=true"
+                    href="/admin/cms/crm/contacts?new=true"
                     className="flex items-center gap-2 px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
                 >
                     <Plus className="w-5 h-5" />
@@ -106,7 +106,7 @@ export default function CRMDashboard() {
                             <LayoutGrid className="w-5 h-5 text-gold" />
                             Pipeline
                         </h2>
-                        <Link href="/admin/crm/pipeline" className="text-gold text-sm hover:underline">
+                        <Link href="/admin/cms/crm/pipeline" className="text-gold text-sm hover:underline">
                             Ver pipeline
                         </Link>
                     </div>
@@ -156,7 +156,7 @@ export default function CRMDashboard() {
 
                     <div className="grid grid-cols-2 gap-4">
                         <Link
-                            href="/admin/crm/conversations"
+                            href="/admin/cms/crm/conversations"
                             className="flex flex-col items-center gap-3 p-6 rounded-xl bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/30 transition-all group"
                         >
                             <MessageSquare className="w-8 h-8 text-platinum group-hover:text-gold transition-colors" />
@@ -164,7 +164,7 @@ export default function CRMDashboard() {
                         </Link>
 
                         <Link
-                            href="/admin/crm/contacts"
+                            href="/admin/cms/crm/contacts"
                             className="flex flex-col items-center gap-3 p-6 rounded-xl bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/30 transition-all group"
                         >
                             <UserCheck className="w-8 h-8 text-platinum group-hover:text-gold transition-colors" />
@@ -172,7 +172,7 @@ export default function CRMDashboard() {
                         </Link>
 
                         <Link
-                            href="/admin/crm/pipeline"
+                            href="/admin/cms/crm/pipeline"
                             className="flex flex-col items-center gap-3 p-6 rounded-xl bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/30 transition-all group"
                         >
                             <TrendingUp className="w-8 h-8 text-platinum group-hover:text-gold transition-colors" />
@@ -180,7 +180,7 @@ export default function CRMDashboard() {
                         </Link>
 
                         <Link
-                            href="/admin/crm/settings"
+                            href="/admin/cms/crm/settings"
                             className="flex flex-col items-center gap-3 p-6 rounded-xl bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/30 transition-all group"
                         >
                             <Sparkles className="w-8 h-8 text-platinum group-hover:text-gold transition-colors" />

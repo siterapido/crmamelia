@@ -6,7 +6,7 @@ import {
     MessageSquare, Sparkles, Send, ToggleLeft, ToggleRight, X,
     Check, CheckCheck, AlertCircle, Paperclip, Image as ImageIcon,
     FileText, Mic, Video, MapPin, User, ChevronDown, UserCheck,
-    Zap, Star
+    Zap, Star, CheckSquare, Square, Filter, Users, XCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useAuth } from '@/lib/auth/context'
@@ -232,6 +232,10 @@ export default function ConversationsPage() {
     const [activeConv, setActiveConv] = useState<ConversationDetail | null>(null)
     const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState('all')
+    const [selectedConversations, setSelectedConversations] = useState<Set<string>>(new Set())
+    const [showBulkActions, setShowBulkActions] = useState(false)
+    const [showFilters, setShowFilters] = useState(false)
+    const [filterAgent, setFilterAgent] = useState<string>('')
     const [newMessage, setNewMessage] = useState('')
     const [sending, setSending] = useState(false)
     const [agents, setAgents] = useState<AgentUser[]>([])
@@ -253,11 +257,23 @@ export default function ConversationsPage() {
     const loadConversations = useCallback(async () => {
         try {
             const params = new URLSearchParams({ limit: '50' })
-            if (filter === 'me') params.set('assignedTo', 'me')
-            else if (filter === 'unassigned') params.set('assignedTo', 'unassigned')
-            else if (filter === 'active') params.set('ai', 'active')
-            else if (filter === 'human') params.set('ai', 'human')
-            else if (filter === 'closed') params.set('status', 'closed')
+            
+            // Para vendedores, aplicar filtro "me" por padrão
+            const isVendedor = currentUser?.role === 'vendedor'
+            
+            if (filter === 'me' || (isVendedor && filter === 'all')) {
+                params.set('assignedTo', 'me')
+            } else if (filter === 'unassigned') {
+                params.set('assignedTo', 'unassigned')
+            } else if (filter === 'active') {
+                params.set('ai', 'active')
+            } else if (filter === 'human') {
+                params.set('ai', 'human')
+            } else if (filter === 'closed') {
+                params.set('status', 'closed')
+            } else if (filterAgent) {
+                params.set('assignedTo', filterAgent)
+            }
 
             const res = await fetch(`/api/crm/conversations?${params}`)
             const data = await res.json()
@@ -267,7 +283,7 @@ export default function ConversationsPage() {
         } finally {
             setLoading(false)
         }
-    }, [filter])
+    }, [filter, filterAgent, currentUser?.role])
 
     useEffect(() => { loadConversations() }, [loadConversations])
 
@@ -386,6 +402,64 @@ export default function ConversationsPage() {
         setShowQuickReplies(false)
     }
 
+    const toggleSelectAll = () => {
+        if (selectedConversations.size === conversations.length) {
+            setSelectedConversations(new Set())
+        } else {
+            setSelectedConversations(new Set(conversations.map(c => c.id)))
+        }
+    }
+
+    const toggleSelect = (id: string) => {
+        const newSet = new Set(selectedConversations)
+        if (newSet.has(id)) {
+            newSet.delete(id)
+        } else {
+            newSet.add(id)
+        }
+        setSelectedConversations(newSet)
+    }
+
+    const handleBulkAssign = async (userId: string | null) => {
+        const ids = Array.from(selectedConversations)
+        try {
+            await Promise.all(
+                ids.map(id =>
+                    fetch(`/api/crm/conversations/${id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ assignedTo: userId }),
+                    })
+                )
+            )
+            setSelectedConversations(new Set())
+            setShowBulkActions(false)
+            loadConversations()
+        } catch (error) {
+            console.error('Error bulk assigning:', error)
+        }
+    }
+
+    const handleBulkClose = async () => {
+        const ids = Array.from(selectedConversations)
+        try {
+            await Promise.all(
+                ids.map(id =>
+                    fetch(`/api/crm/conversations/${id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'closed' }),
+                    })
+                )
+            )
+            setSelectedConversations(new Set())
+            setShowBulkActions(false)
+            loadConversations()
+        } catch (error) {
+            console.error('Error bulk closing:', error)
+        }
+    }
+
     const filteredQuickReplies = quickReplies.filter(qr =>
         !quickReplyFilter ||
         qr.shortcut.toLowerCase().includes(quickReplyFilter) ||
@@ -407,23 +481,129 @@ export default function ConversationsPage() {
                     className="w-96 flex-shrink-0 bg-charcoal rounded-2xl border border-white/10 flex flex-col overflow-hidden"
                 >
                     {/* Filters */}
-                    <div className="p-4 border-b border-white/10">
-                        <div className="flex gap-1 flex-wrap">
-                            {filterOptions.map(opt => (
-                                <button
-                                    key={opt.value}
-                                    onClick={() => setFilter(opt.value)}
-                                    className={cn(
-                                        'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-                                        filter === opt.value
-                                            ? 'bg-gold/10 text-gold'
-                                            : 'text-platinum hover:bg-white/5'
-                                    )}
-                                >
-                                    {opt.label}
-                                </button>
-                            ))}
+                    <div className="p-4 border-b border-white/10 space-y-3">
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="flex gap-1 flex-wrap flex-1">
+                                {filterOptions.map(opt => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => { setFilter(opt.value); setFilterAgent('') }}
+                                        className={cn(
+                                            'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                                            filter === opt.value && !filterAgent
+                                                ? 'bg-gold/10 text-gold'
+                                                : 'text-platinum hover:bg-white/5'
+                                        )}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                            <button
+                                onClick={() => setShowFilters(v => !v)}
+                                className={cn(
+                                    'p-2 rounded-lg transition-all',
+                                    showFilters ? 'bg-gold/10 text-gold' : 'text-platinum hover:bg-white/5'
+                                )}
+                                title="Filtros avançados"
+                            >
+                                <Filter className="w-4 h-4" />
+                            </button>
                         </div>
+
+                        {/* Advanced Filters */}
+                        {showFilters && (
+                            <div className="flex items-center gap-2">
+                                <Users className="w-4 h-4 text-platinum" />
+                                <select
+                                    value={filterAgent}
+                                    onChange={(e) => { setFilterAgent(e.target.value); setFilter('all') }}
+                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-gold/50"
+                                >
+                                    <option value="">Todos os agentes</option>
+                                    <option value="me">Meus atendimentos</option>
+                                    <option value="unassigned">Não atribuídos</option>
+                                    {agents.map(agent => (
+                                        <option key={agent.id} value={agent.id}>{agent.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+
+                        {/* Bulk Actions Bar */}
+                        {selectedConversations.size > 0 && (
+                            <div className="flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-lg px-3 py-2">
+                                <span className="text-gold text-xs font-medium flex-1">
+                                    {selectedConversations.size} selecionada(s)
+                                </span>
+                                <div className="flex gap-1">
+                                    <button
+                                        onClick={() => setShowBulkActions(true)}
+                                        className="p-1.5 rounded bg-gold/20 text-gold hover:bg-gold/30"
+                                        title="Atribuir"
+                                    >
+                                        <UserCheck className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                        onClick={handleBulkClose}
+                                        className="p-1.5 rounded bg-white/10 text-platinum hover:text-white"
+                                        title="Encerrar"
+                                    >
+                                        <XCircle className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedConversations(new Set())}
+                                        className="p-1.5 rounded bg-white/10 text-platinum hover:text-white"
+                                        title="Limpar seleção"
+                                    >
+                                        <X className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Bulk Assign Dropdown */}
+                        {showBulkActions && (
+                            <div className="absolute left-4 top-24 w-56 bg-charcoal border border-white/10 rounded-xl shadow-xl z-30 overflow-hidden">
+                                <div className="px-3 py-2 border-b border-white/10">
+                                    <p className="text-white text-sm font-medium">Atribuir {selectedConversations.size} conversa(s)</p>
+                                </div>
+                                {currentUser && (
+                                    <button
+                                        onClick={() => handleBulkAssign(currentUser.id)}
+                                        className="w-full text-left px-4 py-2.5 text-sm text-white hover:bg-gold/10 flex items-center gap-2"
+                                    >
+                                        <UserCheck className="w-4 h-4 text-gold" />
+                                        Assumir conversa(s)
+                                    </button>
+                                )}
+                                {agents.map(agent => (
+                                    <button
+                                        key={agent.id}
+                                        onClick={() => handleBulkAssign(agent.id)}
+                                        className="w-full text-left px-4 py-2.5 text-sm text-platinum hover:bg-white/5 flex items-center gap-2"
+                                    >
+                                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs">
+                                            {agent.name.charAt(0)}
+                                        </div>
+                                        {agent.name}
+                                    </button>
+                                ))}
+                                <div className="border-t border-white/10" />
+                                <button
+                                    onClick={() => handleBulkAssign(null)}
+                                    className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10"
+                                >
+                                    Remover atribuição
+                                </button>
+                                <button
+                                    onClick={() => setShowBulkActions(false)}
+                                    className="w-full text-left px-4 py-2.5 text-sm text-platinum hover:bg-white/5 border-t border-white/10"
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* List */}
@@ -435,57 +615,87 @@ export default function ConversationsPage() {
                                 ))}
                             </div>
                         ) : conversations.length > 0 ? (
-                            conversations.map(conv => (
-                                <button
-                                    key={conv.id}
-                                    onClick={() => loadConversation(conv.id)}
-                                    className={cn(
-                                        'w-full text-left px-4 py-3 border-b border-white/5 hover:bg-white/5 transition-colors',
-                                        activeConv?.id === conv.id && 'bg-gold/5 border-l-2 border-l-gold'
-                                    )}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <ContactAvatar
-                                            name={conv.contact?.name || '?'}
-                                            profilePictureUrl={conv.contact?.profilePictureUrl}
-                                            size={8}
-                                        />
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-white font-medium truncate text-sm">
-                                                    {conv.contact?.name || 'Desconhecido'}
-                                                </span>
-                                                <div className="flex items-center gap-1.5 flex-shrink-0">
-                                                    {conv.aiEnabled && <Sparkles className="w-3 h-3 text-gold" />}
-                                                    {conv.unreadCount > 0 && (
-                                                        <span className="w-5 h-5 rounded-full bg-gold text-black text-[10px] font-bold flex items-center justify-center">
-                                                            {conv.unreadCount}
+                            <div className="relative">
+                                {/* Select All */}
+                                <div className="sticky top-0 bg-charcoal border-b border-white/10 px-4 py-2 flex items-center gap-2 z-10">
+                                    <button
+                                        onClick={toggleSelectAll}
+                                        className="text-platinum hover:text-white"
+                                    >
+                                        {selectedConversations.size === conversations.length && conversations.length > 0 ? (
+                                            <CheckSquare className="w-4 h-4" />
+                                        ) : (
+                                            <Square className="w-4 h-4" />
+                                        )}
+                                    </button>
+                                    <span className="text-xs text-platinum">Selecionar todas</span>
+                                </div>
+                                {conversations.map(conv => (
+                                    <div
+                                        key={conv.id}
+                                        className={cn(
+                                            'flex items-start gap-2 px-4 py-3 border-b border-white/5 hover:bg-white/5 transition-colors',
+                                            activeConv?.id === conv.id && 'bg-gold/5 border-l-2 border-l-gold'
+                                        )}
+                                    >
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); toggleSelect(conv.id) }}
+                                            className="mt-2 text-platinum hover:text-white"
+                                        >
+                                            {selectedConversations.has(conv.id) ? (
+                                                <CheckSquare className="w-4 h-4 text-gold" />
+                                            ) : (
+                                                <Square className="w-4 h-4" />
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => loadConversation(conv.id)}
+                                            className="flex-1 text-left"
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <ContactAvatar
+                                                    name={conv.contact?.name || '?'}
+                                                    profilePictureUrl={conv.contact?.profilePictureUrl}
+                                                    size={8}
+                                                />
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-white font-medium truncate text-sm">
+                                                            {conv.contact?.name || 'Desconhecido'}
                                                         </span>
-                                                    )}
+                                                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                                                            {conv.aiEnabled && <Sparkles className="w-3 h-3 text-gold" />}
+                                                            {conv.unreadCount > 0 && (
+                                                                <span className="w-5 h-5 rounded-full bg-gold text-black text-[10px] font-bold flex items-center justify-center">
+                                                                    {conv.unreadCount}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-platinum text-xs truncate mt-0.5">
+                                                        {conv.lastMessage || 'Sem mensagens'}
+                                                    </p>
+                                                    <div className="flex items-center justify-between mt-1">
+                                                        {conv.assignedUser ? (
+                                                            <span className="text-gold/70 text-[10px] truncate flex items-center gap-1">
+                                                                <User className="w-2.5 h-2.5" />
+                                                                {conv.assignedUser.name}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-platinum/30 text-[10px]">Sem atendente</span>
+                                                        )}
+                                                        {conv.lastMessageAt && (
+                                                            <span className="text-platinum/50 text-[10px] flex-shrink-0">
+                                                                {formatTime(conv.lastMessageAt)}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <p className="text-platinum text-xs truncate mt-0.5">
-                                                {conv.lastMessage || 'Sem mensagens'}
-                                            </p>
-                                            <div className="flex items-center justify-between mt-1">
-                                                {conv.assignedUser ? (
-                                                    <span className="text-gold/70 text-[10px] truncate flex items-center gap-1">
-                                                        <User className="w-2.5 h-2.5" />
-                                                        {conv.assignedUser.name}
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-platinum/30 text-[10px]">Sem atendente</span>
-                                                )}
-                                                {conv.lastMessageAt && (
-                                                    <span className="text-platinum/50 text-[10px] flex-shrink-0">
-                                                        {formatTime(conv.lastMessageAt)}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
+                                        </button>
                                     </div>
-                                </button>
-                            ))
+                                ))}
+                            </div>
                         ) : (
                             <div className="p-8 text-center">
                                 <MessageSquare className="w-12 h-12 text-platinum/50 mx-auto mb-3" />

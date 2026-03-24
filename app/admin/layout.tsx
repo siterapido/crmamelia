@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { AuthProvider, useAuth } from '@/lib/auth/context'
-import { canAccess } from '@/lib/auth/rbac'
+import { canAccess, hasPermission, isAdmin } from '@/lib/auth/rbac'
 import { Sidebar } from '@/components/admin/Sidebar'
 import { motion } from 'framer-motion'
 import { Loader2, ShieldX } from 'lucide-react'
@@ -12,16 +12,21 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth()
     const router = useRouter()
     const pathname = usePathname()
-    const isLoginPage = pathname === '/admin/login'
+    const isLoginPage = pathname === '/login'
+    const isAdminArea = pathname.startsWith('/admin/users') || pathname === '/admin' || pathname.startsWith('/admin/connections') || pathname.startsWith('/admin/team')
 
     useEffect(() => {
         if (!loading && !user && !isLoginPage) {
-            router.push('/admin/login')
+            router.push('/login')
         }
-        if (!loading && user && !isLoginPage && !canAccess(user, 'blog')) {
-            router.push('/crm')
+        if (!loading && user && isAdminArea && !hasPermission(user, 'users:manage')) {
+            if (canAccess(user, 'blog')) {
+                router.push('/admin/cms')
+            } else if (canAccess(user, 'crm')) {
+                router.push('/crm')
+            }
         }
-    }, [user, loading, router, isLoginPage])
+    }, [user, loading, router, isLoginPage, isAdminArea])
 
     if (isLoginPage) {
         return <>{children}</>
@@ -46,7 +51,15 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         return null
     }
 
-    if (!canAccess(user, 'blog')) {
+    const isCMSArea = pathname.startsWith('/admin/cms')
+    const canAccessCMS = isAdmin(user) // Only admin can access /admin/cms
+    const canAccessAdminSystem = hasPermission(user, 'users:manage')
+
+    if (isCMSArea && !canAccessCMS) {
+        if (canAccess(user, 'crm')) {
+            router.push('/crm')
+            return null
+        }
         return (
             <div className="min-h-screen bg-black-deep flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4 text-center">

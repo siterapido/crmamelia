@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { getCurrentUser, hashPassword } from '@/lib/auth'
-import { isAdmin } from '@/lib/auth/rbac'
+import { canManageAgents } from '@/lib/auth/rbac'
 import { eq, desc } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -26,19 +26,41 @@ export async function GET() {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
         }
 
-        const allUsers = await db
-            .select({
-                id: users.id,
-                name: users.name,
-                email: users.email,
-                role: users.role,
-                avatarUrl: users.avatarUrl,
-                createdAt: users.createdAt,
-            })
-            .from(users)
-            .orderBy(desc(users.createdAt))
+        let allUsers
 
-        return NextResponse.json({ data: allUsers })
+        if (user.role === 'gestor') {
+            allUsers = await db
+                .select({
+                    id: users.id,
+                    name: users.name,
+                    email: users.email,
+                    role: users.role,
+                    avatarUrl: users.avatarUrl,
+                    createdAt: users.createdAt,
+                })
+                .from(users)
+                .where(eq(users.role, 'vendedor'))
+                .orderBy(desc(users.createdAt))
+        } else {
+            allUsers = await db
+                .select({
+                    id: users.id,
+                    name: users.name,
+                    email: users.email,
+                    role: users.role,
+                    avatarUrl: users.avatarUrl,
+                    createdAt: users.createdAt,
+                })
+                .from(users)
+                .orderBy(desc(users.createdAt))
+        }
+
+        const mappedUsers = allUsers.map(u => ({
+            ...u,
+            role: u.role === 'vendedor' ? 'agent' : u.role,
+        }))
+
+        return NextResponse.json({ data: mappedUsers })
     } catch (error) {
         console.error('Error fetching users:', error)
         return NextResponse.json({ error: 'Erro ao buscar usuários' }, { status: 500 })
@@ -52,8 +74,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
         }
 
-        if (!isAdmin(currentUser)) {
-            return NextResponse.json({ error: 'Apenas administradores podem criar usuários' }, { status: 403 })
+        if (!canManageAgents(currentUser)) {
+            return NextResponse.json({ error: 'Apenas administradores e gestores podem criar usuários' }, { status: 403 })
         }
 
         const body = await request.json()
@@ -64,6 +86,11 @@ export async function POST(request: NextRequest) {
         }
 
         const { name, email, password, role } = result.data
+
+        // Gestores só podem criar atendentes (vendedor)
+        if (currentUser.role === 'gestor' && role !== 'vendedor') {
+            return NextResponse.json({ error: 'Gestores só podem criar atendentes' }, { status: 400 })
+        }
 
         // Check duplicate email
         const [existing] = await db

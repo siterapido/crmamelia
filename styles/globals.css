@@ -1288,3 +1288,17 @@ img[data-loaded="false"] {
 .animate-glow-pulse {
   animation: glowPulseButton 3s ease-in-out infinite;
 }
+
+/* Shimmer animation for notifications */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}

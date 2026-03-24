@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { getCurrentUser, hashPassword } from '@/lib/auth'
-import { isAdmin } from '@/lib/auth/rbac'
+import { canManageAgents } from '@/lib/auth/rbac'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -62,8 +62,8 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
         }
 
-        if (!isAdmin(currentUser)) {
-            return NextResponse.json({ error: 'Apenas administradores podem editar usuários' }, { status: 403 })
+        if (!canManageAgents(currentUser)) {
+            return NextResponse.json({ error: 'Apenas administradores e gestores podem editar usuários' }, { status: 403 })
         }
 
         const { id } = await context.params
@@ -72,6 +72,11 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
         if (!result.success) {
             return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 })
+        }
+
+        // Gestores não podem alterar role para admin/gestor
+        if (currentUser.role === 'gestor' && result.data.role && result.data.role !== 'vendedor') {
+            return NextResponse.json({ error: 'Gestores só podem criar/edit атendentes' }, { status: 400 })
         }
 
         const updateData: Record<string, unknown> = { ...result.data, updatedAt: new Date() }
@@ -110,8 +115,8 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
         }
 
-        if (!isAdmin(currentUser)) {
-            return NextResponse.json({ error: 'Apenas administradores podem deletar usuários' }, { status: 403 })
+        if (!canManageAgents(currentUser)) {
+            return NextResponse.json({ error: 'Apenas administradores e gestores podem deletar usuários' }, { status: 403 })
         }
 
         const { id } = await context.params

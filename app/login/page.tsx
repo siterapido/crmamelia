@@ -46,7 +46,6 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-[28rem]"
             >
-                {/* Logo */}
                 <div className="text-center mb-8">
                     <div className="relative w-40 h-12 mx-auto mb-4">
                         <Image
@@ -56,14 +55,12 @@ export default function LoginPage() {
                             className="object-contain"
                         />
                     </div>
-                    <h1 className="text-2xl font-bold text-white">CMS Admin</h1>
-                    <p className="text-platinum mt-2">Acesse o painel administrativo</p>
+                    <h1 className="text-2xl font-bold text-white">Área Restrita</h1>
+                    <p className="text-platinum mt-2">Faça login para continuar</p>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="bg-charcoal rounded-2xl p-6 space-y-5 border border-white/10">
-                        {/* Email */}
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-platinum mb-2">
                                 Email
@@ -82,7 +79,6 @@ export default function LoginPage() {
                             </div>
                         </div>
 
-                        {/* Password */}
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-platinum mb-2">
                                 Senha
@@ -109,7 +105,6 @@ export default function LoginPage() {
                             </div>
                         </div>
 
-                        {/* Error */}
                         {error && (
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
@@ -120,7 +115,6 @@ export default function LoginPage() {
                             </motion.div>
                         )}
 
-                        {/* Submit */}
                         <button
                             type="submit"
                             disabled={loading}
@@ -138,7 +132,6 @@ export default function LoginPage() {
                     </div>
                 </form>
 
-                {/* Footer */}
                 <p className="text-center text-platinum/50 text-sm mt-6">
                     © {new Date().getFullYear()} SIX Saúde. Todos os direitos reservados.
                 </p>

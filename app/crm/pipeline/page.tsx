@@ -2,7 +2,13 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, Building2, ChevronLeft, ChevronRight, DollarSign, X, Phone, Mail, Users, Tag, FileText, ExternalLink, Calendar, Layers, Star, Pencil, Check, AlertCircle, Loader2, MessageSquare } from 'lucide-react'
+import { 
+    User, Building2, ChevronLeft, ChevronRight, DollarSign, X, Phone, Mail, 
+    Users, Tag, FileText, ExternalLink, Calendar, Layers, Star, Pencil, 
+    Check, AlertCircle, Loader2, MessageSquare, ArrowRight, UserPlus, 
+    Filter, CheckSquare, Square, Trash2, Users2, ChevronDown, Search,
+    SlidersHorizontal, Sparkles, Bell, Clock, PhoneCall, Video, AtSign, Plus, Star as StarIcon
+} from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -27,11 +33,30 @@ interface Deal {
         name: string
         phone: string
         company: string | null
+        cpfCnpj: string | null
         profilePictureUrl: string | null
         leadScore: number | null
     } | null
     stage: { id: string; name: string; slug: string; color: string | null; order: number } | null
     assignedUser: { id: string; name: string } | null
+}
+
+interface PipelineUser {
+    id: string
+    name: string
+    email: string
+    role: string
+    avatarUrl: string | null
+}
+
+interface PipelineNotification {
+    id: string
+    type: 'new_deal' | 'stage_change'
+    dealId: string
+    dealTitle: string
+    fromStage?: string
+    toStage?: string
+    timestamp: number
 }
 
 interface ContactDetail {
@@ -89,13 +114,14 @@ function PipelineLeadScore({ score }: { score: number }) {
     )
 }
 
-type ModalTab = 'overview' | 'contact' | 'deal' | 'conversation'
+type ModalTab = 'overview' | 'contact' | 'deal' | 'conversation' | 'history'
 
 const TABS: { id: ModalTab; label: string }[] = [
     { id: 'conversation', label: 'Conversa' },
     { id: 'overview', label: 'Visão Geral' },
     { id: 'contact', label: 'Contato' },
     { id: 'deal', label: 'Negócio' },
+    { id: 'history', label: 'Histórico' },
 ]
 
 interface Message {
@@ -171,7 +197,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
     const [editingDeal, setEditingDeal] = useState(false)
     const [saving, setSaving] = useState(false)
     const [saveError, setSaveError] = useState<string | null>(null)
-    // Conversation
     const [convId, setConvId] = useState<string | null>(null)
     const [msgs, setMsgs] = useState<Message[]>([])
     const [loadingMsgs, setLoadingMsgs] = useState(false)
@@ -179,9 +204,17 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
     const [sendingMsg, setSendingMsg] = useState(false)
     const msgsEndRef = useRef<HTMLDivElement>(null)
 
-    // Contact form state
+    const [activities, setActivities] = useState<{ id: string; type: string; title: string; description: string | null; createdAt: string; user: { id: string; name: string } | null }[]>([])
+    const [followups, setFollowups] = useState<{ id: string; scheduledAt: string; message: string; sent: boolean; createdAt: string }[]>([])
+    const [showActivityForm, setShowActivityForm] = useState(false)
+    const [activityForm, setActivityForm] = useState({ type: 'note', title: '', description: '' })
+    const [savingActivity, setSavingActivity] = useState(false)
+    const [showFollowupForm, setShowFollowupForm] = useState(false)
+    const [followupForm, setFollowupForm] = useState({ scheduledAt: '', message: '' })
+    const [savingFollowup, setSavingFollowup] = useState(false)
+    const [subTab, setSubTab] = useState<'activities' | 'followups'>('activities')
+
     const [cForm, setCForm] = useState({ name: '', phone: '', email: '', company: '', cpfCnpj: '', status: '', source: '', planInterest: '', livesCount: '', leadScore: '', notes: '' })
-    // Deal form state
     const [dForm, setDForm] = useState({ title: '', value: '', planInterest: '', livesCount: '', stageId: '', notes: '', expectedCloseDate: '' })
 
     const loadContact = useCallback(() => {
@@ -230,7 +263,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
             const msgRes = await fetch(`/api/crm/conversations/${conv.id}/messages?limit=50`)
             const msgData = await msgRes.json()
             setMsgs(msgData.data || [])
-        } catch { /* ignore */ } finally {
+        } catch { } finally {
             setLoadingMsgs(false)
         }
     }, [deal.contact?.id])
@@ -238,6 +271,25 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
     useEffect(() => {
         loadConversation()
     }, [loadConversation])
+
+    const loadHistory = useCallback(() => {
+        if (!deal.contact?.id) return
+        Promise.all([
+            fetch(`/api/crm/contacts/${deal.contact.id}/activities`).then(r => r.json()),
+            fetch(`/api/crm/followups?contactId=${deal.contact.id}`).then(r => r.json()),
+        ])
+            .then(([activitiesData, followupsData]) => {
+                setActivities(activitiesData.data || [])
+                setFollowups(followupsData.data || [])
+            })
+            .catch(() => null)
+    }, [deal.contact?.id])
+
+    useEffect(() => {
+        if (tab === 'history') {
+            loadHistory()
+        }
+    }, [tab, loadHistory])
 
     useEffect(() => {
         if (tab === 'conversation') {
@@ -260,9 +312,74 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
             if (res.ok) {
                 setMsgs(prev => [...prev, data.message || { id: Date.now().toString(), content: text, messageType: 'text', direction: 'outbound', createdAt: new Date().toISOString() }])
             }
-        } catch { /* ignore */ } finally {
+        } catch { } finally {
             setSendingMsg(false)
         }
+    }
+
+    const addActivity = async () => {
+        if (!deal.contact?.id || !activityForm.title.trim()) return
+        setSavingActivity(true)
+        try {
+            const res = await fetch(`/api/crm/contacts/${deal.contact.id}/activities`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(activityForm),
+            })
+            if (res.ok) {
+                const data = await res.json()
+                setActivities(prev => [data.activity, ...prev])
+                setShowActivityForm(false)
+                setActivityForm({ type: 'note', title: '', description: '' })
+            }
+        } finally {
+            setSavingActivity(false)
+        }
+    }
+
+    const addFollowup = async () => {
+        if (!deal.contact?.id || !followupForm.message.trim() || !followupForm.scheduledAt) return
+        setSavingFollowup(true)
+        try {
+            const res = await fetch('/api/crm/followups', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contactId: deal.contact.id, ...followupForm }),
+            })
+            if (res.ok) {
+                const data = await res.json()
+                setFollowups(prev => [...prev, data.followup])
+                setShowFollowupForm(false)
+                setFollowupForm({ scheduledAt: '', message: '' })
+            }
+        } finally {
+            setSavingFollowup(false)
+        }
+    }
+
+    const deleteFollowup = async (id: string) => {
+        await fetch(`/api/crm/followups/${id}`, { method: 'DELETE' })
+        setFollowups(prev => prev.filter(f => f.id !== id))
+    }
+
+    const generateAutoFollowup = () => {
+        const lastMsg = msgs[msgs.length - 1]
+        if (!lastMsg) return
+        
+        const now = new Date()
+        now.setDate(now.getDate() + 1)
+        const tomorrow = now.toISOString().slice(0, 16)
+        
+        let suggestedMessage = ''
+        if (lastMsg.direction === 'inbound') {
+            suggestedMessage = `Follow-up: Responder mensagem do lead`
+        } else {
+            suggestedMessage = `Follow-up: Verificar se o lead respondeu`
+        }
+        
+        setFollowupForm({ scheduledAt: tomorrow, message: suggestedMessage })
+        setShowFollowupForm(true)
+        setSubTab('followups')
     }
 
     const saveContact = async () => {
@@ -331,9 +448,8 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
                 transition={{ duration: 0.15 }}
-                className="bg-[#161616] rounded-2xl border border-white/10 w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
+                className="bg-[#161616] rounded-2xl border border-white/10 w-full max-w-2xl md:max-w-3xl lg:max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
             >
-                {/* Header */}
                 <div className="flex items-start justify-between px-5 pt-5 pb-4 border-b border-white/8 flex-shrink-0">
                     <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
                         {deal.contact && <ContactAvatarLg contact={deal.contact} />}
@@ -360,7 +476,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                     </button>
                 </div>
 
-                {/* Tabs */}
                 <div className="flex border-b border-white/8 flex-shrink-0 px-1">
                     {TABS.map(t => (
                         <button
@@ -378,9 +493,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                     ))}
                 </div>
 
-                {/* Tab Content */}
                 <div className="flex-1 overflow-y-auto">
-                    {/* Error */}
                     {saveError && (
                         <div className="mx-5 mt-4 flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                             <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -388,7 +501,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                         </div>
                     )}
 
-                    {/* OVERVIEW TAB */}
                     {tab === 'overview' && (
                         <div className="p-5 space-y-4">
                             <div className="grid grid-cols-3 gap-3">
@@ -439,7 +551,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                 )}
                             </div>
 
-                            {/* Contact quick info */}
                             {deal.contact && (
                                 <div className="bg-white/4 border border-white/8 rounded-xl p-4 space-y-2.5">
                                     <p className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold">Contato</p>
@@ -471,7 +582,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                         </div>
                     )}
 
-                    {/* CONTACT TAB */}
                     {tab === 'contact' && (
                         <div className="p-5">
                             <div className="flex items-center justify-between mb-4">
@@ -596,7 +706,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                         </div>
                     )}
 
-                    {/* DEAL TAB */}
                     {tab === 'deal' && (
                         <div className="p-5">
                             <div className="flex items-center justify-between mb-4">
@@ -668,10 +777,233 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                         </div>
                     )}
 
-                    {/* CONVERSATION TAB */}
+                    {tab === 'history' && (
+                        <div className="p-4 space-y-4">
+                            <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+                                <button
+                                    onClick={() => setSubTab('activities')}
+                                    className={cn(
+                                        'px-4 py-2 text-sm font-medium transition-colors rounded-lg',
+                                        subTab === 'activities' ? 'bg-gold/10 text-gold' : 'text-platinum/50 hover:text-white'
+                                    )}
+                                >
+                                    Atividades
+                                </button>
+                                <button
+                                    onClick={() => setSubTab('followups')}
+                                    className={cn(
+                                        'px-4 py-2 text-sm font-medium transition-colors rounded-lg',
+                                        subTab === 'followups' ? 'bg-gold/10 text-gold' : 'text-platinum/50 hover:text-white'
+                                    )}
+                                >
+                                    Follow-ups
+                                </button>
+                                {subTab === 'followups' && msgs.length > 0 && (
+                                    <button
+                                        onClick={generateAutoFollowup}
+                                        className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-gold/10 text-gold border border-gold/20 rounded-lg text-xs hover:bg-gold/20 transition-colors"
+                                    >
+                                        <Sparkles className="w-3 h-3" />
+                                        Sugerir follow-up
+                                    </button>
+                                )}
+                            </div>
+
+                            {subTab === 'activities' && (
+                                <div className="space-y-4">
+                                    <button
+                                        onClick={() => setShowActivityForm(v => !v)}
+                                        className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-platinum text-sm hover:bg-white/10 transition-colors"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                        Adicionar Atividade
+                                    </button>
+
+                                    {showActivityForm && (
+                                        <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-2">
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <select
+                                                    value={activityForm.type}
+                                                    onChange={e => setActivityForm(f => ({ ...f, type: e.target.value }))}
+                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm"
+                                                >
+                                                    <option value="note">Nota</option>
+                                                    <option value="call">Ligação</option>
+                                                    <option value="meeting">Reunião</option>
+                                                    <option value="email">E-mail</option>
+                                                    <option value="task">Tarefa</option>
+                                                    <option value="status_change">Mudança de Status</option>
+                                                </select>
+                                                <input
+                                                    value={activityForm.title}
+                                                    onChange={e => setActivityForm(f => ({ ...f, title: e.target.value }))}
+                                                    placeholder="Título *"
+                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm"
+                                                />
+                                            </div>
+                                            <textarea
+                                                value={activityForm.description}
+                                                onChange={e => setActivityForm(f => ({ ...f, description: e.target.value }))}
+                                                placeholder="Descrição (opcional)"
+                                                rows={2}
+                                                className="w-full px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm resize-none"
+                                            />
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => setShowActivityForm(false)}
+                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-platinum text-xs"
+                                                >
+                                                    Cancelar
+                                                </button>
+                                                <button
+                                                    onClick={addActivity}
+                                                    disabled={savingActivity || !activityForm.title.trim()}
+                                                    className="px-3 py-1.5 bg-gold-primary text-black font-medium rounded-lg text-xs hover:opacity-90 disabled:opacity-50"
+                                                >
+                                                    {savingActivity ? 'Salvando...' : 'Salvar'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-3 max-h-[350px] overflow-y-auto">
+                                        {activities.map((activity, i) => {
+                                            const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+                                                note: FileText, call: PhoneCall, meeting: Video,
+                                                email: AtSign, task: CheckSquare, status_change: StarIcon,
+                                            }
+                                            const Icon = iconMap[activity.type] || FileText
+                                            return (
+                                                <div key={activity.id} className="flex gap-3">
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
+                                                            <Icon className="w-4 h-4 text-gold" />
+                                                        </div>
+                                                        {i < activities.length - 1 && (
+                                                            <div className="w-0.5 flex-1 bg-white/10 mt-2" />
+                                                        )}
+                                                    </div>
+                                                    <div className="flex-1 pb-3">
+                                                        <div className="flex items-start justify-between">
+                                                            <div>
+                                                                <p className="text-white font-medium text-sm">{activity.title}</p>
+                                                                {activity.description && (
+                                                                    <p className="text-platinum text-xs mt-0.5">{activity.description}</p>
+                                                                )}
+                                                            </div>
+                                                            <span className="text-platinum/50 text-[10px] flex-shrink-0 ml-2">
+                                                                {new Date(activity.createdAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+                                                            </span>
+                                                        </div>
+                                                        {activity.user && (
+                                                            <p className="text-platinum/50 text-[10px] mt-1">por {activity.user.name}</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                        {activities.length === 0 && (
+                                            <div className="text-center py-6">
+                                                <FileText className="w-8 h-8 text-platinum/20 mx-auto mb-2" />
+                                                <p className="text-platinum text-xs">Nenhuma atividade registrada</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {subTab === 'followups' && (
+                                <div className="space-y-4">
+                                    <button
+                                        onClick={() => setShowFollowupForm(v => !v)}
+                                        className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-platinum text-sm hover:bg-white/10 transition-colors"
+                                    >
+                                        <Bell className="w-4 h-4" />
+                                        Agendar Follow-up
+                                    </button>
+
+                                    {showFollowupForm && (
+                                        <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-2">
+                                            <div>
+                                                <label className="block text-platinum text-xs mb-1">Data e Hora</label>
+                                                <input
+                                                    type="datetime-local"
+                                                    value={followupForm.scheduledAt}
+                                                    onChange={e => setFollowupForm(f => ({ ...f, scheduledAt: e.target.value }))}
+                                                    className="w-full px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-platinum text-xs mb-1">Mensagem</label>
+                                                <textarea
+                                                    value={followupForm.message}
+                                                    onChange={e => setFollowupForm(f => ({ ...f, message: e.target.value }))}
+                                                    rows={2}
+                                                    placeholder="Ex: Ligar para fechar proposta"
+                                                    className="w-full px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm resize-none"
+                                                />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => setShowFollowupForm(false)}
+                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-platinum text-xs"
+                                                >
+                                                    Cancelar
+                                                </button>
+                                                <button
+                                                    onClick={addFollowup}
+                                                    disabled={savingFollowup || !followupForm.message.trim() || !followupForm.scheduledAt}
+                                                    className="px-3 py-1.5 bg-gold-primary text-black font-medium rounded-lg text-xs hover:opacity-90 disabled:opacity-50"
+                                                >
+                                                    {savingFollowup ? 'Salvando...' : 'Agendar'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-2 max-h-[350px] overflow-y-auto">
+                                        {followups.map(f => (
+                                            <div
+                                                key={f.id}
+                                                className="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/10"
+                                            >
+                                                <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
+                                                    <Bell className="w-4 h-4 text-gold" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-white text-sm">{f.message}</p>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <Clock className="w-3 h-3 text-platinum/40" />
+                                                        <p className="text-gold text-xs">
+                                                            {new Date(f.scheduledAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
+                                                        </p>
+                                                        {f.sent && (
+                                                            <span className="text-[10px] px-1.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded">Enviado</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => deleteFollowup(f.id)}
+                                                    className="p-1 rounded-lg text-platinum hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {followups.length === 0 && (
+                                            <div className="text-center py-6">
+                                                <Bell className="w-8 h-8 text-platinum/20 mx-auto mb-2" />
+                                                <p className="text-platinum text-xs">Nenhum follow-up agendado</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {tab === 'conversation' && (
                         <div className="flex flex-col h-[480px]">
-                            {/* Messages area */}
                             <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
                                 {loadingMsgs ? (
                                     <div className="flex items-center justify-center h-full">
@@ -713,7 +1045,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                 <div ref={msgsEndRef} />
                             </div>
 
-                            {/* Input */}
                             {convId && (
                                 <div className="border-t border-white/8 p-3 flex gap-2 flex-shrink-0">
                                     <textarea
@@ -737,7 +1068,6 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                     )}
                 </div>
 
-                {/* Footer */}
                 {deal.contact && (
                     <div className="px-5 py-3.5 border-t border-white/8 flex gap-2.5 flex-shrink-0">
                         <Link
@@ -809,9 +1139,324 @@ function ContactAvatar({ contact }: { contact: Deal['contact'] }) {
     )
 }
 
+function PipelineNotificationToast({ 
+    notification, 
+    onDismiss 
+}: { 
+    notification: PipelineNotification
+    onDismiss: () => void 
+}) {
+    useEffect(() => {
+        const timer = setTimeout(onDismiss, 5000)
+        return () => clearTimeout(timer)
+    }, [onDismiss])
+
+    const isNewDeal = notification.type === 'new_deal'
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className={cn(
+                'relative overflow-hidden rounded-2xl border shadow-2xl',
+                isNewDeal 
+                    ? 'bg-gradient-to-r from-emerald-500/20 to-emerald-600/10 border-emerald-500/30' 
+                    : 'bg-gradient-to-r from-gold/20 to-gold/10 border-gold/30'
+            )}
+        >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] animate-shimmer" />
+            <div className="p-4 flex items-start gap-3">
+                <div className={cn(
+                    'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
+                    isNewDeal ? 'bg-emerald-500/20' : 'bg-gold/20'
+                )}>
+                    {isNewDeal ? (
+                        <UserPlus className="w-5 h-5 text-emerald-400" />
+                    ) : (
+                        <ArrowRight className="w-5 h-5 text-gold" />
+                    )}
+                </div>
+                <div className="flex-1 min-w-0">
+                    <p className={cn(
+                        'font-semibold text-sm',
+                        isNewDeal ? 'text-emerald-300' : 'text-gold'
+                    )}>
+                        {isNewDeal ? 'Novo Lead!' : 'Lead Movido'}
+                    </p>
+                    <p className="text-white/90 text-sm font-medium truncate mt-0.5">
+                        {notification.dealTitle}
+                    </p>
+                    {!isNewDeal && notification.fromStage && notification.toStage && (
+                        <div className="flex items-center gap-1.5 mt-1">
+                            <span className="text-white/60 text-xs">{notification.fromStage}</span>
+                            <ArrowRight className="w-3 h-3 text-white/40" />
+                            <span className="text-white/60 text-xs">{notification.toStage}</span>
+                        </div>
+                    )}
+                </div>
+                <button 
+                    onClick={onDismiss}
+                    className="text-white/40 hover:text-white/70 transition-colors"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+            <motion.div 
+                className={cn(
+                    'h-0.5',
+                    isNewDeal ? 'bg-emerald-500' : 'bg-gold'
+                )}
+                initial={{ width: '100%' }}
+                animate={{ width: '0%' }}
+                transition={{ duration: 5, ease: 'linear' }}
+            />
+        </motion.div>
+    )
+}
+
+function BulkActionsPanel({ 
+    selectedCount, 
+    onClearSelection,
+    stages,
+    users,
+    onAssignUser,
+    onChangeStage,
+    onDelete,
+    loading 
+}: {
+    selectedCount: number
+    onClearSelection: () => void
+    stages: PipelineStage[]
+    users: PipelineUser[]
+    onAssignUser: (userId: string | null) => void
+    onChangeStage: (stageId: string | null) => void
+    onDelete: () => void
+    loading: boolean
+}) {
+    const [showUserDropdown, setShowUserDropdown] = useState(false)
+    const [showStageDropdown, setShowStageDropdown] = useState(false)
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-gradient-to-r from-gold/10 to-gold/5 border border-gold/20 rounded-2xl p-4 mb-4"
+        >
+            <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                        <CheckSquare className="w-5 h-5 text-gold" />
+                        <span className="text-white font-semibold">{selectedCount}</span>
+                        <span className="text-platinum/60 text-sm">deal{selectedCount !== 1 ? 's' : ''} selecionado{selectedCount !== 1 ? 's' : ''}</span>
+                    </div>
+                    <button
+                        onClick={onClearSelection}
+                        className="text-platinum/50 hover:text-white text-sm transition-colors"
+                    >
+                        Limpar seleção
+                    </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowUserDropdown(!showUserDropdown)}
+                            disabled={loading}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all text-sm font-medium disabled:opacity-50"
+                        >
+                            <Users2 className="w-4 h-4 text-gold" />
+                            Atribuir
+                            <ChevronDown className={cn("w-4 h-4 transition-transform", showUserDropdown && "rotate-180")} />
+                        </button>
+                        <AnimatePresence>
+                            {showUserDropdown && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                                    className="absolute top-full mt-2 right-0 w-56 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                                >
+                                    <div className="p-2">
+                                        <button
+                                            onClick={() => { onAssignUser(null); setShowUserDropdown(false) }}
+                                            className="w-full text-left px-3 py-2 rounded-lg text-sm text-platinum/60 hover:bg-white/5 hover:text-white transition-all"
+                                        >
+                                            Remover atribuição
+                                        </button>
+                                        {users.map(user => (
+                                            <button
+                                                key={user.id}
+                                                onClick={() => { onAssignUser(user.id); setShowUserDropdown(false) }}
+                                                className="w-full text-left px-3 py-2 rounded-lg text-sm text-platinum/70 hover:bg-white/5 hover:text-white transition-all flex items-center gap-2"
+                                            >
+                                                <div className="w-6 h-6 rounded-full bg-gold/20 flex items-center justify-center text-gold text-xs font-medium">
+                                                    {user.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                {user.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowStageDropdown(!showStageDropdown)}
+                            disabled={loading}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all text-sm font-medium disabled:opacity-50"
+                        >
+                            <Layers className="w-4 h-4 text-gold" />
+                            Mover para
+                            <ChevronDown className={cn("w-4 h-4 transition-transform", showStageDropdown && "rotate-180")} />
+                        </button>
+                        <AnimatePresence>
+                            {showStageDropdown && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                                    className="absolute top-full mt-2 right-0 w-56 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                                >
+                                    <div className="p-2 max-h-64 overflow-y-auto">
+                                        {stages.map(stage => (
+                                            <button
+                                                key={stage.id}
+                                                onClick={() => { onChangeStage(stage.id); setShowStageDropdown(false) }}
+                                                className="w-full text-left px-3 py-2 rounded-lg text-sm text-platinum/70 hover:bg-white/5 hover:text-white transition-all flex items-center gap-2"
+                                            >
+                                                <div 
+                                                    className="w-3 h-3 rounded-full" 
+                                                    style={{ backgroundColor: stage.color || '#666' }}
+                                                />
+                                                {stage.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    )
+}
+
+function FilterPanel({
+    filters,
+    onFilterChange,
+    stages,
+    users,
+    onClearFilters
+}: {
+    filters: { search: string; stage: string; user: string; hasValue: string }
+    onFilterChange: (key: string, value: string) => void
+    stages: PipelineStage[]
+    users: PipelineUser[]
+    onClearFilters: () => void
+}) {
+    const [isOpen, setIsOpen] = useState(false)
+    const hasActiveFilters = filters.stage || filters.user || filters.hasValue
+
+    return (
+        <div className="relative">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all text-sm font-medium",
+                    hasActiveFilters
+                        ? "bg-gold/15 border-gold/30 text-gold"
+                        : "bg-white/5 border-white/10 text-platinum/70 hover:text-white hover:bg-white/10"
+                )}
+            >
+                <SlidersHorizontal className="w-4 h-4" />
+                Filtros
+                {hasActiveFilters && (
+                    <span className="w-5 h-5 rounded-full bg-gold/30 text-[10px] flex items-center justify-center">
+                        {[filters.stage, filters.user, filters.hasValue].filter(Boolean).length}
+                    </span>
+                )}
+            </button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        className="absolute top-full mt-2 right-0 w-72 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                    >
+                        <div className="p-4 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-white font-semibold text-sm">Filtros</h3>
+                                {hasActiveFilters && (
+                                    <button
+                                        onClick={onClearFilters}
+                                        className="text-gold text-xs hover:underline"
+                                    >
+                                        Limpar tudo
+                                    </button>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Etapa</label>
+                                <select
+                                    value={filters.stage}
+                                    onChange={(e) => onFilterChange('stage', e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                >
+                                    <option value="" className="bg-[#1a1a1a]">Todas as etapas</option>
+                                    {stages.map(stage => (
+                                        <option key={stage.id} value={stage.id} className="bg-[#1a1a1a]">{stage.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Responsável</label>
+                                <select
+                                    value={filters.user}
+                                    onChange={(e) => onFilterChange('user', e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                >
+                                    <option value="" className="bg-[#1a1a1a]">Todos os usuários</option>
+                                    <option value="unassigned" className="bg-[#1a1a1a]">Não atribuídos</option>
+                                    {users.map(user => (
+                                        <option key={user.id} value={user.id} className="bg-[#1a1a1a]">{user.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Valor</label>
+                                <select
+                                    value={filters.hasValue}
+                                    onChange={(e) => onFilterChange('hasValue', e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                >
+                                    <option value="" className="bg-[#1a1a1a]">Todos os deals</option>
+                                    <option value="with" className="bg-[#1a1a1a]">Com valor</option>
+                                    <option value="without" className="bg-[#1a1a1a]">Sem valor</option>
+                                </select>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    )
+}
+
 export default function PipelinePage() {
     const [stages, setStages] = useState<PipelineStage[]>([])
     const [deals, setDeals] = useState<Deal[]>([])
+    const [users, setUsers] = useState<PipelineUser[]>([])
     const [loading, setLoading] = useState(true)
     const [draggedDeal, setDraggedDeal] = useState<string | null>(null)
     const [dragOverStage, setDragOverStage] = useState<string | null>(null)
@@ -819,17 +1464,73 @@ export default function PipelinePage() {
     const scrollRef = useRef<HTMLDivElement>(null)
     const [canScrollLeft, setCanScrollLeft] = useState(false)
     const [canScrollRight, setCanScrollRight] = useState(false)
+    const [notifications, setNotifications] = useState<PipelineNotification[]>([])
+    const previousDealsRef = useRef<Map<string, { stageId: string | null; stageName: string | null }>>(new Map())
 
-    const loadData = useCallback(async () => {
+    const [selectedDeals, setSelectedDeals] = useState<Set<string>>(new Set())
+    const [bulkLoading, setBulkLoading] = useState(false)
+    const [filters, setFilters] = useState({ search: '', stage: '', user: '', hasValue: '' })
+    const [showMobileMenu, setShowMobileMenu] = useState(false)
+
+    const loadData = useCallback(async (isAutoRefresh = false) => {
         try {
-            const [stagesRes, dealsRes] = await Promise.all([
+            const [stagesRes, dealsRes, usersRes] = await Promise.all([
                 fetch('/api/crm/pipeline/stages'),
                 fetch('/api/crm/deals'),
+                fetch('/api/crm/users'),
             ])
             const stagesData = await stagesRes.json()
             const dealsData = await dealsRes.json()
-            setStages(stagesData.data || [])
-            setDeals(dealsData.data || [])
+            const usersData = await usersRes.json()
+            const newStages = stagesData.data || []
+            const newDeals = dealsData.data || []
+            const newUsers = usersData.data || []
+
+            if (isAutoRefresh && previousDealsRef.current.size > 0) {
+                const newNotifications: PipelineNotification[] = []
+                
+                newDeals.forEach((deal: Deal) => {
+                    const prev = previousDealsRef.current.get(deal.id)
+                    const isNew = !prev
+                    
+                    if (isNew) {
+                        newNotifications.push({
+                            id: `new-${deal.id}-${Date.now()}`,
+                            type: 'new_deal',
+                            dealId: deal.id,
+                            dealTitle: deal.title,
+                            timestamp: Date.now(),
+                        })
+                    } else if (prev.stageId !== deal.stage?.id) {
+                        const fromStage = prev.stageName || 'Desconhecida'
+                        const toStage = deal.stage?.name || 'Sem etapa'
+                        newNotifications.push({
+                            id: `move-${deal.id}-${Date.now()}`,
+                            type: 'stage_change',
+                            dealId: deal.id,
+                            dealTitle: deal.title,
+                            fromStage,
+                            toStage,
+                            timestamp: Date.now(),
+                        })
+                    }
+                })
+
+                if (newNotifications.length > 0) {
+                    setNotifications(prev => [...newNotifications, ...prev].slice(0, 5))
+                }
+            }
+
+            newDeals.forEach((deal: Deal) => {
+                previousDealsRef.current.set(deal.id, {
+                    stageId: deal.stage?.id || null,
+                    stageName: deal.stage?.name || null,
+                })
+            })
+
+            setStages(newStages)
+            setDeals(newDeals)
+            setUsers(newUsers)
         } catch (error) {
             console.error('Error loading pipeline:', error)
         } finally {
@@ -837,7 +1538,14 @@ export default function PipelinePage() {
         }
     }, [])
 
-    useEffect(() => { loadData() }, [loadData])
+    useEffect(() => { loadData(false) }, [loadData])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            loadData(true)
+        }, 5000)
+        return () => clearInterval(interval)
+    }, [loadData])
 
     const checkScroll = useCallback(() => {
         const el = scrollRef.current
@@ -863,12 +1571,31 @@ export default function PipelinePage() {
     }
 
     const getDealsForStage = (stageId: string) =>
-        deals.filter(d => d.stage?.id === stageId)
+        filteredDeals.filter(d => d.stage?.id === stageId)
 
     const getStageTotalValue = (stageId: string) => {
         const total = getDealsForStage(stageId).reduce((sum, d) => sum + (d.value ?? 0), 0)
         return total > 0 ? (total / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 }) : null
     }
+
+    const filteredDeals = deals.filter(deal => {
+        if (filters.search) {
+            const search = filters.search.toLowerCase()
+            if (!deal.title.toLowerCase().includes(search) && 
+                !deal.contact?.name.toLowerCase().includes(search) &&
+                !deal.contact?.company?.toLowerCase().includes(search)) {
+                return false
+            }
+        }
+        if (filters.stage && deal.stage?.id !== filters.stage) return false
+        if (filters.user) {
+            if (filters.user === 'unassigned' && deal.assignedUser) return false
+            if (filters.user !== 'unassigned' && deal.assignedUser?.id !== filters.user) return false
+        }
+        if (filters.hasValue === 'with' && !deal.value) return false
+        if (filters.hasValue === 'without' && deal.value) return false
+        return true
+    })
 
     const handleDragStart = (dealId: string) => setDraggedDeal(dealId)
 
@@ -878,7 +1605,6 @@ export default function PipelinePage() {
     }
 
     const handleDragLeave = (e: React.DragEvent) => {
-        // Only clear if leaving the column entirely
         if (!e.currentTarget.contains(e.relatedTarget as Node)) {
             setDragOverStage(null)
         }
@@ -902,6 +1628,7 @@ export default function PipelinePage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ stageId }),
             })
+            loadData()
         } catch {
             loadData()
         }
@@ -912,6 +1639,80 @@ export default function PipelinePage() {
     const handleDragEnd = () => {
         setDraggedDeal(null)
         setDragOverStage(null)
+    }
+
+    const toggleDealSelection = (dealId: string, event: React.MouseEvent) => {
+        event.stopPropagation()
+        setSelectedDeals(prev => {
+            const next = new Set(prev)
+            if (next.has(dealId)) {
+                next.delete(dealId)
+            } else {
+                next.add(dealId)
+            }
+            return next
+        })
+    }
+
+    const selectAllInStage = (stageId: string) => {
+        const stageDeals = filteredDeals.filter(d => d.stage?.id === stageId)
+        const allSelected = stageDeals.every(d => selectedDeals.has(d.id))
+        
+        setSelectedDeals(prev => {
+            const next = new Set(prev)
+            if (allSelected) {
+                stageDeals.forEach(d => next.delete(d.id))
+            } else {
+                stageDeals.forEach(d => next.add(d.id))
+            }
+            return next
+        })
+    }
+
+    const clearSelection = () => {
+        setSelectedDeals(new Set())
+    }
+
+    const handleBulkAssign = async (userId: string | null) => {
+        if (selectedDeals.size === 0) return
+        setBulkLoading(true)
+        try {
+            await fetch('/api/crm/deals/bulk', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    dealIds: Array.from(selectedDeals),
+                    assignedTo: userId,
+                }),
+            })
+            clearSelection()
+            loadData()
+        } catch (error) {
+            console.error('Error assigning deals:', error)
+        } finally {
+            setBulkLoading(false)
+        }
+    }
+
+    const handleBulkStageChange = async (stageId: string | null) => {
+        if (selectedDeals.size === 0 || !stageId) return
+        setBulkLoading(true)
+        try {
+            await fetch('/api/crm/deals/bulk', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    dealIds: Array.from(selectedDeals),
+                    stageId,
+                }),
+            })
+            clearSelection()
+            loadData()
+        } catch (error) {
+            console.error('Error changing stage:', error)
+        } finally {
+            setBulkLoading(false)
+        }
     }
 
     if (loading) {
@@ -929,43 +1730,89 @@ export default function PipelinePage() {
 
     return (
         <div className="flex flex-col h-full space-y-4">
-            {/* Header */}
             <div className="flex items-center justify-between flex-shrink-0">
                 <div>
                     <h1 className="text-2xl font-bold text-white">Pipeline</h1>
-                    <p className="text-platinum/60 text-sm mt-0.5">{deals.length} deals ativos</p>
+                    <p className="text-platinum/60 text-sm mt-0.5">
+                        {filteredDeals.length} de {deals.length} deals ativos
+                    </p>
                 </div>
 
-                {/* Scroll arrows */}
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => scroll('left')}
-                        disabled={!canScrollLeft}
-                        className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                        onClick={() => scroll('right')}
-                        disabled={!canScrollRight}
-                        className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                    >
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
+                <div className="flex items-center gap-2 md:gap-4">
+                    <div className="hidden md:block relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-platinum/40" />
+                        <input
+                            type="text"
+                            placeholder="Buscar deals..."
+                            value={filters.search}
+                            onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
+                            className="w-48 lg:w-64 bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm text-white placeholder-platinum/30 focus:outline-none focus:border-gold/50 transition-all"
+                        />
+                    </div>
+
+                    <FilterPanel
+                        filters={filters}
+                        onFilterChange={(key, value) => setFilters(f => ({ ...f, [key]: value }))}
+                        stages={stages}
+                        users={users}
+                        onClearFilters={() => setFilters({ search: '', stage: '', user: '', hasValue: '' })}
+                    />
+
+                    <div className="hidden md:flex items-center gap-2">
+                        <button
+                            onClick={() => scroll('left')}
+                            disabled={!canScrollLeft}
+                            className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => scroll('right')}
+                            disabled={!canScrollRight}
+                            className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                        >
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {/* Deal Detail Modal */}
             <AnimatePresence>
-                {selectedDeal && (
-                    <DealDetailModal deal={selectedDeal} stages={stages} onClose={() => setSelectedDeal(null)} onUpdated={loadData} />
+                {selectedDeals.size > 0 && (
+                    <BulkActionsPanel
+                        selectedCount={selectedDeals.size}
+                        onClearSelection={clearSelection}
+                        stages={stages}
+                        users={users}
+                        onAssignUser={handleBulkAssign}
+                        onChangeStage={handleBulkStageChange}
+                        onDelete={() => {}}
+                        loading={bulkLoading}
+                    />
                 )}
             </AnimatePresence>
 
-            {/* Kanban Board */}
+            <AnimatePresence>
+                {selectedDeal && (
+                    <DealDetailModal deal={selectedDeal} stages={stages} onClose={() => setSelectedDeal(null)} onUpdated={() => loadData(false)} />
+                )}
+            </AnimatePresence>
+
+            <div className="fixed top-4 right-4 z-50 flex flex-col gap-3 w-80 max-w-[calc(100vw-2rem)]">
+                <AnimatePresence mode="popLayout">
+                    {notifications.map((notification) => (
+                        <PipelineNotificationToast
+                            key={notification.id}
+                            notification={notification}
+                            onDismiss={() => setNotifications(prev => prev.filter(n => n.id !== notification.id))}
+                        />
+                    ))}
+                </AnimatePresence>
+            </div>
+
             <div
                 ref={scrollRef}
-                className="flex gap-4 overflow-x-auto pb-4 flex-1 scroll-smooth"
+                className="flex gap-3 md:gap-4 overflow-x-auto pb-4 flex-1 scroll-smooth md:px-0 -mx-4 md:mx-0 px-4"
                 style={{
                     scrollbarWidth: 'thin',
                     scrollbarColor: 'rgba(255,255,255,0.1) transparent',
@@ -976,6 +1823,8 @@ export default function PipelinePage() {
                     const totalValue = getStageTotalValue(stage.id)
                     const isOver = dragOverStage === stage.id
                     const stageColor = stage.color || '#666666'
+                    const selectedInStage = stageDeals.filter(d => selectedDeals.has(d.id)).length
+                    const allSelectedInStage = stageDeals.length > 0 && stageDeals.every(d => selectedDeals.has(d.id))
 
                     return (
                         <motion.div
@@ -983,12 +1832,11 @@ export default function PipelinePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05 }}
-                            className="flex-shrink-0 w-72 flex flex-col"
+                            className="flex-shrink-0 w-[280px] md:w-72 flex flex-col"
                             onDragOver={(e) => handleDragOver(e, stage.id)}
                             onDragLeave={handleDragLeave}
                             onDrop={(e) => handleDrop(e, stage.id)}
                         >
-                            {/* Column Header */}
                             <div
                                 className="rounded-xl mb-2 px-3 py-2.5 border"
                                 style={{
@@ -998,6 +1846,18 @@ export default function PipelinePage() {
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => selectAllInStage(stage.id)}
+                                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                                        >
+                                            {allSelectedInStage ? (
+                                                <CheckSquare className="w-4 h-4 text-gold" />
+                                            ) : selectedInStage > 0 ? (
+                                                <CheckSquare className="w-4 h-4 text-gold/50" />
+                                            ) : (
+                                                <Square className="w-4 h-4 text-platinum/40" />
+                                            )}
+                                        </button>
                                         <div
                                             className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                                             style={{ backgroundColor: stageColor }}
@@ -1015,14 +1875,13 @@ export default function PipelinePage() {
                                     </span>
                                 </div>
                                 {totalValue && (
-                                    <div className="flex items-center gap-1 mt-1.5">
+                                    <div className="flex items-center gap-1 mt-1.5 ml-10">
                                         <DollarSign className="w-3 h-3 text-platinum/40" />
                                         <span className="text-platinum/60 text-[11px]">{totalValue}</span>
                                     </div>
                                 )}
                             </div>
 
-                            {/* Column Body */}
                             <div
                                 className={cn(
                                     'rounded-2xl border p-3 flex-1 min-h-[400px] space-y-2.5 transition-all duration-150',
@@ -1033,62 +1892,116 @@ export default function PipelinePage() {
                                 style={isOver ? { borderColor: `${stageColor}60`, backgroundColor: `${stageColor}08` } : {}}
                             >
                                 {stageDeals.length > 0 ? (
-                                    stageDeals.map(deal => (
-                                        <motion.div
-                                            key={deal.id}
-                                            layout
-                                            draggable
-                                            onDragStart={() => handleDragStart(deal.id)}
-                                            onDragEnd={handleDragEnd}
-                                            onClick={() => { if (!draggedDeal) setSelectedDeal(deal) }}
-                                            className={cn(
-                                                'bg-[#1a1a1a] rounded-xl p-3.5 border border-white/8 cursor-pointer active:cursor-grabbing',
-                                                'hover:border-white/20 hover:shadow-lg hover:shadow-black/30',
-                                                'transition-all duration-150 group',
-                                                draggedDeal === deal.id && 'opacity-40 scale-95'
-                                            )}
-                                        >
-                                            {/* Deal title */}
-                                            <p className="text-white font-medium text-sm leading-snug mb-2.5 group-hover:text-white/90">
-                                                {deal.title}
-                                            </p>
+                                    stageDeals.map(deal => {
+                                        const isSelected = selectedDeals.has(deal.id)
+                                        return (
+                                            <motion.div
+                                                key={deal.id}
+                                                layout
+                                                draggable
+                                                onDragStart={() => handleDragStart(deal.id)}
+                                                onDragEnd={handleDragEnd}
+                                                onClick={(e) => {
+                                                    if (!draggedDeal) {
+                                                        if (e.ctrlKey || e.metaKey) {
+                                                            toggleDealSelection(deal.id, e)
+                                                        } else {
+                                                            setSelectedDeal(deal)
+                                                        }
+                                                    }
+                                                }}
+                                                className={cn(
+                                                    'bg-[#1a1a1a] rounded-xl p-3.5 border cursor-pointer active:cursor-grabbing',
+                                                    'hover:border-white/12',
+                                                    'transition-all duration-150 group',
+                                                    draggedDeal === deal.id && 'opacity-40 scale-95',
+                                                    isSelected ? 'border-gold/50 bg-gold/5' : 'border-white/8'
+                                                )}
+                                            >
+                                                <div className="flex items-start gap-2 mb-2">
+                                                    <button
+                                                        onClick={(e) => toggleDealSelection(deal.id, e)}
+                                                        className="mt-0.5 flex-shrink-0"
+                                                    >
+                                                        {isSelected ? (
+                                                            <CheckSquare className="w-4 h-4 text-gold" />
+                                                        ) : (
+                                                            <Square className="w-4 h-4 text-platinum/30 group-hover:text-platinum/50 transition-colors" />
+                                                        )}
+                                                    </button>
+                                                    <p className="text-white font-medium text-sm leading-snug flex-1 group-hover:text-white/90">
+                                                        {deal.title}
+                                                    </p>
+                                                </div>
 
-                                            {/* Contact */}
-                                            {deal.contact && (
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <ContactAvatar contact={deal.contact} />
-                                                    <div className="min-w-0">
-                                                        <p className="text-white/80 text-xs font-medium truncate">{deal.contact.name}</p>
-                                                        {deal.contact.company && (
-                                                            <div className="flex items-center gap-1 mt-0.5">
-                                                                <Building2 className="w-2.5 h-2.5 text-platinum/40 flex-shrink-0" />
-                                                                <p className="text-platinum/50 text-[10px] truncate">{deal.contact.company}</p>
+                                                {deal.contact && (
+                                                    <div className="flex items-center gap-2 mb-2 ml-6">
+                                                        <ContactAvatar contact={deal.contact} />
+                                                        <div className="min-w-0">
+                                                            <p className="text-white/80 text-xs font-medium truncate">{deal.contact.name}</p>
+                                                            {deal.contact.company && (
+                                                                <div className="flex items-center gap-1 mt-0.5">
+                                                                    <Building2 className="w-2.5 h-2.5 text-platinum/40 flex-shrink-0" />
+                                                                    <p className="text-platinum/50 text-[10px] truncate">{deal.contact.company}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <div className="flex items-center justify-between pt-2 border-t border-white/5 ml-6">
+                                                    <div className="flex items-center gap-1.5">
+                                                        {(() => {
+                                                            const cpfCnpj = deal.contact?.cpfCnpj
+                                                            const company = deal.contact?.company
+                                                            const isPj = company || (cpfCnpj && cpfCnpj.length > 12)
+                                                            return (
+                                                                <>
+                                                                    {isPj ? (
+                                                                        <span className="text-blue-400 text-[10px] font-semibold bg-blue-400/10 px-2 py-0.5 rounded-md border border-blue-400/15">
+                                                                            PJ
+                                                                        </span>
+                                                                    ) : cpfCnpj ? (
+                                                                        <span className="text-purple-400 text-[10px] font-semibold bg-purple-400/10 px-2 py-0.5 rounded-md border border-purple-400/15">
+                                                                            PF
+                                                                        </span>
+                                                                    ) : null}
+                                                                </>
+                                                            )
+                                                        })()}
+                                                        {deal.livesCount != null && (
+                                                            <span className="text-white/60 text-[10px] font-medium bg-white/5 px-2 py-0.5 rounded-md border border-white/10">
+                                                                {deal.livesCount} vida{deal.livesCount !== 1 ? 's' : ''}
+                                                            </span>
+                                                        )}
+                                                        {deal.planInterest && (
+                                                            <span className="text-gold text-[10px] font-semibold bg-gold/10 px-2 py-0.5 rounded-md border border-gold/15">
+                                                                {deal.planInterest}
+                                                            </span>
+                                                        )}
+                                                        {deal.contact?.leadScore && (
+                                                            <PipelineLeadScore score={deal.contact.leadScore} />
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        {deal.assignedUser && (
+                                                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/8" title={`Atribuído a: ${deal.assignedUser.name}`}>
+                                                                <div className="w-4 h-4 rounded-full bg-gold/20 flex items-center justify-center">
+                                                                    <span className="text-gold text-[8px] font-bold">{deal.assignedUser.name.charAt(0).toUpperCase()}</span>
+                                                                </div>
+                                                                <span className="text-platinum/60 text-[9px] truncate max-w-[60px]">{deal.assignedUser.name.split(' ')[0]}</span>
                                                             </div>
+                                                        )}
+                                                        {deal.value != null && (
+                                                            <span className="text-emerald-400 text-xs font-bold">
+                                                                {(deal.value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })}
+                                                            </span>
                                                         )}
                                                     </div>
                                                 </div>
-                                            )}
-
-                                            {/* Footer */}
-                                            <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                                                <div className="flex items-center gap-1.5">
-                                                    {deal.planInterest && (
-                                                        <span className="text-gold text-[10px] font-semibold bg-gold/10 px-2 py-0.5 rounded-md border border-gold/15">
-                                                            {deal.planInterest}
-                                                        </span>
-                                                    )}
-                                                    {deal.contact?.leadScore && (
-                                                        <PipelineLeadScore score={deal.contact.leadScore} />
-                                                    )}
-                                                </div>
-                                                {deal.value != null && (
-                                                    <span className="text-emerald-400 text-xs font-bold">
-                                                        {(deal.value / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    ))
+                                            </motion.div>
+                                        )
+                                    })
                                 ) : (
                                     <div
                                         className={cn(

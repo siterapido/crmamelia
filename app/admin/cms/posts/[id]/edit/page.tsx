@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -8,9 +8,9 @@ import {
     Save,
     Loader2,
     ImageIcon,
-    Sparkles,
     Tag,
     X,
+    Trash2,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -21,44 +21,80 @@ interface Category {
     color: string
 }
 
-export default function NewPostPage() {
+interface Post {
+    id: string
+    title: string
+    slug: string
+    excerpt: string
+    content: string
+    coverImage: string
+    categoryId: string | null
+    status: string
+    featured: boolean
+    aiGenerated: boolean
+    tags: string[]
+}
+
+export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params)
     const router = useRouter()
+    const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [categories, setCategories] = useState<Category[]>([])
     const [tagInput, setTagInput] = useState('')
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<Post>({
+        id: '',
         title: '',
         slug: '',
         excerpt: '',
         content: '',
         coverImage: '',
-        categoryId: '',
-        status: 'draft' as 'draft' | 'published',
+        categoryId: null,
+        status: 'draft',
         featured: false,
-        tags: [] as string[],
         aiGenerated: false,
+        tags: [],
     })
 
     useEffect(() => {
-        fetch('/api/categories')
-            .then((res) => res.json())
-            .then((data) => setCategories(data))
-            .catch(console.error)
-    }, [])
+        const loadData = async () => {
+            try {
+                const [postRes, categoriesRes] = await Promise.all([
+                    fetch(`/api/posts/${id}`),
+                    fetch('/api/categories'),
+                ])
 
-    // Auto-generate slug from title
-    useEffect(() => {
-        if (formData.title && !formData.slug) {
-            const slug = formData.title
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '')
-            setFormData((prev) => ({ ...prev, slug }))
+                if (postRes.ok) {
+                    const post = await postRes.json()
+                    setFormData({
+                        id: post.id,
+                        title: post.title,
+                        slug: post.slug,
+                        excerpt: post.excerpt || '',
+                        content: post.content || '',
+                        coverImage: post.coverImage || '',
+                        categoryId: post.category?.id || null,
+                        status: post.status,
+                        featured: post.featured,
+                        aiGenerated: post.aiGenerated,
+                        tags: post.tags || [],
+                    })
+                }
+
+                if (categoriesRes.ok) {
+                    const cats = await categoriesRes.json()
+                    setCategories(cats)
+                }
+            } catch (error) {
+                console.error('Error loading post:', error)
+            } finally {
+                setLoading(false)
+            }
         }
-    }, [formData.title])
+
+        loadData()
+    }, [id])
 
     const handleAddTag = () => {
         if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
@@ -82,54 +118,89 @@ export default function NewPostPage() {
         setSaving(true)
 
         try {
-            const res = await fetch('/api/posts', {
-                method: 'POST',
+            const res = await fetch(`/api/posts/${id}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    title: formData.title,
+                    slug: formData.slug,
+                    excerpt: formData.excerpt,
+                    content: formData.content,
+                    coverImage: formData.coverImage,
+                    categoryId: formData.categoryId,
+                    status: formData.status,
+                    featured: formData.featured,
+                    tags: formData.tags,
+                }),
             })
 
             if (res.ok) {
-                const data = await res.json()
-                router.push(`/admin/posts/${data.post.id}/edit`)
+                router.push('/admin/cms/posts')
             } else {
                 const error = await res.json()
-                alert(error.error || 'Erro ao criar post')
+                alert(error.error || 'Erro ao atualizar post')
             }
         } catch (error) {
-            console.error('Error creating post:', error)
-            alert('Erro ao criar post')
+            console.error('Error updating post:', error)
+            alert('Erro ao atualizar post')
         } finally {
             setSaving(false)
         }
     }
 
+    const handleDelete = async () => {
+        if (!confirm('Tem certeza que deseja excluir este post?')) return
+
+        try {
+            const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' })
+            if (res.ok) {
+                router.push('/admin/cms/posts')
+            } else {
+                alert('Erro ao excluir post')
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error)
+            alert('Erro ao excluir post')
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 text-gold animate-spin" />
+            </div>
+        )
+    }
+
     return (
         <div className="space-y-6 max-w-4xl">
             {/* Header */}
-            <div className="flex items-center gap-4">
-                <Link
-                    href="/admin/posts"
-                    className="p-2 rounded-lg bg-charcoal text-platinum hover:text-white transition-colors"
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <Link
+                        href="/admin/cms/posts"
+                        className="p-2 rounded-lg bg-charcoal text-platinum hover:text-white transition-colors"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                    </Link>
+                    <div>
+                        <h1 className="text-3xl font-bold text-white">Editar Post</h1>
+                        <p className="text-platinum mt-1">
+                            {formData.aiGenerated && (
+                                <span className="text-gold">✨ Gerado por IA • </span>
+                            )}
+                            Última edição
+                        </p>
+                    </div>
+                </div>
+                <button
+                    onClick={handleDelete}
+                    className="flex items-center gap-2 px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                 >
-                    <ArrowLeft className="w-5 h-5" />
-                </Link>
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Novo Post</h1>
-                    <p className="text-platinum mt-1">Crie um novo artigo para o blog</p>
-                </div>
+                    <Trash2 className="w-5 h-5" />
+                    Excluir
+                </button>
             </div>
-
-            {/* AI Generator Link */}
-            <Link
-                href="/admin/ai-generator"
-                className="flex items-center gap-3 p-4 bg-gradient-to-r from-gold/10 to-gold-light/10 border border-gold/30 rounded-xl hover:border-gold/50 transition-colors"
-            >
-                <Sparkles className="w-6 h-6 text-gold" />
-                <div>
-                    <p className="text-white font-medium">Gerar com IA</p>
-                    <p className="text-platinum text-sm">Use inteligência artificial para criar conteúdo</p>
-                </div>
-            </Link>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -143,9 +214,8 @@ export default function NewPostPage() {
                             type="text"
                             value={formData.title}
                             onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-                            placeholder="Digite o título do post"
                             required
-                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-gold transition-colors"
+                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold transition-colors"
                         />
                     </div>
 
@@ -158,9 +228,8 @@ export default function NewPostPage() {
                             type="text"
                             value={formData.slug}
                             onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
-                            placeholder="meu-post-incrivel"
                             required
-                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-gold transition-colors"
+                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold transition-colors"
                         />
                     </div>
 
@@ -172,9 +241,8 @@ export default function NewPostPage() {
                         <textarea
                             value={formData.excerpt}
                             onChange={(e) => setFormData((prev) => ({ ...prev, excerpt: e.target.value }))}
-                            placeholder="Breve descrição do post"
                             rows={3}
-                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-gold transition-colors resize-none"
+                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold transition-colors resize-none"
                         />
                     </div>
 
@@ -186,13 +254,9 @@ export default function NewPostPage() {
                         <textarea
                             value={formData.content}
                             onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
-                            placeholder="Escreva o conteúdo do post em HTML..."
                             rows={12}
-                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-gold transition-colors resize-none font-mono text-sm"
+                            className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold transition-colors resize-none font-mono text-sm"
                         />
-                        <p className="text-platinum text-xs mt-2">
-                            Suporte a HTML: &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;
-                        </p>
                     </div>
 
                     {/* Cover Image */}
@@ -200,17 +264,14 @@ export default function NewPostPage() {
                         <label className="block text-sm font-medium text-platinum mb-2">
                             Imagem de Capa (URL)
                         </label>
-                        <div className="flex gap-3">
-                            <div className="relative flex-1">
-                                <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-platinum" />
-                                <input
-                                    type="url"
-                                    value={formData.coverImage}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, coverImage: e.target.value }))}
-                                    placeholder="https://exemplo.com/imagem.jpg"
-                                    className="w-full pl-12 pr-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:border-gold transition-colors"
-                                />
-                            </div>
+                        <div className="relative">
+                            <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-platinum" />
+                            <input
+                                type="url"
+                                value={formData.coverImage}
+                                onChange={(e) => setFormData((prev) => ({ ...prev, coverImage: e.target.value }))}
+                                className="w-full pl-12 pr-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold transition-colors"
+                            />
                         </div>
                     </div>
 
@@ -221,8 +282,8 @@ export default function NewPostPage() {
                                 Categoria
                             </label>
                             <select
-                                value={formData.categoryId}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, categoryId: e.target.value }))}
+                                value={formData.categoryId || ''}
+                                onChange={(e) => setFormData((prev) => ({ ...prev, categoryId: e.target.value || null }))}
                                 className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold transition-colors"
                             >
                                 <option value="">Selecione...</option>
@@ -240,11 +301,12 @@ export default function NewPostPage() {
                             </label>
                             <select
                                 value={formData.status}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
+                                onChange={(e) => setFormData((prev) => ({ ...prev, status: e.target.value }))}
                                 className="w-full px-4 py-3 bg-black-deep border border-white/10 rounded-xl text-white focus:outline-none focus:border-gold transition-colors"
                             >
                                 <option value="draft">Rascunho</option>
                                 <option value="published">Publicado</option>
+                                <option value="archived">Arquivado</option>
                             </select>
                         </div>
                     </div>
@@ -312,7 +374,7 @@ export default function NewPostPage() {
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-4">
                     <Link
-                        href="/admin/posts"
+                        href="/admin/cms/posts"
                         className="px-6 py-3 rounded-xl text-platinum hover:text-white transition-colors"
                     >
                         Cancelar
@@ -330,7 +392,7 @@ export default function NewPostPage() {
                         ) : (
                             <>
                                 <Save className="w-5 h-5" />
-                                Criar Post
+                                Salvar Alterações
                             </>
                         )}
                     </button>

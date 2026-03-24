@@ -378,23 +378,7 @@ export default function CRMSettingsPage() {
                         <h2 className="text-white font-semibold">Administração</h2>
                     </div>
 
-                    {isAdmin && (
-                        <Link
-                            href="/crm/settings/users"
-                            className="flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors group border-b border-white/5"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                                    <Users className="w-4 h-4 text-blue-400" />
-                                </div>
-                                <div>
-                                    <p className="text-white text-sm font-medium">Equipe</p>
-                                    <p className="text-platinum/50 text-xs">Gerenciar atendentes e permissões</p>
-                                </div>
-                            </div>
-                            <ChevronRight className="w-4 h-4 text-platinum/30 group-hover:text-platinum/60 transition-colors" />
-                        </Link>
-                    )}
+
 
                     <div className="flex items-center gap-3 px-6 py-4 border-b border-white/5">
                         <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">

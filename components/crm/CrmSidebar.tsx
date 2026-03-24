@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/auth/context'
 import { cn } from '@/lib/utils/cn'
-import { canAccess, ROLE_LABELS, type UserRole } from '@/lib/auth/rbac'
+import { canAccess, isAdmin, ROLE_LABELS, type UserRole } from '@/lib/auth/rbac'
 import { motion } from 'framer-motion'
 import {
     LayoutDashboard,
@@ -133,8 +133,8 @@ export function CrmSidebar() {
                     </>
                 )}
 
-                {/* Back to Admin - only for roles with blog access */}
-                {user && canAccess(user, 'blog') && (
+                {/* Back to Admin - only for admin */}
+                {user && isAdmin(user) && (
                     <>
                         <div className="my-4 mx-4 border-t border-white/10" />
                         <Link

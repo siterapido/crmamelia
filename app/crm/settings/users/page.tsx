@@ -38,10 +38,14 @@ export default function UsersPage() {
     const [form, setForm] = useState({ name: '', email: '', password: '', role: 'agent' })
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState('')
+    const [canEdit, setCanEdit] = useState(false)
 
     useEffect(() => {
-        if (currentUser && currentUser.role !== 'admin') {
+        if (currentUser && currentUser.role !== 'admin' && currentUser.role !== 'gestor') {
             router.push('/crm')
+        }
+        if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'gestor')) {
+            setCanEdit(true)
         }
     }, [currentUser, router])
 
@@ -107,7 +111,7 @@ export default function UsersPage() {
         if (res.ok) loadUsers()
     }
 
-    if (currentUser?.role !== 'admin') return null
+    if (loading) return null
 
     return (
         <div className="space-y-6">
@@ -121,7 +125,8 @@ export default function UsersPage() {
                 </div>
                 <button
                     onClick={openCreate}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
+                    disabled={!canEdit}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <Plus className="w-5 h-5" />
                     Novo Atendente
@@ -214,7 +219,7 @@ export default function UsersPage() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-charcoal rounded-2xl p-6 border border-white/10 w-full max-w-md"
+                        className="bg-charcoal rounded-2xl p-6 border border-white/10 w-full max-w-md md:max-w-xl lg:max-w-2xl"
                     >
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-semibold text-white">
@@ -262,11 +267,18 @@ export default function UsersPage() {
                                 <select
                                     value={form.role}
                                     onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
-                                    className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white focus:outline-none focus:border-gold/50"
+                                    disabled={currentUser?.role === 'gestor'}
+                                    className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white focus:outline-none focus:border-gold/50 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <option value="agent">Atendente</option>
-                                    <option value="editor">Editor</option>
-                                    <option value="admin">Administrador</option>
+                                    {currentUser?.role === 'gestor' ? (
+                                        <option value="agent">Atendente</option>
+                                    ) : (
+                                        <>
+                                            <option value="agent">Atendente</option>
+                                            <option value="editor">Editor</option>
+                                            <option value="admin">Administrador</option>
+                                        </>
+                                    )}
                                 </select>
                             </div>
 

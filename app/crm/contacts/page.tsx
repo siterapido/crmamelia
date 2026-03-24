@@ -330,7 +330,7 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
                 transition={{ duration: 0.15 }}
-                className="bg-[#161616] rounded-2xl border border-white/10 w-full max-w-lg overflow-hidden shadow-2xl"
+                className="bg-[#161616] rounded-2xl border border-white/10 w-full max-w-lg md:max-w-2xl lg:max-w-3xl overflow-hidden shadow-2xl"
             >
                 {/* Header */}
                 <div className="flex items-start justify-between p-5 border-b border-white/8">
@@ -556,7 +556,7 @@ function NewContactModal({ onClose, onCreated }: { onClose: () => void; onCreate
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-charcoal rounded-2xl border border-white/10 p-8 w-full max-w-lg mx-4"
+                className="bg-charcoal rounded-2xl border border-white/10 p-8 w-full max-w-lg md:max-w-2xl lg:max-w-3xl mx-4"
             >
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-semibold text-white">Novo Contato</h2>

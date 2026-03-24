@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { contacts, users } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
+import { canViewAllCRMData } from '@/lib/auth/rbac'
 import { eq, desc, ilike, or, and, sql } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -59,6 +60,26 @@ export async function GET(request: NextRequest) {
 
         if (source && source !== 'all') {
             conditions.push(eq(contacts.source, source))
+        }
+
+        // Vendedores só veem leads atribuídos a eles
+        const assignedFilter = searchParams.get('assignedTo')
+        if (!canViewAllCRMData(user)) {
+            // Vendedores: apenas seus leads ou não atribuídos (se filtro específico)
+            if (assignedFilter === 'me' || assignedFilter === 'unassigned' || !assignedFilter) {
+                conditions.push(
+                    or(
+                        eq(contacts.assignedTo, user.userId),
+                        sql`${contacts.assignedTo} IS NULL`
+                    )
+                )
+            }
+        } else if (assignedFilter === 'me') {
+            conditions.push(eq(contacts.assignedTo, user.userId))
+        } else if (assignedFilter === 'unassigned') {
+            conditions.push(sql`${contacts.assignedTo} IS NULL`)
+        } else if (assignedFilter && assignedFilter !== 'all') {
+            conditions.push(eq(contacts.assignedTo, assignedFilter))
         }
 
         const whereClause = conditions.length > 0 ? and(...conditions) : undefined

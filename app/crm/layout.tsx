@@ -15,7 +15,7 @@ function CrmLayoutContent({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (!loading && !user) {
-            router.push(`/admin/login?redirect=${encodeURIComponent(pathname)}`)
+            router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
         }
         if (!loading && user && !canAccess(user, 'crm')) {
             router.push('/admin')

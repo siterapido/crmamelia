@@ -91,7 +91,7 @@ export default function PostsPage() {
                     <p className="text-platinum mt-1">Gerencie os posts do blog</p>
                 </div>
                 <Link
-                    href="/admin/posts/new"
+                    href="/admin/cms/posts/new"
                     className="flex items-center gap-2 px-5 py-2.5 bg-gold-primary text-black font-semibold rounded-xl hover:opacity-90 transition-opacity"
                 >
                     <Plus className="w-5 h-5" />
