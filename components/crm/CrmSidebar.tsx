@@ -20,10 +20,10 @@ import {
 } from 'lucide-react'
 
 const navItems = [
-    { href: '/crm', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    { href: '/crm/pipeline', label: 'Pipeline', icon: LayoutGrid },
+    { href: '/crm/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/crm/conversations', label: 'Conversas', icon: MessageSquare },
     { href: '/crm/contacts', label: 'Contatos', icon: UserCheck },
-    { href: '/crm/pipeline', label: 'Pipeline', icon: LayoutGrid },
     { href: '/crm/settings', label: 'Configurações', icon: Settings, exact: true },
 ]
 
@@ -45,7 +45,7 @@ export function CrmSidebar() {
         <aside className="fixed left-0 top-0 h-screen w-64 bg-charcoal border-r border-white/10 flex flex-col">
             {/* Logo */}
             <div className="p-6 border-b border-white/10">
-                <Link href="/crm" className="flex items-center gap-3">
+                <Link href="/crm/pipeline" className="flex items-center gap-3">
                     <div className="relative w-28 h-9">
                         <Image
                             src="/Logos/SIX SAÚDE LOGO FINAL - Branca.png"

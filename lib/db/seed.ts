@@ -45,16 +45,24 @@ async function seed() {
     }).onConflictDoNothing()
     console.log('✅ Default author created')
 
-    // Create admin user
-    console.log('Creating admin user...')
-    const adminPassword = await hashPassword('admin123') // Change this!
-    await db.insert(schema.users).values({
-        email: 'admin@sixsaude.com.br',
-        passwordHash: adminPassword,
-        name: 'Administrador',
-        role: 'admin',
-    }).onConflictDoNothing()
-    console.log('✅ Admin user created (email: admin@sixsaude.com.br, password: admin123)')
+    // Create users
+    console.log('Creating users...')
+    const usersData = [
+        { email: 'admin@sixsaude.com.br', name: 'Administrador', role: 'admin', password: 'Adm!n@S1X#2026' },
+        { email: 'gestor@sixsaude.com.br', name: 'Gestor SIX', role: 'gestor', password: 'G3st0r@S1X#2026' },
+        { email: 'editor@sixsaude.com.br', name: 'Editor de Blog', role: 'produtor', password: 'Ed1t0r@S1X#2026' },
+        { email: 'vendedor@sixsaude.com.br', name: 'Vendedor SIX', role: 'vendedor', password: 'V3nd3@S1X#2026' },
+    ]
+    for (const u of usersData) {
+        const passwordHash = await hashPassword(u.password)
+        await db.insert(schema.users).values({
+            email: u.email,
+            passwordHash,
+            name: u.name,
+            role: u.role,
+        }).onConflictDoNothing()
+        console.log(`✅ ${u.role} created (${u.email} / ${u.password})`)
+    }
 
     // Create CRM pipeline stages
     console.log('Creating pipeline stages...')
@@ -72,17 +80,6 @@ async function seed() {
         await db.insert(schema.pipelineStages).values(stage).onConflictDoNothing()
     }
     console.log('✅ Pipeline stages created')
-
-    // Create agent user
-    console.log('Creating agent user...')
-    const agentPassword = await hashPassword('agent123')
-    await db.insert(schema.users).values({
-        email: 'atendente@sixsaude.com.br',
-        passwordHash: agentPassword,
-        name: 'Atendente SIX',
-        role: 'agent',
-    }).onConflictDoNothing()
-    console.log('✅ Agent user created (email: atendente@sixsaude.com.br, password: agent123)')
 
     // Create quick replies
     console.log('Creating quick replies...')
@@ -127,7 +124,7 @@ async function seed() {
     console.log('')
     console.log('🎉 Database seeded successfully!')
     console.log('')
-    console.log('⚠️  IMPORTANT: Change the admin password after first login!')
+    console.log('⚠️  IMPORTANTE: Troque as senhas após o primeiro login!')
 }
 
 seed().catch(console.error)

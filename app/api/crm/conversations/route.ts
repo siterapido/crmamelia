@@ -44,6 +44,11 @@ export async function GET(request: NextRequest) {
             conditions.push(eq(conversations.assignedTo, assignedFilter))
         }
 
+        const contactFilter = searchParams.get('contact')
+        if (contactFilter) {
+            conditions.push(eq(conversations.contactId, contactFilter))
+        }
+
         const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
         const [conversationsData, countResult] = await Promise.all([

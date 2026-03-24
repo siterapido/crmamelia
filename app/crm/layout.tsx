@@ -56,10 +56,10 @@ function CrmLayoutContent({ children }: { children: React.ReactNode }) {
     return (
         <div className="h-screen bg-black-deep flex overflow-hidden">
             <CrmSidebar />
-            <main className="flex-1 ml-64 p-8 overflow-hidden flex flex-col">
+            <main className="flex-1 ml-64 p-8 overflow-y-auto flex flex-col">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                     className="flex-1 min-h-0"
                 >

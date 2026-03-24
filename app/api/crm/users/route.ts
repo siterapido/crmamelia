@@ -16,7 +16,7 @@ const createUserSchema = z.object({
     name: z.string().min(1, 'Nome é obrigatório'),
     email: z.string().email('Email inválido'),
     password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
-    role: z.enum(['admin', 'agent', 'editor']).default('agent'),
+    role: z.enum(['admin', 'gestor', 'produtor', 'vendedor']).default('vendedor'),
 })
 
 export async function GET() {
