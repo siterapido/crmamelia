@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { HeroSectionGold } from '@/components/sections/HeroSectionGold'
 import { ClientSection } from '@/components/sections/ClientSection'
 import { PlanSection } from '@/components/sections/PlanSection'
-import { AppSection } from '@/components/sections/AppSection'
 import { SocialProofSection } from '@/components/sections/SocialProofSection'
 import { FAQSection } from '@/components/sections/FAQSection'
 import { CTABanner } from '@/components/sections/CTABanner'
@@ -40,8 +39,8 @@ export default function LandingPage2() {
         ctaText="Falar com especialista"
       />
 
-      {/* Mobile App Section */}
-      <AppSection />
+      {/* FAQ Section */}
+      <FAQSection />
 
       {/* CTA Banner - Engagement #2 (Gold with Pulse Pattern) */}
       <CTABanner
@@ -55,9 +54,6 @@ export default function LandingPage2() {
 
       {/* Social Proof Section */}
       <SocialProofSection />
-
-      {/* FAQ Section */}
-      <FAQSection />
 
       {/* Footer */}
       <Footer />

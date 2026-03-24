@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
-import { HeroSection } from '@/components/sections/HeroSection'
+import { HeroSectionGold } from '@/components/sections/HeroSectionGold'
 import { ClientSection } from '@/components/sections/ClientSection'
 import { PlanSection } from '@/components/sections/PlanSection'
-import { AppSection } from '@/components/sections/AppSection'
 import { SocialProofSection } from '@/components/sections/SocialProofSection'
 import { FAQSection } from '@/components/sections/FAQSection'
 import { CTABanner } from '@/components/sections/CTABanner'
@@ -29,15 +28,11 @@ export const metadata: Metadata = {
   },
 }
 
-/**
- * Home Page Component
- * Landing page principal with premium design and conversion focus
- */
 export default function Home() {
   return (
     <>
-      {/* Hero Section - First Impression (3 seconds) */}
-      <HeroSection />
+      {/* Hero Section - Gold Background Variant */}
+      <HeroSectionGold />
 
       {/* Client Self-Service Section */}
       <ClientSection />
