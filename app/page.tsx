@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { HeroSectionGold } from '@/components/sections/HeroSectionGold'
+import { HeroSection } from '@/components/sections/HeroSection'
 import { ClientSection } from '@/components/sections/ClientSection'
 import { PlanSection } from '@/components/sections/PlanSection'
 import { SocialProofSection } from '@/components/sections/SocialProofSection'
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      {/* Hero Section - Gold Background Variant */}
-      <HeroSectionGold />
+      {/* Hero Section - Original */}
+      <HeroSection />
 
       {/* Client Self-Service Section */}
       <ClientSection />

@@ -1,1 +1,2 @@
 {"timestamp":"2026-01-30T18:33:42.197Z","tool":"context","action":"init","status":"success","details":{"params":{"action":"init","repoPath":"/Users/marcosalexandre/projetos/sixsaude","type":"both"},"result":{"status":"incomplete"}}}
+{"timestamp":"2026-03-24T17:28:44.094Z","tool":"explore","action":"getStructure","status":"success","details":{"params":{"action":"getStructure","rootPath":"/Users/marcosalexandre/projetos/sixsaude","maxDepth":3,"includePatterns":["app/page.tsx","components/**/*lp*","components/sections/**"]},"result":{"success":true}}}
