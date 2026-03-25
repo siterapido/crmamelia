@@ -39,6 +39,8 @@ interface Deal {
     } | null
     stage: { id: string; name: string; slug: string; color: string | null; order: number } | null
     assignedUser: { id: string; name: string } | null
+    lastInboundAt: string | null
+    flowState: string | null
 }
 
 interface PipelineUser {
@@ -100,6 +102,33 @@ const pipelineScoreColors: Record<number, string> = {
     3: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
     4: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
     5: 'text-red-400 bg-red-500/10 border-red-500/20',
+}
+
+function getInactivityHours(lastInboundAt: string | null): number | null {
+    if (!lastInboundAt) return null
+    return (Date.now() - new Date(lastInboundAt).getTime()) / (1000 * 60 * 60)
+}
+
+function formatInactivityDuration(hours: number): string {
+    if (hours < 1) return `${Math.round(hours * 60)}min`
+    if (hours < 24) return `${Math.round(hours)}h`
+    return `${Math.floor(hours / 24)}d`
+}
+
+type InactivityLevel = 'alert' | 'critical' | 'dormant' | null
+
+function getInactivityLevel(hours: number | null): InactivityLevel {
+    if (hours === null) return null
+    if (hours >= 48) return 'dormant'
+    if (hours >= 24) return 'critical'
+    if (hours >= 4) return 'alert'
+    return null
+}
+
+const inactivityStyles: Record<NonNullable<InactivityLevel>, { badge: string; border: string }> = {
+    alert:   { badge: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20', border: 'border-yellow-500/20' },
+    critical: { badge: 'bg-orange-500/15 text-orange-400 border-orange-500/20', border: 'border-orange-500/25' },
+    dormant:  { badge: 'bg-red-500/15 text-red-400 border-red-500/20', border: 'border-red-500/25' },
 }
 
 function PipelineLeadScore({ score }: { score: number }) {
@@ -1354,14 +1383,14 @@ function FilterPanel({
     users,
     onClearFilters
 }: {
-    filters: { search: string; stage: string; user: string; hasValue: string }
+    filters: { search: string; stage: string; user: string; hasValue: string; inactivity: string }
     onFilterChange: (key: string, value: string) => void
     stages: PipelineStage[]
     users: PipelineUser[]
     onClearFilters: () => void
 }) {
     const [isOpen, setIsOpen] = useState(false)
-    const hasActiveFilters = filters.stage || filters.user || filters.hasValue
+    const hasActiveFilters = filters.stage || filters.user || filters.hasValue || filters.inactivity
 
     return (
         <div className="relative">
@@ -1378,7 +1407,7 @@ function FilterPanel({
                 Filtros
                 {hasActiveFilters && (
                     <span className="w-5 h-5 rounded-full bg-gold/30 text-[10px] flex items-center justify-center">
-                        {[filters.stage, filters.user, filters.hasValue].filter(Boolean).length}
+                        {[filters.stage, filters.user, filters.hasValue, filters.inactivity].filter(Boolean).length}
                     </span>
                 )}
             </button>
@@ -1445,6 +1474,20 @@ function FilterPanel({
                                     <option value="without" className="bg-[#1a1a1a]">Sem valor</option>
                                 </select>
                             </div>
+
+                            <div>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Inatividade</label>
+                                <select
+                                    value={filters.inactivity}
+                                    onChange={(e) => onFilterChange('inactivity', e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                >
+                                    <option value="" className="bg-[#1a1a1a]">Todos</option>
+                                    <option value="alert" className="bg-[#1a1a1a]">⚠ Alerta — +4h sem resposta</option>
+                                    <option value="critical" className="bg-[#1a1a1a]">🔶 Crítico — +24h sem resposta</option>
+                                    <option value="dormant" className="bg-[#1a1a1a]">🔴 Dormente — +48h sem resposta</option>
+                                </select>
+                            </div>
                         </div>
                     </motion.div>
                 )}
@@ -1469,7 +1512,7 @@ export default function PipelinePage() {
 
     const [selectedDeals, setSelectedDeals] = useState<Set<string>>(new Set())
     const [bulkLoading, setBulkLoading] = useState(false)
-    const [filters, setFilters] = useState({ search: '', stage: '', user: '', hasValue: '' })
+    const [filters, setFilters] = useState({ search: '', stage: '', user: '', hasValue: '', inactivity: '' })
     const [showMobileMenu, setShowMobileMenu] = useState(false)
 
     const loadData = useCallback(async (isAutoRefresh = false) => {
@@ -1594,6 +1637,12 @@ export default function PipelinePage() {
         }
         if (filters.hasValue === 'with' && !deal.value) return false
         if (filters.hasValue === 'without' && deal.value) return false
+        if (filters.inactivity) {
+            const hours = getInactivityHours(deal.lastInboundAt)
+            const thresholds = { alert: 4, critical: 24, dormant: 48 }
+            const min = thresholds[filters.inactivity as keyof typeof thresholds]
+            if (hours === null || hours < min) return false
+        }
         return true
     })
 
@@ -1755,7 +1804,7 @@ export default function PipelinePage() {
                         onFilterChange={(key, value) => setFilters(f => ({ ...f, [key]: value }))}
                         stages={stages}
                         users={users}
-                        onClearFilters={() => setFilters({ search: '', stage: '', user: '', hasValue: '' })}
+                        onClearFilters={() => setFilters({ search: '', stage: '', user: '', hasValue: '', inactivity: '' })}
                     />
 
                     <div className="hidden md:flex items-center gap-2">
@@ -1915,7 +1964,12 @@ export default function PipelinePage() {
                                                     'hover:border-white/12',
                                                     'transition-all duration-150 group',
                                                     draggedDeal === deal.id && 'opacity-40 scale-95',
-                                                    isSelected ? 'border-gold/50 bg-gold/5' : 'border-white/8'
+                                                    isSelected
+                                                        ? 'border-gold/50 bg-gold/5'
+                                                        : (() => {
+                                                            const level = getInactivityLevel(getInactivityHours(deal.lastInboundAt))
+                                                            return level ? inactivityStyles[level].border : 'border-white/8'
+                                                        })()
                                                 )}
                                             >
                                                 <div className="flex items-start gap-2 mb-2">
@@ -1948,6 +2002,20 @@ export default function PipelinePage() {
                                                         </div>
                                                     </div>
                                                 )}
+
+                                                {(() => {
+                                                    const hours = getInactivityHours(deal.lastInboundAt)
+                                                    const level = getInactivityLevel(hours)
+                                                    if (!level) return null
+                                                    const style = inactivityStyles[level]
+                                                    const labels = { alert: 'Aguardando', critical: 'Sem resposta', dormant: 'Dormente' }
+                                                    return (
+                                                        <div className={cn('flex items-center gap-1 ml-6 mb-2 px-2 py-0.5 rounded-md border w-fit text-[10px] font-medium', style.badge)}>
+                                                            <Clock className="w-3 h-3" />
+                                                            {labels[level]} · {formatInactivityDuration(hours!)}
+                                                        </div>
+                                                    )
+                                                })()}
 
                                                 <div className="flex items-center justify-between pt-2 border-t border-white/5 ml-6">
                                                     <div className="flex items-center gap-1.5">

@@ -97,6 +97,8 @@ export const conversations = pgTable('conversations', {
     aiEnabled: boolean('ai_enabled').default(true).notNull(),
     assignedTo: uuid('assigned_to').references(() => users.id),
     lastMessageAt: timestamp('last_message_at'),
+    lastInboundAt: timestamp('last_inbound_at'),
+    flowState: varchar('flow_state', { length: 20 }).default('active').notNull(),
     closedAt: timestamp('closed_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
 })

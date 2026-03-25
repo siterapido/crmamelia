@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/followups",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/inactivity",
+      "schedule": "*/30 * * * *"
+    }
+  ]
+}

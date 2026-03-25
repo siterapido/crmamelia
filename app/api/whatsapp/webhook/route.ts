@@ -232,6 +232,7 @@ async function handleInboundMessage(
                     status: 'active',
                     aiEnabled: true,
                     lastMessageAt: new Date(),
+                    lastInboundAt: new Date(),
                 })
                 .returning()
             conversation = newConv
@@ -240,7 +241,11 @@ async function handleInboundMessage(
             console.log(`[Handler] Found conversation ID: ${conversation.id}`)
             await db
                 .update(conversations)
-                .set({ lastMessageAt: new Date() })
+                .set({
+                    lastMessageAt: new Date(),
+                    lastInboundAt: new Date(),
+                    flowState: 'active'
+                })
                 .where(eq(conversations.id, conversation.id))
         }
         conversationId = conversation.id

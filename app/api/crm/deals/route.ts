@@ -6,10 +6,10 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { deals, contacts, pipelineStages, users } from '@/lib/db/schema'
+import { deals, contacts, pipelineStages, users, conversations } from '@/lib/db/schema'
 import { getCurrentUser } from '@/lib/auth'
 import { canViewAllCRMData } from '@/lib/auth/rbac'
-import { eq, desc, sql, or } from 'drizzle-orm'
+import { eq, desc, sql, or, and } from 'drizzle-orm'
 import { z } from 'zod'
 
 const createDealSchema = z.object({
@@ -101,6 +101,18 @@ export async function GET(request: NextRequest) {
                     id: users.id,
                     name: users.name,
                 },
+                lastInboundAt: sql<string | null>`(
+                    SELECT c.last_inbound_at FROM conversations c
+                    WHERE c.contact_id = ${deals.contactId}
+                    AND c.status = 'active'
+                    ORDER BY c.created_at DESC LIMIT 1
+                )`.as('last_inbound_at'),
+                flowState: sql<string | null>`(
+                    SELECT c.flow_state FROM conversations c
+                    WHERE c.contact_id = ${deals.contactId}
+                    AND c.status = 'active'
+                    ORDER BY c.created_at DESC LIMIT 1
+                )`.as('flow_state'),
             })
             .from(deals)
             .leftJoin(contacts, eq(deals.contactId, contacts.id))

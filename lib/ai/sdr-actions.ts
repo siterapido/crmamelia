@@ -95,6 +95,47 @@ async function moveDealToStage(contactId: string, stageSlug: string) {
     console.log(`[CRM] Moved deal ${deal.id} to stage "${stage.name}"`)
 }
 
+/**
+ * Mark a deal as lost due to inactivity (called by the inactivity cron)
+ * Only moves deals that are not already won/lost
+ */
+export async function markDealLostByInactivity(contactId: string): Promise<void> {
+    const stage = await getStageBySlug('lost')
+    if (!stage) {
+        console.error('[CRM] Pipeline stage "lost" not found')
+        return
+    }
+
+    const [deal] = await db
+        .select()
+        .from(deals)
+        .where(eq(deals.contactId, contactId))
+        .limit(1)
+
+    if (!deal) return
+
+    // Don't override won deals
+    if (deal.wonAt) {
+        console.log(`[CRM] Deal ${deal.id} already won, skipping inactivity loss`)
+        return
+    }
+
+    // Already lost — skip
+    if (deal.stageId === stage.id) return
+
+    await db
+        .update(deals)
+        .set({
+            stageId: stage.id,
+            lostAt: new Date(),
+            lostReason: 'Inatividade — sem resposta após mensagens de recuperação',
+            updatedAt: new Date(),
+        })
+        .where(eq(deals.id, deal.id))
+
+    console.log(`[CRM] Deal ${deal.id} marked as lost by inactivity`)
+}
+
 export async function executeSDRActions(
     actions: SDRAction[],
     contact: Contact,
