@@ -66,6 +66,7 @@ export const AIChatWidget = () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: userText, sessionId, conversationId }),
+                credentials: 'include',
             })
 
             if (!res.ok) throw new Error('Request failed')

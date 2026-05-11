@@ -66,7 +66,6 @@ export default function AIGeneratorPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    topic: formData.topic,
                     category: formData.category,
                     tone: formData.tone,
                     targetAudience: formData.targetAudience,
@@ -75,6 +74,7 @@ export default function AIGeneratorPage() {
                         ? formData.keywords.split(',').map((k) => k.trim())
                         : undefined,
                 }),
+                credentials: 'include',
             })
 
             const data = await res.json()
@@ -126,6 +126,7 @@ export default function AIGeneratorPage() {
                     aiGenerated: true,
                     tags: generatedPost.tags,
                 }),
+                credentials: 'include',
             })
 
             if (res.ok) {

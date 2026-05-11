@@ -374,6 +374,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contactId: deal.contact.id, ...followupForm }),
+                credentials: 'include',
             })
             if (res.ok) {
                 const data = await res.json()
@@ -1733,6 +1734,7 @@ export default function PipelinePage() {
                     dealIds: Array.from(selectedDeals),
                     assignedTo: userId,
                 }),
+                credentials: 'include',
             })
             clearSelection()
             loadData()
@@ -1754,6 +1756,7 @@ export default function PipelinePage() {
                     dealIds: Array.from(selectedDeals),
                     stageId,
                 }),
+                credentials: 'include',
             })
             clearSelection()
             loadData()

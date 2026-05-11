@@ -284,6 +284,7 @@ function NewContactModal({ onClose, onCreated }: { onClose: () => void; onCreate
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...form, source: 'manual' }),
+                credentials: 'include',
             })
             const data = await res.json()
 

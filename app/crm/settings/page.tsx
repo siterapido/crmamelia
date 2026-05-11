@@ -58,6 +58,7 @@ export default function CRMSettingsPage() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name.trim() }),
+                credentials: 'include',
             })
             const data = await res.json()
             if (!res.ok) {
@@ -93,6 +94,7 @@ export default function CRMSettingsPage() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ currentPassword: pwForm.current, newPassword: pwForm.new }),
+                credentials: 'include',
             })
             const data = await res.json()
             if (!res.ok) {

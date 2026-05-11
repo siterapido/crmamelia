@@ -244,6 +244,7 @@ export default function ContactDetailPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contactId: contact.id, ...followupForm }),
+                credentials: 'include',
             })
             if (res.ok) {
                 const data = await res.json()
