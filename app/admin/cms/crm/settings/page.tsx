@@ -17,7 +17,7 @@ export default function CRMSettingsPage() {
         setTesting(true)
         setTestResult(null)
         try {
-            const res = await fetch('/api/crm/whatsapp/test', { method: 'POST' })
+            const res = await fetch('/api/crm/whatsapp/test', { method: 'POST', credentials: 'include' })
             const data = await res.json()
             setTestResult({
                 success: data.success,

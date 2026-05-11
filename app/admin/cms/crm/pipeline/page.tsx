@@ -73,8 +73,8 @@ export default function PipelinePage() {
     const loadData = useCallback(async () => {
         try {
             const [stagesRes, dealsRes] = await Promise.all([
-                fetch('/api/crm/pipeline/stages'),
-                fetch('/api/crm/deals'),
+                fetch('/api/crm/pipeline/stages', { credentials: 'include' }),
+                fetch('/api/crm/deals', { credentials: 'include' }),
             ])
             const stagesData = await stagesRes.json()
             const dealsData = await dealsRes.json()

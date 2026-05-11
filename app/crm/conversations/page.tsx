@@ -250,8 +250,8 @@ export default function ConversationsPage() {
 
     // Load agents and quick replies on mount
     useEffect(() => {
-        fetch('/api/crm/users').then(r => r.json()).then(d => setAgents(d.data || []))
-        fetch('/api/crm/quick-replies').then(r => r.json()).then(d => setQuickReplies(d.data || []))
+        fetch('/api/crm/users', { credentials: 'include' }).then(r => r.json()).then(d => setAgents(d.data || []))
+        fetch('/api/crm/quick-replies', { credentials: 'include' }).then(r => r.json()).then(d => setQuickReplies(d.data || []))
     }, [])
 
     const loadConversations = useCallback(async () => {
@@ -338,7 +338,7 @@ export default function ConversationsPage() {
         try {
             const formData = new FormData()
             formData.append('file', file)
-            const res = await fetch('/api/upload', { method: 'POST', body: formData })
+            const res = await fetch('/api/upload', { method: 'POST', body: formData, credentials: 'include' })
             const data = await res.json()
             if (data.success) {
                 const type = file.type.startsWith('image/') ? 'image'

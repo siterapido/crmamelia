@@ -29,7 +29,7 @@ export default function CRMDashboard() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch('/api/crm/stats')
+        fetch('/api/crm/stats', { credentials: 'include' })
             .then(res => res.json())
             .then(setStats)
             .catch(console.error)

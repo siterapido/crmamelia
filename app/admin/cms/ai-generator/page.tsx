@@ -46,7 +46,7 @@ export default function AIGeneratorPage() {
     })
 
     useEffect(() => {
-        fetch('/api/categories')
+        fetch('/api/categories', { credentials: 'include' })
             .then((res) => res.json())
             .then((data) => setCategories(data))
             .catch(console.error)

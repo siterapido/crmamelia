@@ -27,7 +27,7 @@ export default function TeamPage() {
 
     const loadMembers = async () => {
         try {
-            const res = await fetch('/api/crm/users')
+            const res = await fetch('/api/crm/users', { credentials: 'include' })
             const data = await res.json()
             const users = data.data || []
             

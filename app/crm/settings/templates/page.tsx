@@ -33,7 +33,7 @@ export default function TemplatesPage() {
 
     const loadTemplates = async () => {
         try {
-            const res = await fetch('/api/crm/quick-replies')
+            const res = await fetch('/api/crm/quick-replies', { credentials: 'include' })
             const data = await res.json()
             setTemplates(data.data || [])
         } finally {

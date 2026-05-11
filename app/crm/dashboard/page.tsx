@@ -38,8 +38,8 @@ export default function CRMDashboard() {
 
     useEffect(() => {
         Promise.all([
-            fetch('/api/crm/stats').then(r => r.json()),
-            fetch('/api/crm/followups').then(r => r.json()),
+            fetch('/api/crm/stats', { credentials: 'include' }).then(r => r.json()),
+            fetch('/api/crm/followups', { credentials: 'include' }).then(r => r.json()),
         ])
             .then(([statsData, followupsData]) => {
                 setStats(statsData)

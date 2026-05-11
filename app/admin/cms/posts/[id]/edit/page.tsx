@@ -62,7 +62,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             try {
                 const [postRes, categoriesRes] = await Promise.all([
                     fetch(`/api/posts/${id}`),
-                    fetch('/api/categories'),
+                    fetch('/api/categories', { credentials: 'include' }),
                 ])
 
                 if (postRes.ok) {

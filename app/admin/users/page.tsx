@@ -36,7 +36,7 @@ export default function UsersPage() {
 
     const loadUsers = async () => {
         try {
-            const res = await fetch('/api/crm/users')
+            const res = await fetch('/api/crm/users', { credentials: 'include' })
             const data = await res.json()
             setUsers(data.data || [])
         } catch (error) {
