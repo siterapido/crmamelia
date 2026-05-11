@@ -19,7 +19,7 @@ export const FAQSection = () => {
     {
       question: 'Quando recebo minha carteirinha digital?',
       answer:
-        'Você terá acesso à sua carteirinha digital a partir da data de início da vigência do contrato, diretamente pelo Aplicativo Six Saúde.',
+        'Você terá acesso à sua carteirinha digital a partir da data de início da vigência do contrato, diretamente pelo Aplicativo Amélia Saúde.',
     },
     {
       question: 'Como realizo o pagamento das mensalidades?',

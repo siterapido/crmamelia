@@ -63,7 +63,7 @@ export default function AdminDashboard() {
         <div className="space-y-8">
             <div>
                 <h1 className="text-3xl font-bold text-white">Painel Admin</h1>
-                <p className="text-platinum mt-1">Gerencie o sistema Six Saúde</p>
+                <p className="text-platinum mt-1">Gerencie o sistema Amélia Saúde</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

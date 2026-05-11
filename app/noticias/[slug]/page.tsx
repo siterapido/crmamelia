@@ -13,16 +13,10 @@ import {
   getRelatedNews,
   getPopularNews,
   getCategories,
-  getAllSlugs,
 } from '@/lib/api/news'
 
 interface PageProps {
   params: Promise<{ slug: string }>
-}
-
-export async function generateStaticParams() {
-  const slugs = await getAllSlugs()
-  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
