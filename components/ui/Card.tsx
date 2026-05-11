@@ -16,7 +16,7 @@ interface CardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
 }
 
 /**
- * Premium Card Component - SIX Saúde Design System
+ * Premium Card Component - Amélia Saúde Design System
  *
  * Variants:
  * - default: Subtle dark background with border

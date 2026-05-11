@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { LegalPageLayout } from '@/components/layout/LegalPageLayout'
 
 export const metadata: Metadata = {
-  title: 'LGPD - Lei Geral de Protecao de Dados | SIX Saude',
-  description: 'Saiba como a SIX Saude esta em conformidade com a Lei Geral de Protecao de Dados (LGPD) e como exercer seus direitos.',
+  title: 'LGPD - Lei Geral de Protecao de Dados | Amélia Saúde',
+  description: 'Saiba como a Amélia Saúde esta em conformidade com a Lei Geral de Protecao de Dados (LGPD) e como exercer seus direitos.',
 }
 
 export default function LGPDPage() {
@@ -27,10 +27,10 @@ export default function LGPDPage() {
 
       <section>
         <h2 className="text-2xl font-display font-semibold text-white mb-4">
-          Compromisso da SIX Saude
+          Compromisso da Amélia Saúde
         </h2>
         <p>
-          A SIX Saude esta comprometida com a protecao dos dados pessoais de seus clientes,
+          A Amélia Saúde esta comprometida com a protecao dos dados pessoais de seus clientes,
           colaboradores e parceiros. Implementamos medidas tecnicas e organizacionais para
           garantir a seguranca e privacidade das informacoes, em total conformidade com a LGPD.
         </p>
@@ -122,7 +122,7 @@ export default function LGPDPage() {
           Bases Legais para Tratamento
         </h2>
         <p className="mb-4">
-          A SIX Saude trata seus dados pessoais com base nas seguintes hipoteses legais:
+          A Amélia Saúde trata seus dados pessoais com base nas seguintes hipoteses legais:
         </p>
         <ul className="list-disc pl-6 space-y-2">
           <li>
@@ -157,7 +157,7 @@ export default function LGPDPage() {
           Dados Sensiveis
         </h2>
         <p>
-          Por atuar no setor de saude, a SIX Saude pode tratar dados pessoais sensiveis,
+          Por atuar no setor de saude, a Amélia Saúde pode tratar dados pessoais sensiveis,
           como informacoes de saude. Esses dados recebem protecao reforçada e sao tratados
           apenas para as finalidades especificas e necessarias a prestacao dos servicos,
           sempre em conformidade com a legislacao aplicavel e com as melhores praticas de
@@ -170,13 +170,13 @@ export default function LGPDPage() {
           Encarregado de Protecao de Dados (DPO)
         </h2>
         <p className="mb-4">
-          A SIX Saude nomeou um Encarregado de Protecao de Dados (DPO) para atuar como
+          A Amélia Saúde nomeou um Encarregado de Protecao de Dados (DPO) para atuar como
           canal de comunicacao entre a empresa, os titulares de dados e a Autoridade Nacional
           de Protecao de Dados (ANPD).
         </p>
         <div className="p-4 bg-black-deep rounded-lg border border-white/10">
-          <p><strong className="text-white">DPO:</strong> Departamento de Privacidade SIX Saude</p>
-          <p><strong className="text-white">E-mail:</strong> dpo@sixsaude.com.br</p>
+          <p><strong className="text-white">DPO:</strong> Departamento de Privacidade Amélia Saúde</p>
+          <p><strong className="text-white">E-mail:</strong> dpo@ameliasaude.com.br</p>
           <p><strong className="text-white">Telefone:</strong> 0800 000 0000</p>
         </div>
       </section>

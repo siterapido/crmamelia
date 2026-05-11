@@ -8,7 +8,7 @@ import { Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '@/lib/auth/context'
 import { getDefaultRedirect } from '@/lib/auth/rbac'
 
-export default function LoginPage() {
+export function LoginForm() {
     const router = useRouter()
     const { login } = useAuth()
     const [email, setEmail] = useState('')
@@ -49,8 +49,8 @@ export default function LoginPage() {
                 <div className="text-center mb-8">
                     <div className="relative w-40 h-12 mx-auto mb-4">
                         <Image
-                            src="/Logos/SIX SAÚDE LOGO FINAL - Branca.png"
-                            alt="SIX Saúde"
+                            src="/Logos/AMÉLIA SAÚDE LOGO FINAL - Branca.png"
+                            alt="Amélia Saúde"
                             fill
                             className="object-contain"
                         />
@@ -133,7 +133,7 @@ export default function LoginPage() {
                 </form>
 
                 <p className="text-center text-platinum/50 text-sm mt-6">
-                    © {new Date().getFullYear()} SIX Saúde. Todos os direitos reservados.
+                    © {new Date().getFullYear()} Amélia Saúde. Todos os direitos reservados.
                 </p>
             </motion.div>
         </div>

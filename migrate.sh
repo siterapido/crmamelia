@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ============================================
-# MIGRATION SCRIPT - SIX SAUDE
+# MIGRATION SCRIPT - AMELIA SAUDE
 # Database: PostgreSQL (Neon)
 # ORM: Drizzle
 # Date: 2026-01-30
@@ -160,7 +160,7 @@ start_dev_server() {
     log_info "Starting development server..."
     log_success "Development server started at http://localhost:3000"
     log_info "Admin panel: http://localhost:3000/admin"
-    log_info "Default credentials: admin@sixsaude.com.br / admin123"
+    log_info "Default credentials: admin@ameliasaude.com.br / admin123"
 
     pnpm dev
 }
@@ -191,7 +191,7 @@ full_migration() {
 show_menu() {
     echo ""
     echo "=========================================="
-    echo "  SIX SAUDE - MIGRATION SCRIPT"
+    echo "  AMELIA SAUDE - MIGRATION SCRIPT"
     echo "=========================================="
     echo ""
     echo "1. Full Migration (recommended for new setup)"

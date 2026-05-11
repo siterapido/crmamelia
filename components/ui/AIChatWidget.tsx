@@ -21,7 +21,7 @@ function getOrCreateSessionId(): string {
 }
 
 /**
- * AI Chat Widget - SIX Saúde Design System
+ * AI Chat Widget - Amélia Saúde Design System
  *
  * Premium floating chat widget with:
  * - Yellow theme matching brand colors
@@ -100,7 +100,7 @@ export const AIChatWidget = () => {
 
     const handleWhatsAppClick = () => {
         const message = encodeURIComponent(
-            'Olá! Vim pelo chat do site da SIX Saúde e gostaria de falar com um especialista.'
+            'Olá! Vim pelo chat do site da Amélia Saúde e gostaria de falar com um especialista.'
         )
         window.open(`https://wa.me/5511999999999?text=${message}`, '_blank', 'noopener,noreferrer')
     }
@@ -122,7 +122,7 @@ export const AIChatWidget = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label="Abrir chat de IA"
-                title="Assistente Virtual SIX Saúde"
+                title="Assistente Virtual Amélia Saúde"
             >
                 {/* Pulse ring effect */}
                 <motion.span
@@ -206,7 +206,7 @@ export const AIChatWidget = () => {
                             <div className="flex items-center gap-2">
                                 <Sparkles size={20} />
                                 <div>
-                                    <h3 className="font-semibold text-sm">Assistente SIX Saúde</h3>
+                                    <h3 className="font-semibold text-sm">Assistente Amélia Saúde</h3>
                                     <p className="text-xs opacity-75">Online • Responde em segundos</p>
                                 </div>
                             </div>
@@ -225,7 +225,7 @@ export const AIChatWidget = () => {
                             {msgs.length === 0 && (
                                 <div className="bg-[#1A1A1A] rounded-lg p-3 text-sm text-gray-300">
                                     <p className="mb-2">
-                                        👋 Olá! Sou o assistente virtual da <strong className="text-[#F6C200]">SIX Saúde</strong>.
+                                        👋 Olá! Sou o assistente virtual da <strong className="text-[#F6C200]">Amélia Saúde</strong>.
                                     </p>
                                     <p>Como posso ajudar você hoje?</p>
                                 </div>

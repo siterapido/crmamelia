@@ -22,11 +22,11 @@ export const viewport: Viewport = {
  * Optimized for search engines and social media
  */
 export const metadata: Metadata = {
-  title: 'SIX Saúde | Administradora de Benefícios Premium',
+  title: 'Amélia Saúde | Administradora de Benefícios Premium',
   description:
     'Planos de saúde com transparência, agilidade e atendimento humano. Administradora AAA registrada na ANS com 10+ anos de experiência.',
-  applicationName: 'SIX Saúde',
-  authors: [{ name: 'SIX Saúde' }],
+  applicationName: 'Amélia Saúde',
+  authors: [{ name: 'Amélia Saúde' }],
   keywords: [
     'plano de saúde',
     'administradora de benefícios',
@@ -43,9 +43,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: 'https://sixsaude.com.br',
-    siteName: 'SIX Saúde',
-    title: 'SIX Saúde | Administradora de Benefícios Premium',
+    url: 'https://ameliasaude.com.br',
+    siteName: 'Amélia Saúde',
+    title: 'Amélia Saúde | Administradora de Benefícios Premium',
     description:
       'Planos de saúde com transparência, agilidade e atendimento humano. Administradora AAA registrada na ANS.',
     images: [
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'SIX Saúde - Administradora de Benefícios',
+        alt: 'Amélia Saúde - Administradora de Benefícios',
         type: 'image/jpeg',
       },
     ],
@@ -62,19 +62,19 @@ export const metadata: Metadata = {
   /* Twitter Card */
   twitter: {
     card: 'summary_large_image',
-    title: 'SIX Saúde | Administradora de Benefícios Premium',
+    title: 'Amélia Saúde | Administradora de Benefícios Premium',
     description:
       'Planos de saúde com transparência, agilidade e atendimento humano.',
     images: ['/og-image.jpg'],
   },
 
   /* Other Metadata */
-  metadataBase: new URL('https://sixsaude.com.br'),
+  metadataBase: new URL('https://ameliasaude.com.br'),
   manifest: '/site.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'SIX Saúde',
+    title: 'Amélia Saúde',
   },
   formatDetection: {
     telephone: true,
@@ -125,14 +125,14 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'LocalBusiness',
-              '@id': 'https://sixsaude.com.br',
-              name: 'SIX Saúde',
+              '@id': 'https://ameliasaude.com.br',
+              name: 'Amélia Saúde',
               description: 'Administradora de Benefícios de Saúde Premium. Planos de saúde com transparência, agilidade e atendimento humano.',
-              url: 'https://sixsaude.com.br',
-              logo: 'https://sixsaude.com.br/logo.png',
-              image: 'https://sixsaude.com.br/og-image.jpg',
+              url: 'https://ameliasaude.com.br',
+              logo: 'https://ameliasaude.com.br/logo.png',
+              image: 'https://ameliasaude.com.br/og-image.jpg',
               telephone: '+55-21-97222-9609',
-              email: 'atendimento@sixsaude.com.br',
+              email: 'atendimento@ameliasaude.com.br',
               address: {
                 '@type': 'PostalAddress',
                 addressLocality: 'São Paulo',
@@ -151,9 +151,9 @@ export default function RootLayout({
                 closes: '23:59',
               },
               sameAs: [
-                'https://instagram.com/sixsaude',
-                'https://linkedin.com/company/sixsaude',
-                'https://facebook.com/sixsaude',
+                'https://instagram.com/ameliasaude',
+                'https://linkedin.com/company/ameliasaude',
+                'https://facebook.com/ameliasaude',
               ],
               priceRange: '$$',
               aggregateRating: {

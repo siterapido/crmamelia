@@ -1,5 +1,5 @@
 /**
- * UI Components - SIX Saúde Design System
+ * UI Components - Amélia Saúde Design System
  *
  * Core building blocks for the premium interface
  */

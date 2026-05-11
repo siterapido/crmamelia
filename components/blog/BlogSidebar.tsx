@@ -132,7 +132,7 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
                         className="!bg-black-premium !text-gold-primary hover:!bg-black-deep shadow-premium w-full"
                         onClick={() => {
                             const phoneNumber = '5511999999999'
-                            const message = 'Olá! Vi o blog da SIX Saúde e gostaria de mais informações.'
+                            const message = 'Olá! Vi o blog da Amélia Saúde e gostaria de mais informações.'
                             const encodedMessage = encodeURIComponent(message)
                             window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank')
                         }}

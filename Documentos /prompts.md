@@ -1,4 +1,4 @@
-# Prompts Prontos - Site SIX Saúde Premium AAA
+# Prompts Prontos - Site Amélia Saúde Premium AAA
 ## Comandos Otimizados para Claude Code
 
 ---
@@ -23,7 +23,7 @@ Cada prompt abaixo está pronto para ser copiado e colado no Claude Code. Os pro
 ## 1️⃣ PROMPT: SETUP INICIAL DO PROJETO
 
 ```
-Crie um projeto Next.js 14+ premium para o site da SIX Saúde Administradora de Benefícios.
+Crie um projeto Next.js 14+ premium para o site da Amélia Saúde Administradora de Benefícios.
 
 CONTEXTO:
 Estou construindo um site institucional AAA com visual premium em preto e amarelo ouro. Consulte os seguintes documentos para entender o projeto completo:
@@ -62,7 +62,7 @@ Performance > 95 no PageSpeed desde o início. Código limpo, componentizado e T
 ## 2️⃣ PROMPT: DESIGN SYSTEM & COMPONENTES BASE
 
 ```
-Crie o design system premium AAA para o site SIX Saúde com base no design-guidelines-premium.md.
+Crie o design system premium AAA para o site Amélia Saúde com base no design-guidelines-premium.md.
 
 COMPONENTES A CRIAR:
 
@@ -126,7 +126,7 @@ Componentes funcionais, reutilizáveis e com exemplo de uso em comentários.
 ## 3️⃣ PROMPT: HOME PAGE - HERO SECTION
 
 ```
-Crie a Hero Section premium AAA para a home page do site SIX Saúde.
+Crie a Hero Section premium AAA para a home page do site Amélia Saúde.
 
 REFERÊNCIA:
 - landing-page-spec.md seção 2 (Hero)
@@ -164,7 +164,7 @@ ELEMENTOS:
    - Botão Primário: "Sou Cliente" (ouro com gradiente)
      - Ação: Scroll suave para seção "Sou Cliente" ou link para /cliente
    - Botão Secundário: "Quero Contratar" (outline ouro)
-     - Ação: Abre WhatsApp com mensagem: "Olá! Tenho interesse em conhecer os planos da SIX Saúde."
+     - Ação: Abre WhatsApp com mensagem: "Olá! Tenho interesse em conhecer os planos da Amélia Saúde."
    - Gap: 16px entre botões
    - Animação: Fade in com delay 0.4s
 
@@ -203,7 +203,7 @@ Hero section totalmente funcional, animado e responsivo.
 ## 4️⃣ PROMPT: SEÇÃO "SOU CLIENTE" (AUTOATENDIMENTO)
 
 ```
-Crie a seção "Sou Cliente" para autoatendimento do site SIX Saúde.
+Crie a seção "Sou Cliente" para autoatendimento do site Amélia Saúde.
 
 REFERÊNCIA:
 - landing-page-spec.md seção 3
@@ -278,7 +278,7 @@ ESTILO DOS CARDS:
 
 4. CTA de Escape:
    - Texto: "Não encontrou o que procurava? Fale com um especialista"
-   - Link: WhatsApp com mensagem: "Olá! Sou cliente da SIX Saúde e preciso de ajuda."
+   - Link: WhatsApp com mensagem: "Olá! Sou cliente da Amélia Saúde e preciso de ajuda."
    - Estilo: Link destacado, cor ouro, underline no hover
    - Posição: Abaixo dos cards, centralizado
 
@@ -295,7 +295,7 @@ Componente completo (/components/home/ClientSection.tsx) com todos os cards func
 ## 5️⃣ PROMPT: SEÇÃO DE PLANOS
 
 ```
-Crie a seção de Planos do site SIX Saúde com design premium.
+Crie a seção de Planos do site Amélia Saúde com design premium.
 
 REFERÊNCIA:
 - landing-page-spec.md seção 4
@@ -373,7 +373,7 @@ ENTREGUE:
 ## 6️⃣ PROMPT: SEÇÃO DO APLICATIVO
 
 ```
-Crie a seção de apresentação do Aplicativo SIX Saúde.
+Crie a seção de apresentação do Aplicativo Amélia Saúde.
 
 REFERÊNCIA:
 - landing-page-spec.md seção 5
@@ -393,7 +393,7 @@ COLUNA ESQUERDA (Conteúdo):
    - Cor: Branco
 
 2. Subheadline:
-   - Texto: "Gerencie seu plano, consulte a rede credenciada e muito mais pelo aplicativo SIX Saúde"
+   - Texto: "Gerencie seu plano, consulte a rede credenciada e muito mais pelo aplicativo Amélia Saúde"
    - Cor: Cinza platinum
 
 3. Lista de Funcionalidades:
@@ -519,7 +519,7 @@ ENTREGUE:
 ## 8️⃣ PROMPT: PÁGINA "SOBRE NÓS"
 
 ```
-Crie a página "Sobre Nós" premium para o site SIX Saúde.
+Crie a página "Sobre Nós" premium para o site Amélia Saúde.
 
 REFERÊNCIA:
 - briefing.md seção 6
@@ -539,7 +539,7 @@ ESTRUTURA DA PÁGINA:
 2. HISTÓRIA:
    - Background: Cinza carvão
    - Título: "Nossa História"
-   - Conteúdo: Parágrafos sobre trajetória da SIX Saúde
+   - Conteúdo: Parágrafos sobre trajetória da Amélia Saúde
    - Layout: Texto com imagem lateral (alternado)
 
 3. MISSÃO, VISÃO, VALORES:
@@ -552,7 +552,7 @@ ESTRUTURA DA PÁGINA:
 
 4. DIFERENCIAIS:
    - Background: Cinza carvão
-   - Título: "Por que escolher a SIX Saúde?"
+   - Título: "Por que escolher a Amélia Saúde?"
    - Grid de diferenciais:
      - Atendimento Humano (ícone: Heart)
      - Transparência (ícone: Eye)
@@ -588,7 +588,7 @@ ENTREGUE:
 ## 9️⃣ PROMPT: OTIMIZAÇÃO DE PERFORMANCE
 
 ```
-Otimize o site SIX Saúde para atingir PageSpeed 95+ e Core Web Vitals verdes.
+Otimize o site Amélia Saúde para atingir PageSpeed 95+ e Core Web Vitals verdes.
 
 TAREFAS DE OTIMIZAÇÃO:
 
@@ -646,14 +646,14 @@ ENTREGUE:
 ## 🔟 PROMPT: SEO & METADATA
 
 ```
-Configure SEO completo para o site SIX Saúde.
+Configure SEO completo para o site Amélia Saúde.
 
 TAREFAS:
 
 1. METADATA (/app/layout.tsx):
-   - Title: "SIX Saúde | Administradora de Benefícios Premium"
+   - Title: "Amélia Saúde | Administradora de Benefícios Premium"
    - Description: "Planos de saúde com atendimento humanizado, transparência e agilidade. Administradora de benefícios com soluções personalizadas para você e sua empresa."
-   - Keywords: administradora de benefícios, plano de saúde, [cidade], SIX Saúde
+   - Keywords: administradora de benefícios, plano de saúde, [cidade], Amélia Saúde
    - Open Graph (OG):
      - og:title, og:description, og:image, og:url
      - og:type: website
@@ -662,7 +662,7 @@ TAREFAS:
 
 2. STRUCTURED DATA (Schema.org):
    - Organization schema:
-     - Nome: SIX Saúde
+     - Nome: Amélia Saúde
      - Logo
      - Contato (telefone, email, endereço)
      - Redes sociais
@@ -713,7 +713,7 @@ ENTREGUE:
 ## 1️⃣1️⃣ PROMPT: TESTES & QA
 
 ```
-Execute testes completos de qualidade AAA no site SIX Saúde.
+Execute testes completos de qualidade AAA no site Amélia Saúde.
 
 CHECKLIST DE TESTES:
 
@@ -797,7 +797,7 @@ Relatório completo de testes com screenshots de:
 ## 1️⃣2️⃣ PROMPT: DEPLOY & LANÇAMENTO
 
 ```
-Faça o deploy do site SIX Saúde na Vercel e configure tudo para produção.
+Faça o deploy do site Amélia Saúde na Vercel e configure tudo para produção.
 
 TAREFAS:
 
@@ -813,7 +813,7 @@ TAREFAS:
    - Deploy de produção no merge para main
 
 2. DOMÍNIO CUSTOMIZADO:
-   - Adicionar domínio da SIX Saúde
+   - Adicionar domínio da Amélia Saúde
    - Configurar DNS (A record ou CNAME)
    - Forçar HTTPS
    - Redirecionar www → naked domain (ou vice-versa)
@@ -912,7 +912,7 @@ Template de dashboard preenchível pelo cliente ou equipe.
 6. Commit se estiver satisfeito
 
 ### Customizações:
-- Substitua [placeholders] por dados reais da SIX Saúde
+- Substitua [placeholders] por dados reais da Amélia Saúde
 - Ajuste URLs de WhatsApp com números reais
 - Forneça logo e imagens reais quando disponíveis
 - Personalize textos conforme necessário

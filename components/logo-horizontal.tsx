@@ -15,15 +15,15 @@ export default function LogoHorizontal({
   width = 400,
   height = 200,
   className = '',
-  alt = 'Six Saúde',
+  alt = 'Amélia Saúde',
 }: LogoHorizontalProps) {
   const colorMap: Record<LogoColor, string> = {
-    preta: '/six-saude-logo-preta-horizontal.svg',
-    branca: '/six-saude-logo-branca-horizontal.svg',
-    amarela: '/six-saude-logo-amarela-horizontal.svg',
+    preta: '/amelia-saude-logo-preta-horizontal.svg',
+    branca: '/amelia-saude-logo-branca-horizontal.svg',
+    amarela: '/amelia-saude-logo-amarela-horizontal.svg',
   };
 
-  const altText = alt || `Six Saúde Logo Horizontal - ${color}`;
+  const altText = alt || `Amélia Saúde Logo Horizontal - ${color}`;
 
   return (
     <img

@@ -78,10 +78,10 @@ export const LegalPageLayout = ({
               Tem duvidas sobre este documento?
             </p>
             <a
-              href="mailto:privacidade@sixsaude.com.br"
+              href="mailto:privacidade@ameliasaude.com.br"
               className="text-gold-signature hover:text-gold-light font-semibold transition-colors"
             >
-              Entre em contato: privacidade@sixsaude.com.br
+              Entre em contato: privacidade@ameliasaude.com.br
             </a>
           </motion.div>
         </Container>

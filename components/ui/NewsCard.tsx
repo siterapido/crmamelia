@@ -19,7 +19,7 @@ interface NewsCardProps {
 }
 
 /**
- * News Card Component - SIX Saúde News Portal
+ * News Card Component - Amélia Saúde News Portal
  * Multiple variants for different layouts
  */
 export const NewsCard = ({ article, variant = 'default', className, priority = false }: NewsCardProps) => {

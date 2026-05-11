@@ -1,6 +1,6 @@
-# Six Saúde - Logo Componentes
+# Amélia Saúde - Logo Componentes
 
-Este diretório contém os arquivos de logo do projeto Six Saúde.
+Este diretório contém os arquivos de logo do projeto Amélia Saúde.
 
 ## 📁 Arquivos SVG
 
@@ -8,9 +8,9 @@ Localização: `public/`
 
 | Arquivo | Cor | Tamanho | Uso Recomendado |
 |---------|-----|---------|-----------------|
-| `six-saude-logo-preta.svg` | Preto (#000000) | 3.9KB | Fundos claros |
-| `six-saude-logo-branca.svg` | Branco (#FFFFFF) | 3.9KB | Fundos escuros, dark mode |
-| `six-saude-logo-amarela.svg` | Amarelo (#FFCC00) | 3.9KB | Destaque, CTA |
+| `amelia-saude-logo-preta.svg` | Preto (#000000) | 3.9KB | Fundos claros |
+| `amelia-saude-logo-branca.svg` | Branco (#FFFFFF) | 3.9KB | Fundos escuros, dark mode |
+| `amelia-saude-logo-amarela.svg` | Amarelo (#FFCC00) | 3.9KB | Destaque, CTA |
 
 ## 🎨 Componentes Disponíveis
 
@@ -37,7 +37,7 @@ import Logo from '@/components/logo';
 - `width?: number | string` (default: `200`)
 - `height?: number | string` (default: `200`)
 - `className?: string`
-- `alt?: string` (default: `'Six Saúde'`)
+- `alt?: string` (default: `'Amélia Saúde'`)
 
 ---
 
@@ -61,7 +61,7 @@ import LogoImage from '@/components/logo-image';
 - `width?: number` (default: `200`)
 - `height?: number` (default: `200`)
 - `className?: string`
-- `alt?: string` (default: `'Six Saúde'`)
+- `alt?: string` (default: `'Amélia Saúde'`)
 - `priority?: boolean` (default: `false`)
 
 ---
@@ -109,7 +109,7 @@ import Logo from '@/components/logo';
 
 <footer className="bg-gray-100 dark:bg-gray-900">
   <Logo width={80} height={80} />
-  <p className="mt-2 text-sm">© 2026 Six Saúde</p>
+  <p className="mt-2 text-sm">© 2026 Amélia Saúde</p>
 </footer>
 ```
 
@@ -196,9 +196,9 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        'logo-preta': "url('/six-saude-logo-preta.svg')",
-        'logo-branca': "url('/six-saude-logo-branca.svg')",
-        'logo-amarela': "url('/six-saude-logo-amarela.svg')",
+        'logo-preta': "url('/amelia-saude-logo-preta.svg')",
+        'logo-branca': "url('/amelia-saude-logo-branca.svg')",
+        'logo-amarela': "url('/amelia-saude-logo-amarela.svg')",
       },
       backgroundSize: {
         'logo': 'contain',

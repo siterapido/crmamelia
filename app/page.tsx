@@ -1,74 +1,12 @@
-import type { Metadata } from 'next'
-import { HeroSection } from '@/components/sections/HeroSection'
-import { ClientSection } from '@/components/sections/ClientSection'
-import { PlanSection } from '@/components/sections/PlanSection'
-import { SocialProofSection } from '@/components/sections/SocialProofSection'
-import { FAQSection } from '@/components/sections/FAQSection'
-import { CTABanner } from '@/components/sections/CTABanner'
-import { LatestNewsSection } from '@/components/sections/LatestNewsSection'
-import { Footer } from '@/components/layout/Footer'
-import { AIChatWidget } from '@/components/ui/AIChatWidget'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'SIX Saúde | Planos de Saúde Premium com Atendimento Humano',
-  description:
-    'Planos de saúde com transparência, agilidade e atendimento 24/7. Administradora AAA registrada na ANS. Autoatendimento rápido e suporte especializado.',
-  openGraph: {
-    title: 'SIX Saúde | Planos de Saúde Premium',
-    description: 'Planos de saúde com atendimento humano e transparência total',
-    url: 'https://sixsaude.com.br',
-    type: 'website',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-      },
-    ],
-  },
-}
+import { AuthProvider } from '@/lib/auth/context'
+import { LoginForm } from '@/components/auth/LoginForm'
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <>
-      {/* Hero Section - Original */}
-      <HeroSection />
-
-      {/* Client Self-Service Section */}
-      <ClientSection />
-
-      {/* Plans Section */}
-      <PlanSection />
-
-      {/* CTA Banner - Engagement #1 (Gold with Shield Pattern) */}
-      <CTABanner
-        variant="gold"
-        heading="Ficou com alguma dúvida?"
-        subheading="Nosso time está pronto para te ajudar"
-        ctaText="Falar com especialista"
-      />
-
-      {/* FAQ Section */}
-      <FAQSection />
-
-      {/* CTA Banner - Engagement #2 (Gold with Pulse Pattern) */}
-      <CTABanner
-        variant="gold-care"
-        heading="Pronto para ter um plano de saúde que realmente cuida de você?"
-        ctaText="Quero Contratar"
-      />
-
-      {/* Latest News & Content */}
-      <LatestNewsSection />
-
-      {/* Social Proof Section */}
-      <SocialProofSection />
-
-      {/* Footer */}
-      <Footer />
-
-      {/* AI Chat Widget */}
-      <AIChatWidget />
-    </>
+    <AuthProvider>
+      <LoginForm />
+    </AuthProvider>
   )
 }

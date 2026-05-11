@@ -1,5 +1,5 @@
 # PRD - Product Requirements Document
-## Site SIX Saúde Administradora de Benefícios
+## Site Amélia Saúde Administradora de Benefícios
 
 ---
 
@@ -20,7 +20,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 | **Cliente** | Acesso à área do cliente | Direciona para página "Sou Cliente" |
 | **Quero Contratar** | CTA principal | Link destacado → WhatsApp de vendas |
 | **Canal de Atendimento** | Suporte | WhatsApp corporativo com mensagem "Fale com um especialista" |
-| **Sobre Nós** | Institucional | Página sobre a SIX Saúde |
+| **Sobre Nós** | Institucional | Página sobre a Amélia Saúde |
 
 **Requisitos:**
 - Menu fixo no scroll (sticky header)
@@ -89,7 +89,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
   - Breve descrição (2-3 benefícios principais)
   - Ícone visual
   - Badge opcional: "Mais contratado", "Melhor custo-benefício"
-- **CTA Único e Claro:** "Quero Contratar" (direciona para WhatsApp com mensagem pré-preenchida: "Olá, tenho interesse em saber mais sobre os planos da SIX Saúde")
+- **CTA Único e Claro:** "Quero Contratar" (direciona para WhatsApp com mensagem pré-preenchida: "Olá, tenho interesse em saber mais sobre os planos da Amélia Saúde")
 
 **Requisitos:**
 - Máximo 3-4 planos em destaque
@@ -98,7 +98,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 
 ---
 
-#### Seção 4: Aplicativo SIX Saúde
+#### Seção 4: Aplicativo Amélia Saúde
 **Objetivo:** Demonstrar a conveniência do app
 
 **Elementos:**
@@ -161,7 +161,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 
 #### Seção 7: Rodapé (Footer)
 **Elementos:**
-- Logo da SIX Saúde
+- Logo da Amélia Saúde
 - **Links Rápidos:**
   - Sou Cliente
   - Quero Contratar
@@ -176,7 +176,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
   - Endereço (opcional)
 - **Redes Sociais:** Ícones (se aplicável)
 - Certificações: Badge ANS, SSL
-- Copyright: "© 2026 SIX Saúde. Todos os direitos reservados."
+- Copyright: "© 2026 Amélia Saúde. Todos os direitos reservados."
 
 ---
 
@@ -189,7 +189,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
    - Título: "Quem Somos"
    - Imagem institucional (equipe ou infraestrutura)
 2. **História:**
-   - Trajetória da SIX Saúde no mercado
+   - Trajetória da Amélia Saúde no mercado
    - Missão, visão e valores
 3. **Diferenciais:**
    - Atendimento humano
@@ -222,7 +222,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 ### 3.1 Performance Excepcional
 - **Meta:** 100/100 no Google PageSpeed
 - **Tempo de carregamento:** < 0.8 segundos
-- **Benefício:** Sites lentos perdem 53% dos leads; SIX Saúde não perderá visitantes
+- **Benefício:** Sites lentos perdem 53% dos leads; Amélia Saúde não perderá visitantes
 
 ### 3.2 Segurança de Dados
 - Certificação SSL (HTTPS)
@@ -309,7 +309,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 
 ## 6. MONETIZAÇÃO & ROI
 
-### Modelo de Receita (SIX Saúde)
+### Modelo de Receita (Amélia Saúde)
 - Venda de planos de saúde (comissão por contrato)
 - Retenção de clientes (redução de churn via autoatendimento)
 
@@ -408,4 +408,4 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 
 **Documento criado em:** Janeiro 2026
 **Versão:** 1.0
-**Aprovadores:** Equipe SIX Saúde + Equipe de Desenvolvimento
+**Aprovadores:** Equipe Amélia Saúde + Equipe de Desenvolvimento

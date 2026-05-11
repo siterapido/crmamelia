@@ -39,8 +39,8 @@ async function seed() {
     // Create default author
     console.log('Creating default author...')
     await db.insert(schema.authors).values({
-        name: 'Equipe SIX Saúde',
-        email: 'blog@sixsaude.com.br',
+        name: 'Equipe Amélia Saúde',
+        email: 'blog@ameliasaude.com.br',
         role: 'Comunicação',
     }).onConflictDoNothing()
     console.log('✅ Default author created')
@@ -48,10 +48,10 @@ async function seed() {
     // Create users
     console.log('Creating users...')
     const usersData = [
-        { email: 'admin@sixsaude.com.br', name: 'Administrador', role: 'admin', password: 'Adm!n@S1X#2026' },
-        { email: 'gestor@sixsaude.com.br', name: 'Gestor SIX', role: 'gestor', password: 'G3st0r@S1X#2026' },
-        { email: 'editor@sixsaude.com.br', name: 'Editor de Blog', role: 'produtor', password: 'Ed1t0r@S1X#2026' },
-        { email: 'vendedor@sixsaude.com.br', name: 'Vendedor SIX', role: 'vendedor', password: 'V3nd3@S1X#2026' },
+        { email: 'admin@ameliasaude.com.br', name: 'Administrador', role: 'admin', password: 'Adm!n@S1X#2026' },
+        { email: 'gestor@ameliasaude.com.br', name: 'Gestor Amélia', role: 'gestor', password: 'G3st0r@S1X#2026' },
+        { email: 'editor@ameliasaude.com.br', name: 'Editor de Blog', role: 'produtor', password: 'Ed1t0r@S1X#2026' },
+        { email: 'vendedor@ameliasaude.com.br', name: 'Vendedor Amélia', role: 'vendedor', password: 'V3nd3@S1X#2026' },
     ]
     for (const u of usersData) {
         const passwordHash = await hashPassword(u.password)
@@ -87,7 +87,7 @@ async function seed() {
         {
             title: 'Saudação',
             shortcut: '/oi',
-            content: 'Olá! Tudo bem? Sou da equipe SIX Saúde. Como posso te ajudar hoje? 😊',
+            content: 'Olá! Tudo bem? Sou da equipe Amélia Saúde. Como posso te ajudar hoje? 😊',
             category: 'saudacao',
         },
         {

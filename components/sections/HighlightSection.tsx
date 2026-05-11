@@ -222,14 +222,14 @@ export const WhyChooseUsSection = () => {
 
   const handleCTA = () => {
     const phoneNumber = '5521972338589'
-    const message = 'Olá! Quero conhecer os diferenciais da SIX Saúde!'
+    const message = 'Olá! Quero conhecer os diferenciais da Amélia Saúde!'
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
   }
 
   return (
     <HighlightSection
       variant="medical"
-      badge="Por que a SIX Saúde?"
+      badge="Por que a Amélia Saúde?"
       heading="Saúde de verdade, sem complicação"
       items={items}
       ctaText="Fale com um especialista"

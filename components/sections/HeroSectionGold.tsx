@@ -218,7 +218,7 @@ export const HeroSectionGold = () => {
                 className="!bg-white !text-[#0A0A0A] hover:!bg-gray-100 !px-8 !py-6 !text-base font-bold min-w-[200px] rounded-xl !shadow-lg transition-all duration-300 hover:!shadow-xl !border !border-white/80"
                 onClick={() => {
                   const phoneNumber = '5521972338589'
-                  const message = 'Olá! Gostaria de fazer um orçamento de plano de saúde com a SIX Saúde.'
+                  const message = 'Olá! Gostaria de fazer um orçamento de plano de saúde com a Amélia Saúde.'
                   window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
                 }}
               >

@@ -1,4 +1,4 @@
-# SIX Saúde - Landing Page Premium AAA
+# Amélia Saúde - Landing Page Premium AAA
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev/)
@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red)](#)
 
-Site institucional **premium** para **SIX Saúde Administradora de Benefícios**. Design minimalista com paleta preto/amarelo ouro, otimizado para conversão e performance excepcional.
+Site institucional **premium** para **Amélia Saúde Administradora de Benefícios**. Design minimalista com paleta preto/amarelo ouro, otimizado para conversão e performance excepcional.
 
 ## ✨ Características
 
@@ -67,7 +67,7 @@ Acesse `http://localhost:3000`
 ## 📁 Estrutura do Projeto
 
 ```
-sixsaude/
+ameliasaude/
 ├── app/
 │   ├── layout.tsx              # Root layout + SEO metadata
 │   └── page.tsx                # Home page principal
@@ -373,7 +373,7 @@ pnpm dev
 
 ## 📄 Licença
 
-**Proprietary** - SIX Saúde Administradora de Benefícios
+**Proprietary** - Amélia Saúde Administradora de Benefícios
 
 ---
 

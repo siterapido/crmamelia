@@ -1,19 +1,19 @@
-# Clawdbot Migration Guide - SIX Saúde
+# Clawdbot Migration Guide - Amélia Saúde
 
-**Projeto:** SIX Saúde CMS
+**Projeto:** Amélia Saúde CMS
 **Data:** 30/01/2026
 **Versão:** 1.0
 
 ## 📋 Visão Geral
 
-Este guia descreve como migrar o projeto SIX Saúde para um novo ambiente, mantendo toda a configuração do Clawdbot e os dados do banco de dados.
+Este guia descreve como migrar o projeto Amélia Saúde para um novo ambiente, mantendo toda a configuração do Clawdbot e os dados do banco de dados.
 
 ---
 
 ## 🗂️ Estrutura do Projeto
 
 ```
-sixsaude/
+ameliasaude/
 ├── .gitignore
 ├── .env.example
 ├── CLAUDE.md
@@ -50,8 +50,8 @@ sixsaude/
 │   ├── favicon.png        # Favicon (32px)
 │   ├── icon.svg           # SVG icon
 │   ├── apple-touch-icon.png
-│   ├── six-saude-logo-*.svg      # Logo SVGs (3 colors × 2 formats)
-│   └── six-saude-logo-*.png      # Logo PNGs (3 colors × 2 formats × 5 sizes)
+│   ├── amelia-saude-logo-*.svg      # Logo SVGs (3 colors × 2 formats)
+│   └── amelia-saude-logo-*.png      # Logo PNGs (3 colors × 2 formats × 5 sizes)
 ├── styles/                # Global styles
 ├── drizzle/               # Database migrations
 │   └── 001_initial_schema.sql
@@ -86,8 +86,8 @@ sixsaude/
 #### Clone do Repositório
 
 ```bash
-git clone <repository-url> sixsaude
-cd sixsaude
+git clone <repository-url> ameliasaude
+cd ameliasaude
 ```
 
 #### Instalação de Dependências
@@ -131,7 +131,7 @@ OPENAI_API_KEY=your-openai-key
 npm install -g neonctl
 
 # Criar projeto
-neonctl projects create --name sixsaude
+neonctl projects create --name ameliasaude
 
 # Copiar connection string
 neonctl connection-string --project-id your-project-id
@@ -145,7 +145,7 @@ brew install postgresql
 brew services start postgresql
 
 # Criar database
-createdb sixsaude
+createdb ameliasaude
 ```
 
 ### 4. Executar Migrações do Banco de Dados
@@ -185,7 +185,7 @@ Ou manual via SQL:
 ```sql
 -- Criar usuário admin
 INSERT INTO users (email, password_hash, name, role)
-VALUES ('admin@sixsaude.com.br', '$2a$10$...', 'Admin', 'admin');
+VALUES ('admin@ameliasaude.com.br', '$2a$10$...', 'Admin', 'admin');
 ```
 
 ### 6. Iniciar o Servidor de Desenvolvimento
@@ -206,7 +206,7 @@ Acesse: http://localhost:3000
 Acesse: http://localhost:3000/admin
 
 Credenciais padrão:
-- Email: `admin@sixsaude.com.br`
+- Email: `admin@ameliasaude.com.br`
 - Password: `admin123` (ALTERAR EM PRODUÇÃO!)
 
 ---
@@ -218,8 +218,8 @@ Credenciais padrão:
 O projeto usa logos SVGs otimizados para web:
 
 #### SVGs Disponíveis
-- Formato Quadrado (1:1): `six-saude-logo-{cor}.svg`
-- Formato Horizontal (2:1): `six-saude-logo-{cor}-horizontal.svg`
+- Formato Quadrado (1:1): `amelia-saude-logo-{cor}.svg`
+- Formato Horizontal (2:1): `amelia-saude-logo-{cor}-horizontal.svg`
 
 #### Cores Disponíveis
 - `preta` (#000000) - Fundos claros

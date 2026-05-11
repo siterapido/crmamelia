@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { LegalPageLayout } from '@/components/layout/LegalPageLayout'
 
 export const metadata: Metadata = {
-  title: 'Politica de Cookies | SIX Saude',
-  description: 'Saiba como a SIX Saude utiliza cookies e tecnologias similares para melhorar sua experiencia em nosso site.',
+  title: 'Politica de Cookies | Amélia Saúde',
+  description: 'Saiba como a Amélia Saúde utiliza cookies e tecnologias similares para melhorar sua experiencia em nosso site.',
 }
 
 export default function CookiesPage() {
@@ -29,7 +29,7 @@ export default function CookiesPage() {
         <h2 className="text-2xl font-display font-semibold text-white mb-4">
           2. Por que Utilizamos Cookies?
         </h2>
-        <p className="mb-4">A SIX Saude utiliza cookies para:</p>
+        <p className="mb-4">A Amélia Saúde utiliza cookies para:</p>
         <ul className="list-disc pl-6 space-y-2">
           <li>Garantir o funcionamento adequado do site</li>
           <li>Lembrar suas preferencias e configuracoes</li>
@@ -235,7 +235,7 @@ export default function CookiesPage() {
           em nosso site, entre em contato conosco:
         </p>
         <div className="mt-4 p-4 bg-black-deep rounded-lg border border-white/10">
-          <p><strong className="text-white">E-mail:</strong> privacidade@sixsaude.com.br</p>
+          <p><strong className="text-white">E-mail:</strong> privacidade@ameliasaude.com.br</p>
           <p><strong className="text-white">Telefone:</strong> 0800 000 0000</p>
         </div>
       </section>

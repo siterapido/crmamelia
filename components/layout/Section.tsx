@@ -32,7 +32,7 @@ interface SectionProps {
 }
 
 /**
- * Section Wrapper Component - SIX Saúde Design System
+ * Section Wrapper Component - Amélia Saúde Design System
  *
  * Reusable section container with:
  * - Consistent padding across all sections

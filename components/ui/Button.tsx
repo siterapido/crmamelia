@@ -23,7 +23,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 /**
- * Premium Button Component - SIX Saúde Design System
+ * Premium Button Component - Amélia Saúde Design System
  *
  * Variants:
  * - primary: Gold gradient with shadow, elevated hover effect

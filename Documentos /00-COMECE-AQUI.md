@@ -1,11 +1,11 @@
-# 🚀 PLANEJAMENTO COMPLETO - Site SIX Saúde Premium AAA
+# 🚀 PLANEJAMENTO COMPLETO - Site Amélia Saúde Premium AAA
 ## Guia de Início Rápido
 
 ---
 
 ## ✨ O QUE FOI CRIADO
 
-Parabéns! Você tem em mãos um **planejamento completo nível AAA** para o site da SIX Saúde Administradora de Benefícios. Este é um projeto premium com visual **preto e amarelo ouro**, inspirado em marcas de luxo como Apple, Tesla e Porsche.
+Parabéns! Você tem em mãos um **planejamento completo nível AAA** para o site da Amélia Saúde Administradora de Benefícios. Este é um projeto premium com visual **preto e amarelo ouro**, inspirado em marcas de luxo como Apple, Tesla e Porsche.
 
 ---
 
@@ -300,7 +300,7 @@ Cinza Platinum:  #B8B8B8 (textos secundários)
 ## ✅ CHECKLIST PRÉ-DESENVOLVIMENTO
 
 Antes de começar, certifique-se de ter:
-- [ ] Logo da SIX Saúde em alta qualidade (SVG ou PNG 2x/3x)
+- [ ] Logo da Amélia Saúde em alta qualidade (SVG ou PNG 2x/3x)
 - [ ] Cores oficiais da marca (validar com cliente se preto e amarelo ouro estão aprovados)
 - [ ] Número de WhatsApp (vendas + suporte)
 - [ ] Links para 2ª via de boleto e demonstrativo de IR
@@ -412,7 +412,7 @@ Crie dashboard simples (Google Sheets ou Notion) para acompanhar:
 
 ## 🎉 CONCLUSÃO
 
-Você tem em mãos um **planejamento nível mundial** para o site da SIX Saúde. Este projeto foi pensado nos mínimos detalhes para:
+Você tem em mãos um **planejamento nível mundial** para o site da Amélia Saúde. Este projeto foi pensado nos mínimos detalhes para:
 
 ✨ **Transmitir luxo e sofisticação** (preto e amarelo ouro premium)
 ⚡ **Converter visitantes em leads** (arquitetura de conversão)
@@ -437,7 +437,7 @@ Comece pelo design, depois desenvolvimento, teste rigorosamente e lance com conf
 
 ---
 
-**Projeto:** Site SIX Saúde Premium AAA
+**Projeto:** Site Amélia Saúde Premium AAA
 **Versão do Planejamento:** 1.0
 **Data:** Janeiro 2026
 **Status:** ✅ Pronto para execução

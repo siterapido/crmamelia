@@ -1,4 +1,4 @@
-# Guia de Setup & Instalação - Site SIX Saúde
+# Guia de Setup & Instalação - Site Amélia Saúde
 ## Next.js + Neon DB + Auth + Cloudflare R2
 
 ---
@@ -40,13 +40,13 @@ git --version
 
 ```bash
 # Opção 1: Com npx (recomendado)
-npx create-next-app@latest sixsaude-site
+npx create-next-app@latest ameliasaude-site
 
 # Opção 2: Com pnpm (mais rápido)
-pnpm create next-app sixsaude-site
+pnpm create next-app ameliasaude-site
 
 # Opção 3: Com yarn
-yarn create next-app sixsaude-site
+yarn create next-app ameliasaude-site
 ```
 
 **Configuração interativa (escolha):**
@@ -64,7 +64,7 @@ yarn create next-app sixsaude-site
 ### 1.3 Entrar no Projeto
 
 ```bash
-cd sixsaude-site
+cd ameliasaude-site
 ```
 
 ---
@@ -139,7 +139,7 @@ pnpm add -D prisma @types/node @types/react @types/react-dom typescript eslint e
 
 1. Acesse [neon.tech](https://neon.tech)
 2. Crie uma conta (GitHub login recomendado)
-3. Crie um novo projeto: "sixsaude-production"
+3. Crie um novo projeto: "ameliasaude-production"
 4. Selecione região: **US East (Ohio)** ou mais próxima do Brasil
 
 ### 3.2 Obter Connection String
@@ -224,7 +224,7 @@ model User {
   emailVerified DateTime?
   image         String?
   role          String    @default("user") // user, admin
-  cpf           String?   @unique // Para clientes SIX Saúde
+  cpf           String?   @unique // Para clientes Amélia Saúde
   phone         String?
   accounts      Account[]
   sessions      Session[]
@@ -241,7 +241,7 @@ model VerificationToken {
 }
 
 // ========================================
-// MODELS ESPECÍFICOS DA SIX SAÚDE
+// MODELS ESPECÍFICOS DA AMÉLIA SAÚDE
 // ========================================
 
 // Exemplo: Solicitações de contato via site
@@ -293,8 +293,8 @@ NEXTAUTH_SECRET="sua-chave-secreta-super-segura-aqui" # Gerar com: openssl rand 
 R2_ACCOUNT_ID="seu-account-id"
 R2_ACCESS_KEY_ID="sua-access-key"
 R2_SECRET_ACCESS_KEY="seu-secret-key"
-R2_BUCKET_NAME="sixsaude-files"
-R2_PUBLIC_URL="https://files.sixsaude.com.br" # URL pública do bucket
+R2_BUCKET_NAME="ameliasaude-files"
+R2_PUBLIC_URL="https://files.ameliasaude.com.br" # URL pública do bucket
 
 # Analytics (opcional)
 NEXT_PUBLIC_GA_ID="G-XXXXXXXXXX"
@@ -391,7 +391,7 @@ import { prisma } from './prisma'
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
-    // Login com CPF (para clientes SIX Saúde)
+    // Login com CPF (para clientes Amélia Saúde)
     CredentialsProvider({
       id: 'cpf-login',
       name: 'CPF',
@@ -477,7 +477,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SIX Saúde | Administradora de Benefícios Premium',
+  title: 'Amélia Saúde | Administradora de Benefícios Premium',
   description: 'Planos de saúde com atendimento humanizado e transparência',
 }
 
@@ -504,7 +504,7 @@ export default function RootLayout({
 
 1. Acesse [Cloudflare Dashboard](https://dash.cloudflare.com/)
 2. Vá em **R2** → **Create bucket**
-3. Nome: `sixsaude-files`
+3. Nome: `ameliasaude-files`
 4. Locação: Automática (escolhe melhor região)
 
 ---
@@ -527,7 +527,7 @@ Para servir arquivos publicamente:
 
 1. No bucket, vá em **Settings** → **Public Access**
 2. Habilite **Allow Public Access**
-3. Configure domínio customizado (ex: `files.sixsaude.com.br`)
+3. Configure domínio customizado (ex: `files.ameliasaude.com.br`)
 4. Adicione CNAME no seu DNS apontando para o endpoint R2
 
 ---
@@ -739,7 +739,7 @@ export default config
 ## 📁 PARTE 7: ESTRUTURA DE PASTAS RECOMENDADA
 
 ```
-sixsaude-site/
+ameliasaude-site/
 ├── app/
 │   ├── (auth)/              # Grupo de rotas de autenticação
 │   │   ├── login/
@@ -825,8 +825,8 @@ NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
 R2_ACCOUNT_ID=""
 R2_ACCESS_KEY_ID=""
 R2_SECRET_ACCESS_KEY=""
-R2_BUCKET_NAME="sixsaude-files"
-R2_PUBLIC_URL="https://files.sixsaude.com.br"
+R2_BUCKET_NAME="ameliasaude-files"
+R2_PUBLIC_URL="https://files.ameliasaude.com.br"
 
 # Analytics
 NEXT_PUBLIC_GA_ID=""

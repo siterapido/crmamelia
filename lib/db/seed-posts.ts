@@ -42,12 +42,12 @@ const postsData = [
             <p>Imprevistos acontecem. Ter a segurança de saber para onde correr em caso de uma emergência médica, sem depender das longas filas do sistema público, não tem preço. O atendimento rápido pode ser crucial em situações delicadas.</p>
             
             <h2>4. Ampla Rede Credenciada</h2>
-            <p>Planos de saúde familiares, como os oferecidos pela SIX Saúde, contam com uma vasta rede de hospitais, clínicas e laboratórios de excelência. Isso garante que você terá o especialista certo perto de você quando precisar.</p>
+            <p>Planos de saúde familiares, como os oferecidos pela Amélia Saúde, contam com uma vasta rede de hospitais, clínicas e laboratórios de excelência. Isso garante que você terá o especialista certo perto de você quando precisar.</p>
             
             <h2>5. Tranquilidade e Segurança</h2>
             <p>Saber que sua família está amparada traz uma paz de espírito inestimável. Você não precisa se preocupar com custos surpresa em caso de internações ou cirurgias, pois o plano oferece a cobertura necessária.</p>
             
-            <p>Investir na saúde da sua família é um ato de amor. Fale com um consultor da SIX Saúde e encontre o plano perfeito para o seu lar.</p>
+            <p>Investir na saúde da sua família é um ato de amor. Fale com um consultor da Amélia Saúde e encontre o plano perfeito para o seu lar.</p>
         `
     },
     {
@@ -70,7 +70,7 @@ const postsData = [
             <h2>Custo-Benefício</h2>
             <p>Compare o valor mensal do plano com o custo de consultas particulares. Geralmente, se você vai ao dentista mais de duas vezes ao ano ou precisa de tratamentos, o plano já se paga.</p>
 
-            <p>Na SIX Saúde, oferecemos opções flexíveis que se adaptam ao seu perfil. Não deixe sua saúde bucal para depois!</p>
+            <p>Na Amélia Saúde, oferecemos opções flexíveis que se adaptam ao seu perfil. Não deixe sua saúde bucal para depois!</p>
         `
     },
     {
@@ -121,7 +121,7 @@ const postsData = [
             <h2>Quando Usar?</h2>
             <p>É ideal para triagem de sintomas leves (resfriados, alergias), acompanhamento de doenças crônicas, análise de exames e renovação de receitas.</p>
 
-            <p>A SIX Saúde integra tecnologia de ponta para oferecer telemedicina de qualidade aos seus beneficiários.</p>
+            <p>A Amélia Saúde integra tecnologia de ponta para oferecer telemedicina de qualidade aos seus beneficiários.</p>
         `
     },
     {
@@ -142,7 +142,7 @@ const postsData = [
                 <li><strong>Organize-se:</strong> O planejamento reduz a ansiedade e a sensação de urgência constante.</li>
             </ol>
 
-            <p>Empresas parceiras da SIX Saúde contam com programas de apoio ao colaborador. Se precisar, peça ajuda.</p>
+            <p>Empresas parceiras da Amélia Saúde contam com programas de apoio ao colaborador. Se precisar, peça ajuda.</p>
         `
     },
     {
@@ -236,16 +236,16 @@ const postsData = [
             <h2>Portabilidade</h2>
             <p>Se você já tem um plano há algum tempo, pode trocar de operadora sem cumprir novas carências (portabilidade), seguindo algumas regras.</p>
 
-            <p>A SIX Saúde preza pela transparência. Consulte seu contrato e tire dúvidas com nossa equipe.</p>
+            <p>A Amélia Saúde preza pela transparência. Consulte seu contrato e tire dúvidas com nossa equipe.</p>
         `
     },
     {
-        title: 'Por Que Escolher a SIX Saúde? Conheça Nossos Diferenciais',
+        title: 'Por Que Escolher a Amélia Saúde? Conheça Nossos Diferenciais',
         categoryName: 'Institucional',
         coverImage: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-        excerpt: 'Mais que um plano, somos parceiros da sua saúde. Conheça a tecnologia, o atendimento e a rede que fazem da SIX a melhor escolha.',
+        excerpt: 'Mais que um plano, somos parceiros da sua saúde. Conheça a tecnologia, o atendimento e a rede que fazem da Amélia a melhor escolha.',
         content: `
-            <p>No mercado de saúde, confiança é tudo. A SIX Saúde nasceu para oferecer uma experiência diferente, humanizada e eficiente.</p>
+            <p>No mercado de saúde, confiança é tudo. A Amélia Saúde nasceu para oferecer uma experiência diferente, humanizada e eficiente.</p>
 
             <h2>1. Atendimento Humanizado</h2>
             <p>Aqui você não é um número. Nosso time de concierges de saúde está pronto para ouvir e resolver, sem robôs infinitos.</p>
@@ -259,7 +259,7 @@ const postsData = [
             <h2>4. Gestão de Saúde</h2>
             <p>Não focamos apenas na doença, mas na saúde. Nossos programas de prevenção ajudam você a viver mais e melhor.</p>
 
-            <p>Venha ser SIX. Sua saúde merece esse cuidado.</p>
+            <p>Venha ser Amélia. Sua saúde merece esse cuidado.</p>
         `
     }
 ]
@@ -276,7 +276,7 @@ async function seedPosts() {
 
     // 1. Get Default Author
     const author = await db.query.authors.findFirst({
-        where: eq(schema.authors.email, 'blog@sixsaude.com.br')
+        where: eq(schema.authors.email, 'blog@ameliasaude.com.br')
     })
 
     if (!author) {

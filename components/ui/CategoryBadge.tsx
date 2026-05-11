@@ -11,7 +11,7 @@ interface CategoryBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 /**
- * Category Badge Component - SIX Saúde News Portal
+ * Category Badge Component - Amélia Saúde News Portal
  * Displays category with custom color indicator
  */
 export const CategoryBadge = React.forwardRef<HTMLSpanElement, CategoryBadgeProps>(

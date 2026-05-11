@@ -6,7 +6,7 @@ dotenv.config({ path: resolve(process.cwd(), '.env.local') });
 
 async function testSend() {
     const phone = '558486536223'; // The instance owner phone
-    const message = 'Teste de resposta automática da SIX Saúde';
+    const message = 'Teste de resposta automática da Amélia Saúde';
     
     console.log(`Testing sendTextMessage to ${phone}...`);
     try {

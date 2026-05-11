@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { LegalPageLayout } from '@/components/layout/LegalPageLayout'
 
 export const metadata: Metadata = {
-  title: 'Termos de Uso | SIX Saude',
-  description: 'Termos e condicoes de uso do site e servicos da SIX Saude. Leia atentamente antes de utilizar nossos servicos.',
+  title: 'Termos de Uso | Amélia Saúde',
+  description: 'Termos e condicoes de uso do site e servicos da Amélia Saúde. Leia atentamente antes de utilizar nossos servicos.',
 }
 
 export default function TermosPage() {
@@ -18,7 +18,7 @@ export default function TermosPage() {
           1. Aceitacao dos Termos
         </h2>
         <p>
-          Ao acessar e usar o site da SIX Saude (sixsaude.com.br) e nossos servicos, voce concorda
+          Ao acessar e usar o site da Amélia Saúde (ameliasaude.com.br) e nossos servicos, voce concorda
           em cumprir e estar vinculado a estes Termos de Uso. Se voce nao concordar com qualquer
           parte destes termos, nao devera usar nosso site ou servicos.
         </p>
@@ -29,7 +29,7 @@ export default function TermosPage() {
           2. Descricao dos Servicos
         </h2>
         <p className="mb-4">
-          A SIX Saude e uma administradora de beneficios de saude registrada na ANS que oferece:
+          A Amélia Saúde e uma administradora de beneficios de saude registrada na ANS que oferece:
         </p>
         <ul className="list-disc pl-6 space-y-2">
           <li>Intermediacao na contratacao de planos de saude</li>
@@ -78,7 +78,7 @@ export default function TermosPage() {
         </h2>
         <p>
           Todo o conteudo do site, incluindo textos, graficos, logos, icones, imagens, clips de audio,
-          downloads digitais e compilacoes de dados, e de propriedade da SIX Saude ou de seus
+          downloads digitais e compilacoes de dados, e de propriedade da Amélia Saúde ou de seus
           fornecedores de conteudo e e protegido pelas leis brasileiras e internacionais de
           propriedade intelectual.
         </p>
@@ -89,7 +89,7 @@ export default function TermosPage() {
           6. Limitacao de Responsabilidade
         </h2>
         <p className="mb-4">
-          A SIX Saude nao sera responsavel por:
+          A Amélia Saúde nao sera responsavel por:
         </p>
         <ul className="list-disc pl-6 space-y-2">
           <li>Interrupcoes temporarias no acesso ao site</li>
@@ -109,7 +109,7 @@ export default function TermosPage() {
         </h2>
         <p>
           Nosso site pode conter links para sites de terceiros. Esses links sao fornecidos apenas
-          para sua conveniencia. A SIX Saude nao endossa e nao e responsavel pelo conteudo,
+          para sua conveniencia. A Amélia Saúde nao endossa e nao e responsavel pelo conteudo,
           politicas de privacidade ou praticas de sites de terceiros.
         </p>
       </section>
@@ -155,7 +155,7 @@ export default function TermosPage() {
           Para duvidas sobre estes termos:
         </p>
         <div className="mt-4 p-4 bg-black-deep rounded-lg border border-white/10">
-          <p><strong className="text-white">E-mail:</strong> contato@sixsaude.com.br</p>
+          <p><strong className="text-white">E-mail:</strong> contato@ameliasaude.com.br</p>
           <p><strong className="text-white">Telefone:</strong> 0800 000 0000</p>
         </div>
       </section>

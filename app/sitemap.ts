@@ -5,7 +5,7 @@ import { MetadataRoute } from 'next'
  * Automatically generates sitemap.xml for SEO
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://sixsaude.com.br'
+  const baseUrl = 'https://ameliasaude.com.br'
   const lastModified = new Date()
 
   return [

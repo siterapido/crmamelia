@@ -49,7 +49,7 @@ export async function ensureDeal(contact: Contact): Promise<string> {
     const [newDeal] = await db.insert(deals).values({
         contactId: contact.id,
         stageId: stage.id,
-        title: `${contact.name} - SIX Saúde`,
+        title: `${contact.name} - Amélia Saúde`,
         planInterest: contact.planInterest,
         livesCount: contact.livesCount,
     }).returning()
@@ -205,7 +205,7 @@ async function handleQualify(contact: Contact, action: SDRAction) {
     if (action.field === 'name') {
         const [deal] = await db.select().from(deals).where(eq(deals.contactId, contact.id)).limit(1)
         if (deal) {
-            await db.update(deals).set({ title: `${action.value} - SIX Saúde`, updatedAt: new Date() }).where(eq(deals.id, deal.id))
+            await db.update(deals).set({ title: `${action.value} - Amélia Saúde`, updatedAt: new Date() }).where(eq(deals.id, deal.id))
         }
     }
 

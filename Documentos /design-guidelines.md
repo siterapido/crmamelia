@@ -1,4 +1,4 @@
-# Design Guidelines - SIX Saúde
+# Design Guidelines - Amélia Saúde
 ## Identidade Visual & Diretrizes de Design
 
 ---
@@ -6,7 +6,7 @@
 ## 1. PERSONALIDADE DA MARCA
 
 ### Arquétipo da Marca: O Cuidador
-A SIX Saúde se posiciona como **O Cuidador** - uma marca que protege, acolhe e cuida de seus clientes com empatia, confiança e responsabilidade.
+A Amélia Saúde se posiciona como **O Cuidador** - uma marca que protege, acolhe e cuida de seus clientes com empatia, confiança e responsabilidade.
 
 ### Atributos de Personalidade
 
@@ -29,7 +29,7 @@ A SIX Saúde se posiciona como **O Cuidador** - uma marca que protege, acolhe e 
 | Vendas | Consultivo e seguro | "Vamos encontrar o plano ideal para você e sua família" |
 | Suporte | Empático e solucionador | "Estamos aqui para ajudar. Fale com um especialista agora" |
 
-### O que SIX Saúde É vs. Não É
+### O que Amélia Saúde É vs. Não É
 
 | ✅ É | ❌ Não É |
 |------|----------|

@@ -1,5 +1,5 @@
 /**
- * Layout Components - SIX Saúde Design System
+ * Layout Components - Amélia Saúde Design System
  *
  * Structural components for page layout
  */

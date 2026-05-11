@@ -11,7 +11,7 @@ interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
 }
 
 /**
- * Search Input Component - SIX Saúde Design System
+ * Search Input Component - Amélia Saúde Design System
  * Glass-style input with debounced search
  */
 export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(

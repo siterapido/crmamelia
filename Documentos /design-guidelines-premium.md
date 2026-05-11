@@ -1,4 +1,4 @@
-# Design Guidelines PREMIUM AAA - SIX Saúde
+# Design Guidelines PREMIUM AAA - Amélia Saúde
 ## Identidade Visual de Alto Padrão: Preto & Amarelo Ouro
 
 ---
@@ -6,7 +6,7 @@
 ## 🎯 VISÃO DO DESIGN AAA
 
 ### Posicionamento Premium
-SIX Saúde não é apenas uma administradora de benefícios. É **a escolha sofisticada** para quem valoriza excelência, exclusividade e atendimento de classe mundial.
+Amélia Saúde não é apenas uma administradora de benefícios. É **a escolha sofisticada** para quem valoriza excelência, exclusividade e atendimento de classe mundial.
 
 ### Filosofia de Design
 **"Menos é Luxo"** - Inspirado em Apple, Tesla e marcas AAA, o design comunica sofisticação através de:

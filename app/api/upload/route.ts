@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer()
         await writeFile(filePath, Buffer.from(bytes))
 
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sixsaude.vercel.app'
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ameliasaude.vercel.app'
         const url = `${baseUrl}/uploads/${fileName}`
 
         return NextResponse.json({

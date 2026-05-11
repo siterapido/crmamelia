@@ -1,4 +1,4 @@
-# MIGRATION SUMMARY - SIX SAUDE
+# MIGRATION SUMMARY - AMELIA SAUDE
 
 **Data:** 30/01/2026
 **Autor:** Clawdbot
@@ -112,7 +112,7 @@ psql $DATABASE_URL
 
 ## 🔐 Credenciais Padrão
 
-- **Email:** admin@sixsaude.com.br
+- **Email:** admin@ameliasaude.com.br
 - **Password:** admin123
 - **Role:** admin
 

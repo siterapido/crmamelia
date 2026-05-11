@@ -82,7 +82,7 @@ export default function SobrePage() {
     {
       icon: Users,
       title: '5.000+ Clientes',
-      description: 'Milhares de clientes satisfeitos que confiam na SIX Saúde para cuidar do que mais importa.',
+      description: 'Milhares de clientes satisfeitos que confiam na Amélia Saúde para cuidar do que mais importa.',
     },
   ]
 
@@ -164,7 +164,7 @@ export default function SobrePage() {
                   transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <span className="text-white">Somos a </span>
-                  <span className="text-gradient">SIX Saúde</span>
+                  <span className="text-gradient">Amélia Saúde</span>
                 </motion.h1>
 
                 {/* Subheadline */}
@@ -217,7 +217,7 @@ export default function SobrePage() {
                     className="!border-white/20 !text-white hover:!bg-white/10"
                     onClick={() => {
                       const phoneNumber = '5511999999999'
-                      const message = 'Olá! Vim da página Sobre e gostaria de saber mais sobre a SIX Saúde.'
+                      const message = 'Olá! Vim da página Sobre e gostaria de saber mais sobre a Amélia Saúde.'
                       window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
                     }}
                   >
@@ -454,7 +454,7 @@ export default function SobrePage() {
             viewport={{ once: true, margin: '-100px' }}
           >
             <h2 className="font-display font-semibold text-h2 mb-4">
-              Por que escolher a SIX Saúde?
+              Por que escolher a Amélia Saúde?
             </h2>
             <p className="text-xl text-platinum-light max-w-2xl mx-auto">
               Diferenciais que fazem da gente uma referência no mercado
@@ -567,7 +567,7 @@ export default function SobrePage() {
               Pronto para fazer parte da nossa história?
             </h2>
             <p className="text-xl text-black-premium/70 mb-10 leading-relaxed">
-              Junte-se a milhares de clientes que já confiam na SIX Saúde para cuidar
+              Junte-se a milhares de clientes que já confiam na Amélia Saúde para cuidar
               do que mais importa: a saúde de quem você ama.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -577,7 +577,7 @@ export default function SobrePage() {
                 className="btn-on-gold shadow-[0_10px_40px_rgba(0,0,0,0.2)]"
                 onClick={() => {
                   const phoneNumber = '5511999999999'
-                  const message = 'Olá! Vim da página Sobre e gostaria de conhecer os planos da SIX Saúde.'
+                  const message = 'Olá! Vim da página Sobre e gostaria de conhecer os planos da Amélia Saúde.'
                   window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
                 }}
               >

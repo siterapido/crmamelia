@@ -1,4 +1,4 @@
-# Landing Page Specification - SIX Saúde
+# Landing Page Specification - Amélia Saúde
 ## Especificação Detalhada da Home Page: Copy, Headlines, CTAs e Prova Social
 
 ---
@@ -83,7 +83,7 @@ Capturar atenção em **3 segundos** e guiar o visitante para uma de duas açõe
 #### CTA Secundário
 **Texto:** "Quero Contratar"
 **Cor:** Laranja (`#FF6B35`)
-**Ação:** Abre WhatsApp com mensagem: "Olá! Tenho interesse em conhecer os planos da SIX Saúde. Podem me ajudar?"
+**Ação:** Abre WhatsApp com mensagem: "Olá! Tenho interesse em conhecer os planos da Amélia Saúde. Podem me ajudar?"
 **Hierarquia:** Botão menor ou outline, à direita
 
 ---
@@ -147,7 +147,7 @@ Capturar atenção em **3 segundos** e guiar o visitante para uma de duas açõe
 ### 3.4 CTA de Escape
 **Texto:** "Não encontrou o que procurava? **Fale com um especialista**"
 **Posição:** Abaixo dos cards, centralizado
-**Ação:** Abre WhatsApp com mensagem: "Olá! Sou cliente da SIX Saúde e preciso de ajuda com [descreva sua necessidade]"
+**Ação:** Abre WhatsApp com mensagem: "Olá! Sou cliente da Amélia Saúde e preciso de ajuda com [descreva sua necessidade]"
 **Estilo:** Link destacado (cor primária, underline no hover)
 
 ---
@@ -166,7 +166,7 @@ Capturar atenção em **3 segundos** e guiar o visitante para uma de duas açõe
 
 ### 4.3 Cards de Planos (Exemplo de Estrutura)
 
-**Nota:** Ajustar conforme planos reais da SIX Saúde
+**Nota:** Ajustar conforme planos reais da Amélia Saúde
 
 #### Card: Plano Individual/Familiar
 - **Ícone:** 👤 (User - Lucide)
@@ -208,7 +208,7 @@ Capturar atenção em **3 segundos** e guiar o visitante para uma de duas açõe
 "Tudo na palma da sua mão"
 
 ### 5.2 Subheadline
-"Gerencie seu plano, consulte a rede credenciada e muito mais pelo aplicativo SIX Saúde"
+"Gerencie seu plano, consulte a rede credenciada e muito mais pelo aplicativo Amélia Saúde"
 
 ---
 
@@ -266,7 +266,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 **Formato:** Cards com foto + nome + texto curto
 
 **Exemplo:**
-> "A SIX Saúde resolveu meu problema em minutos. Atendimento impecável!"
+> "A Amélia Saúde resolveu meu problema em minutos. Atendimento impecável!"
 > **— Maria Silva, cliente há 3 anos**
 
 **Nota:** Usar depoimentos reais com autorização. Se não houver, deixar para Fase 2.
@@ -317,7 +317,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 
 #### Pergunta 5: Qual a diferença entre administradora e operadora?
 **Resposta:**
-"A administradora (SIX Saúde) cuida da gestão do seu plano, atendimento e suporte. A operadora é quem fornece a rede credenciada de médicos e hospitais. Trabalhamos com as melhores operadoras para garantir a melhor cobertura para você."
+"A administradora (Amélia Saúde) cuida da gestão do seu plano, atendimento e suporte. A operadora é quem fornece a rede credenciada de médicos e hospitais. Trabalhamos com as melhores operadoras para garantir a melhor cobertura para você."
 
 ---
 
@@ -369,7 +369,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 ### 9.1 Estrutura do Footer
 
 #### Coluna 1: Logo + Tagline
-- Logo SIX Saúde
+- Logo Amélia Saúde
 - Tagline: "Cuidando da sua saúde com transparência e dedicação"
 
 #### Coluna 2: Links Rápidos
@@ -386,7 +386,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 
 #### Coluna 4: Contato
 - **WhatsApp:** (XX) XXXXX-XXXX (com ícone)
-- **E-mail:** contato@sixsaude.com.br
+- **E-mail:** contato@ameliasaude.com.br
 - **Telefone:** (XX) XXXX-XXXX
 - **Endereço:** Rua X, Nº X, Cidade - UF (se relevante)
 
@@ -404,7 +404,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 ---
 
 ### 9.3 Copyright
-**Texto:** "© 2026 SIX Saúde Administradora de Benefícios. Todos os direitos reservados."
+**Texto:** "© 2026 Amélia Saúde Administradora de Benefícios. Todos os direitos reservados."
 **Posição:** Centralizado na parte inferior do footer
 
 ---
@@ -421,7 +421,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 
 ### 10.2 Comportamento
 - **Ação ao clicar:** Abre WhatsApp com mensagem:
-  - "Olá! Vim pelo site da SIX Saúde e gostaria de mais informações."
+  - "Olá! Vim pelo site da Amélia Saúde e gostaria de mais informações."
 - **Sempre visível:** Em todas as páginas, exceto mobile quando menu está aberto
 - **Tooltip (opcional):** Ao passar o mouse, mostra "Fale conosco"
 
@@ -431,25 +431,25 @@ Reduzir objeções e transmitir confiança através de números, certificações
 
 ### 11.1 CTA "Quero Contratar" (Vendas)
 **Mensagem:**
-"Olá! Tenho interesse em conhecer os planos da SIX Saúde. Podem me ajudar?"
+"Olá! Tenho interesse em conhecer os planos da Amélia Saúde. Podem me ajudar?"
 
 ---
 
 ### 11.2 CTA "Fale com um Especialista" (Suporte)
 **Mensagem:**
-"Olá! Vim pelo site da SIX Saúde e preciso falar com um especialista."
+"Olá! Vim pelo site da Amélia Saúde e preciso falar com um especialista."
 
 ---
 
 ### 11.3 CTA de Escape - Sou Cliente
 **Mensagem:**
-"Olá! Sou cliente da SIX Saúde e preciso de ajuda com [descreva sua necessidade]"
+"Olá! Sou cliente da Amélia Saúde e preciso de ajuda com [descreva sua necessidade]"
 
 ---
 
 ### 11.4 Botão Flutuante (Genérico)
 **Mensagem:**
-"Olá! Vim pelo site da SIX Saúde e gostaria de mais informações."
+"Olá! Vim pelo site da Amélia Saúde e gostaria de mais informações."
 
 ---
 

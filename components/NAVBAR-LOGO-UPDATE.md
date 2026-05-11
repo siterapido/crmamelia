@@ -17,7 +17,7 @@ import { LogoImage } from '@/components/logo-image';  // Adicionar import
 <Link
   href="/"
   className="flex items-center gap-2 group"
-  aria-label="SIX Saude - Pagina inicial"
+  aria-label="Amélia Saúde - Pagina inicial"
 >
   <motion.div
     whileHover={{ scale: 1.02 }}
@@ -43,7 +43,7 @@ Opção 2: Usar diretamente o arquivo SVG
 <Link
   href="/"
   className="flex items-center gap-2 group"
-  aria-label="SIX Saude - Pagina inicial"
+  aria-label="Amélia Saúde - Pagina inicial"
 >
   <motion.div
     whileHover={{ scale: 1.02 }}
@@ -51,8 +51,8 @@ Opção 2: Usar diretamente o arquivo SVG
     className="relative w-32 h-12"
   >
     <Image
-      src="/six-saude-logo-branca.svg"  // Alterar de /logo.png
-      alt="SIX Saúde"
+      src="/amelia-saude-logo-branca.svg"  // Alterar de /logo.png
+      alt="Amélia Saúde"
       fill
       className="object-contain"
       priority
@@ -93,7 +93,7 @@ import { LogoImage } from '@/components/logo-image';
 
 ## Benefícios da Atualização
 
-✅ **Arquivo existe:** `/six-saude-logo-branca.svg` está disponível
+✅ **Arquivo existe:** `/amelia-saude-logo-branca.svg` está disponível
 ✅ **SVG vetorial:** Sem perda de qualidade ao redimensionar
 ✅ **Dark mode:** Cor branca visível no fundo escuro do Navbar
 ✅ **SEO e Acessibilidade:** Tags `<title>`, `<desc>`, `role="img"`, `aria-label`
@@ -135,7 +135,7 @@ export const Navbar = () => {
             <Link
               href="/"
               className="flex items-center gap-2 group"
-              aria-label="SIX Saude - Pagina inicial"
+              aria-label="Amélia Saúde - Pagina inicial"
             >
               <motion.div
                 whileHover={{ scale: 1.02 }}
@@ -147,7 +147,7 @@ export const Navbar = () => {
                   width={128}
                   height={48}
                   priority
-                  alt="SIX Saúde - Logo"
+                  alt="Amélia Saúde - Logo"
                 />
               </motion.div>
             </Link>

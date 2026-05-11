@@ -31,12 +31,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!article) {
     return {
-      title: 'Notícia não encontrada | SIX Saúde',
+      title: 'Notícia não encontrada | Amélia Saúde',
     }
   }
 
   return {
-    title: `${article.title} | SIX Saúde`,
+    title: `${article.title} | Amélia Saúde`,
     description: article.excerpt,
     openGraph: {
       title: article.title,

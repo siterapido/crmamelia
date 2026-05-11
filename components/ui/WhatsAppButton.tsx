@@ -12,7 +12,7 @@ interface WhatsAppButtonProps {
 }
 
 /**
- * WhatsApp Floating Button - SIX Saúde Design System
+ * WhatsApp Floating Button - Amélia Saúde Design System
  *
  * Premium floating action button with:
  * - Subtle pulse animation every 3 seconds
@@ -25,7 +25,7 @@ interface WhatsAppButtonProps {
  */
 export const WhatsAppButton = ({
   phoneNumber = '5521972229609',
-  message = 'Olá! Vim pelo site da SIX Saúde e gostaria de mais informações.',
+  message = 'Olá! Vim pelo site da Amélia Saúde e gostaria de mais informações.',
 }: WhatsAppButtonProps) => {
   const handleWhatsAppClick = () => {
     const encodedMessage = encodeURIComponent(message)

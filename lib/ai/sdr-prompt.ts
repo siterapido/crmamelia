@@ -85,7 +85,7 @@ function getCollectionPhase(contact: Contact, history: Message[]): string {
 export function buildSDRPrompt(contact: Contact, history: Message[]): string {
     const historyText = history
         .slice(-20)
-        .map(m => `[${m.sender === 'contact' ? contact.name : 'SIX Saúde'}]: ${m.content}`)
+        .map(m => `[${m.sender === 'contact' ? contact.name : 'Amélia Saúde'}]: ${m.content}`)
         .join('\n')
 
     const status = getQualifyingStatus(contact, history)
@@ -93,7 +93,7 @@ export function buildSDRPrompt(contact: Contact, history: Message[]): string {
     const answeredCount = status.filter(q => q.answered).length
     const pendingQuestions = status.filter(q => !q.answered).map(q => q.question)
 
-    return `Você é a assistente virtual da SIX Saúde Administradora de Benefícios no WhatsApp. Seu papel é acolher o lead, fazer perguntas de qualificação e encaminhar para um consultor humano.
+    return `Você é a assistente virtual da Amélia Saúde Administradora de Benefícios no WhatsApp. Seu papel é acolher o lead, fazer perguntas de qualificação e encaminhar para um consultor humano.
 
 ## METODOLOGIA: SPIN SELLING + QUALIFICAÇÃO
 
@@ -147,7 +147,7 @@ ${historyText || 'Primeira mensagem do contato.'}
 ## FLUXO OBRIGATÓRIO
 
 ### Se fase = INICIO
-- Apresente-se como assistente virtual da SIX Saúde
+- Apresente-se como assistente virtual da Amélia Saúde
 - Faça a primeira pergunta pendente (geralmente o nome)
 
 ### Se fase = COLETANDO_DADOS ou QUALIFICANDO

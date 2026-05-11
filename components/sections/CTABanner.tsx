@@ -142,11 +142,11 @@ export const CTABanner: React.FC<CTABannerProps> = ({
                 let message = ''
 
                 if (variant === 'help') {
-                  message = 'Olá! Vim pelo site da SIX Saúde e preciso de ajuda.'
+                  message = 'Olá! Vim pelo site da Amélia Saúde e preciso de ajuda.'
                 } else if (variant === 'gold' || variant === 'gold-care') {
-                  message = 'Olá! Quero saber mais sobre os planos da SIX Saúde!'
+                  message = 'Olá! Quero saber mais sobre os planos da Amélia Saúde!'
                 } else {
-                  message = 'Olá! Tenho interesse em conhecer os planos da SIX Saúde. Podem me ajudar?'
+                  message = 'Olá! Tenho interesse em conhecer os planos da Amélia Saúde. Podem me ajudar?'
                 }
 
                 const encodedMessage = encodeURIComponent(message)

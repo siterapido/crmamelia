@@ -1,6 +1,6 @@
 -- ============================================
 -- MIGRATION: 001_initial_schema.sql
--- Project: SIX Saúde CMS
+-- Project: Amélia Saúde CMS
 -- Database: PostgreSQL (Neon)
 -- ORM: Drizzle
 -- Date: 2026-01-30
@@ -132,7 +132,7 @@ CREATE TRIGGER update_posts_updated_at
 
 -- Initial admin user (password: admin123 - CHANGE IN PRODUCTION!)
 INSERT INTO users (id, email, password_hash, name, role) VALUES
-('00000000-0000-0000-0000-000000000001', 'admin@sixsaude.com.br', '$2a$10$rK8Z9X7Q2wF3Y5Z8X1Z0Yq3Z8X1Z0Yq3Z8X1Z0Yq3Z8X1Z0Yq3Z8X', 'Admin SIX Saúde', 'admin')
+('00000000-0000-0000-0000-000000000001', 'admin@ameliasaude.com.br', '$2a$10$rK8Z9X7Q2wF3Y5Z8X1Z0Yq3Z8X1Z0Yq3Z8X1Z0Yq3Z8X1Z0Yq3Z8X', 'Admin Amélia Saúde', 'admin')
 ON CONFLICT (email) DO NOTHING;
 
 -- Initial categories
@@ -146,5 +146,5 @@ ON CONFLICT (slug) DO NOTHING;
 
 -- Initial author
 INSERT INTO authors (name, email, role) VALUES
-    ('Dr. Six Saúde', 'contato@sixsaude.com.br', 'Editor Chefe')
+    ('Dr. Amélia Saúde', 'contato@ameliasaude.com.br', 'Editor Chefe')
 ON CONFLICT (email) DO NOTHING;

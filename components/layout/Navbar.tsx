@@ -24,7 +24,7 @@ const navItems: NavItem[] = [
 ]
 
 /**
- * Premium Navbar Component - SIX Saúde Design System
+ * Premium Navbar Component - Amélia Saúde Design System
  */
 export const Navbar = () => {
   const pathname = usePathname()
@@ -78,12 +78,12 @@ export const Navbar = () => {
                 <Image
                     src={
                       isScrolled
-                        ? '/Logos/SIX SAÚDE LOGO FINAL - Preta .png'
+                        ? '/Logos/AMÉLIA SAÚDE LOGO FINAL - Preta.png'
                         : isGoldHero
-                          ? '/Logos/SIX SAÚDE LOGO FINAL - Preta .png'
-                          : '/Logos/SIX SAÚDE LOGO FINAL - Amarela.png'
+                          ? '/Logos/AMÉLIA SAÚDE LOGO FINAL - Preta.png'
+                          : '/Logos/AMÉLIA SAÚDE LOGO FINAL - Amarela.png'
                     }
-                  alt="SIX Saúde"
+                  alt="Amélia Saúde"
                   fill
                   className="object-contain"
                   priority

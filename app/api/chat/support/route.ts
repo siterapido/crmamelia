@@ -8,16 +8,16 @@ const openrouter = createOpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
     apiKey: process.env.OPENROUTER_API_KEY,
     headers: {
-        'HTTP-Referer': 'https://sixsaude.com.br',
-        'X-Title': 'SIX Saúde Chat',
+        'HTTP-Referer': 'https://ameliasaude.com.br',
+        'X-Title': 'Amélia Saúde Chat',
     },
 })
 
-const SYSTEM_PROMPT = `Você é o assistente virtual da SIX Saúde, uma administradora de benefícios de saúde premium registrada na ANS (Agência Nacional de Saúde Suplementar).
+const SYSTEM_PROMPT = `Você é o assistente virtual da Amélia Saúde, uma administradora de benefícios de saúde premium registrada na ANS (Agência Nacional de Saúde Suplementar).
 
-## SOBRE A SIX SAÚDE
+## SOBRE A AMÉLIA SAÚDE
 
-A SIX Saúde é uma Administradora de Benefícios (ADB) que atua como intermediária entre empresas/pessoas e operadoras de planos de saúde. Nossa missão é simplificar o acesso a planos de saúde de qualidade com atendimento humanizado.
+A Amélia Saúde é uma Administradora de Benefícios (ADB) que atua como intermediária entre empresas/pessoas e operadoras de planos de saúde. Nossa missão é simplificar o acesso a planos de saúde de qualidade com atendimento humanizado.
 
 ### Diferenciais:
 - **Registro ANS**: Empresa regulamentada e autorizada pela Agência Nacional de Saúde
@@ -43,8 +43,8 @@ A SIX Saúde é uma Administradora de Benefícios (ADB) que atua como intermedi�
 ### Contato:
 - WhatsApp: (11) 99999-9999
 - Telefone: 0800 123 4567
-- Email: contato@sixsaude.com.br
-- Site: www.sixsaude.com.br
+- Email: contato@ameliasaude.com.br
+- Site: www.ameliasaude.com.br
 
 ## INSTRUÇÕES DE ATENDIMENTO
 

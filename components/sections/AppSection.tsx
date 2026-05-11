@@ -103,7 +103,7 @@ export const AppSection = () => {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 viewport={{ once: true }}
               >
-                Gerencie seu plano, consulte a rede credenciada e muito mais pelo aplicativo SIX Saúde
+                Gerencie seu plano, consulte a rede credenciada e muito mais pelo aplicativo Amélia Saúde
               </motion.p>
             </div>
 

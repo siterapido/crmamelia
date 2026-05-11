@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { HeroSectionGold } from '@/components/sections/HeroSectionGold'
+import { HeroSection } from '@/components/sections/HeroSection'
 import { ClientSection } from '@/components/sections/ClientSection'
 import { PlanSection } from '@/components/sections/PlanSection'
 import { SocialProofSection } from '@/components/sections/SocialProofSection'
@@ -13,52 +13,42 @@ export const metadata: Metadata = {
   title: 'Amélia Saúde | Planos de Saúde Premium com Atendimento Humano',
   description:
     'Planos de saúde com transparência, agilidade e atendimento 24/7. Administradora AAA registrada na ANS. Autoatendimento rápido e suporte especializado.',
+  openGraph: {
+    title: 'Amélia Saúde | Planos de Saúde Premium',
+    description: 'Planos de saúde com atendimento humano e transparência total',
+    url: 'https://ameliasaude.com.br',
+    type: 'website',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
 }
 
-/**
- * Landing Page 2 - Gold Hero Variant
- * Same structure as homepage but with gold background hero (no family photo)
- */
-export default function LandingPage2() {
+export default function LandingPage() {
   return (
     <>
-      {/* Hero Section - Gold Background Variant */}
-      <HeroSectionGold />
-
-      {/* Client Self-Service Section */}
+      <HeroSection />
       <ClientSection />
-
-      {/* Plans Section */}
       <PlanSection />
-
-      {/* CTA Banner - Engagement #1 (Gold with Shield Pattern) */}
       <CTABanner
         variant="gold"
         heading="Ficou com alguma dúvida?"
         subheading="Nosso time está pronto para te ajudar"
         ctaText="Falar com especialista"
       />
-
-      {/* FAQ Section */}
       <FAQSection />
-
-      {/* CTA Banner - Engagement #2 (Gold with Pulse Pattern) */}
       <CTABanner
         variant="gold-care"
         heading="Pronto para ter um plano de saúde que realmente cuida de você?"
         ctaText="Quero Contratar"
       />
-
-      {/* Latest News & Content */}
       <LatestNewsSection />
-
-      {/* Social Proof Section */}
       <SocialProofSection />
-
-      {/* Footer */}
       <Footer />
-
-      {/* AI Chat Widget */}
       <AIChatWidget />
     </>
   )

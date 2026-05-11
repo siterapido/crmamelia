@@ -15,15 +15,15 @@ export default function Logo({
   width = 200,
   height = 200,
   className = '',
-  alt = 'Six Saúde',
+  alt = 'Amélia Saúde',
 }: LogoProps) {
   const colorMap: Record<LogoColor, string> = {
-    preta: '/six-saude-logo-preta.svg',
-    branca: '/six-saude-logo-branca.svg',
-    amarela: '/six-saude-logo-amarela.svg',
+    preta: '/amelia-saude-logo-preta.svg',
+    branca: '/amelia-saude-logo-branca.svg',
+    amarela: '/amelia-saude-logo-amarela.svg',
   };
 
-  const altText = alt || `Six Saúde Logo - ${color}`;
+  const altText = alt || `Amélia Saúde Logo - ${color}`;
 
   return (
     <img

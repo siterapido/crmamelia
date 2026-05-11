@@ -1,5 +1,5 @@
 /**
- * Database Schema - SIX Saúde CMS + CRM
+ * Database Schema - Amélia Saúde CMS + CRM
  * Using Drizzle ORM with Neon PostgreSQL
  */
 

@@ -1,5 +1,5 @@
 /**
- * News Portal Types - SIX Saúde
+ * News Portal Types - Amélia Saúde
  */
 
 export interface NewsCategory {

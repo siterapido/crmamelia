@@ -1,5 +1,5 @@
 /**
- * Section Components - SIX Saúde Design System
+ * Section Components - Amélia Saúde Design System
  *
  * Page sections for the landing page and other pages
  */

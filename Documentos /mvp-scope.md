@@ -1,4 +1,4 @@
-# MVP Scope - Site SIX Saúde
+# MVP Scope - Site Amélia Saúde
 ## Minimum Viable Product: Definição & Métricas de Sucesso
 
 ---
@@ -42,7 +42,7 @@ Lançar um **site institucional funcional e de alta performance** que:
 - ✅ Links funcionais para 2ª via de boleto (redirecionamento)
 - ✅ Links funcionais para demonstrativo de IR (redirecionamento)
 - ✅ Integração WhatsApp (mensagens pré-configuradas)
-  - Vendas: "Olá, tenho interesse em saber mais sobre os planos da SIX Saúde"
+  - Vendas: "Olá, tenho interesse em saber mais sobre os planos da Amélia Saúde"
   - Suporte: "Olá, preciso falar com um especialista"
 - ✅ Links para download do aplicativo (App Store + Google Play)
 - ✅ Menu de navegação responsivo (mobile + desktop)
@@ -175,7 +175,7 @@ Lançar um **site institucional funcional e de alta performance** que:
 - "administradora de benefícios [cidade]"
 - "plano de saúde [cidade]"
 - "contratar plano de saúde"
-- "2ª via de boleto SIX Saúde"
+- "2ª via de boleto Amélia Saúde"
 
 ---
 

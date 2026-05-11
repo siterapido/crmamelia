@@ -1,5 +1,5 @@
 /**
- * News API - SIX Saúde
+ * News API - Amélia Saúde
  * Fetches data from Neon Database using Drizzle ORM
  */
 'use server'
@@ -25,7 +25,7 @@ function mapPostToArticle(post: any): NewsArticle {
       color: post.categories?.color || '#10D86F',
     },
     author: {
-      name: post.authors?.name || 'Equipe SIX Saúde',
+      name: post.authors?.name || 'Equipe Amélia Saúde',
       role: post.authors?.role || 'Colaborador',
       avatar: post.authors?.avatarUrl || undefined,
     },

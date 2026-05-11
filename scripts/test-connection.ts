@@ -1,12 +1,12 @@
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 
-dotenv.config({ path: resolve('/Users/marcosalexandre/projetos/sixsaude/.env.local') });
+dotenv.config({ path: resolve('/Users/marcosalexandre/projetos/ameliasaude/.env.local') });
 
 async function testConnection() {
     const apiUrl = 'https://evolution-api-production-027f.up.railway.app';
     const apiKey = '27F55316E89A-46EC-80E2-59412C91A830';
-    const instanceName = 'sixosaudeficial';
+    const instanceName = 'ameliasaudeoficial';
 
     console.log('Testing Evolution API connection with user-provided info...');
     console.log('URL:', apiUrl);

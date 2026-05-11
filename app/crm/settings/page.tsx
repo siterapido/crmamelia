@@ -386,7 +386,7 @@ export default function CRMSettingsPage() {
                         </div>
                         <div className="flex-1">
                             <p className="text-white text-sm font-medium">WhatsApp</p>
-                            <p className="text-platinum/50 text-xs">Evolution API · sixosaudeficial</p>
+                            <p className="text-platinum/50 text-xs">Evolution API · ameliasaudeoficial</p>
                         </div>
                         <span className="flex items-center gap-1.5 text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-full border border-green-500/20">
                             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />

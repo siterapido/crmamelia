@@ -63,12 +63,12 @@ export async function generateMetadata({ params }: BlogArticlePageProps) {
 
     if (!article) {
         return {
-            title: 'Artigo não encontrado - SIX Saúde',
+            title: 'Artigo não encontrado - Amélia Saúde',
         }
     }
 
     return {
-        title: `${article.title} - Blog SIX Saúde`,
+        title: `${article.title} - Blog Amélia Saúde`,
         description: article.excerpt,
         openGraph: {
             title: article.title,

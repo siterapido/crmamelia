@@ -1,8 +1,8 @@
-# CLAUDE.md - SIX Saude
+# CLAUDE.md - Amélia Saúde
 
 ## Project Overview
 
-Landing page institucional premium e portal de conteúdo para **SIX Saude Administradora de Beneficios**. Site focado em conversão com design minimalista preto/amarelo ouro, integrando blog CMS e chatbot com IA.
+Landing page institucional premium e portal de conteúdo para **Amélia Saúde Administradora de Beneficios**. Site focado em conversão com design minimalista preto/amarelo ouro, integrando blog CMS e chatbot com IA.
 
 ## Tech Stack
 

@@ -12,7 +12,7 @@ interface PaginationProps {
 }
 
 /**
- * Pagination Component - SIX Saúde Design System
+ * Pagination Component - Amélia Saúde Design System
  * Premium styled pagination with gold accents
  */
 export const Pagination = ({ currentPage, totalPages, onPageChange, className }: PaginationProps) => {

@@ -140,7 +140,7 @@ export default function CRMSettingsPage() {
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-gold mt-1">2.</span>
-                                <span><strong>Informa</strong> sobre planos SIX Saúde (Essencial, Completo, Premium)</span>
+                                <span><strong>Informa</strong> sobre planos Amélia Saúde (Essencial, Completo, Premium)</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-gold mt-1">3.</span>

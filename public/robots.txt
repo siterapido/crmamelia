@@ -1,11 +1,12 @@
-# robots.txt - SIX Saúde
-# https://sixsaude.com.br
+# robots.txt - Amélia Saúde
+# https://ameliasaude.com.br
 
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
-# Sitemaps
-Sitemap: https://sixsaude.com.br/sitemap.xml
+Sitemap: https://ameliasaude.com.br/sitemap.xml
 
 # Disallow admin/private paths (if any in future)
 Disallow: /api/

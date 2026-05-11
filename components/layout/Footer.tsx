@@ -9,7 +9,7 @@ import { Container } from '@/components/ui/Container'
 import { cn } from '@/lib/utils/cn'
 
 /**
- * Footer Component - SIX Saúde Design System
+ * Footer Component - Amélia Saúde Design System
  *
  * Premium footer with:
  * - 5 columns: Brand, Links, Legal, Contact, Social
@@ -47,14 +47,14 @@ export const Footer = () => {
 
   const contactInfo = [
     { icon: MessageCircle, label: 'WhatsApp', value: '(21) 97222-9609', href: 'https://wa.me/5521972229609' },
-    { icon: Mail, label: 'E-mail', value: 'atendimento@sixsaude.com.br', href: 'mailto:atendimento@sixsaude.com.br' },
+    { icon: Mail, label: 'E-mail', value: 'atendimento@ameliasaude.com.br', href: 'mailto:atendimento@ameliasaude.com.br' },
     { icon: Phone, label: 'Telefone', value: '(21) 97222-9609', href: 'tel:+5521972229609' },
   ]
 
   const socialLinks = [
-    { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/dixmed' },
-    { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/company/sixsaude' },
-    { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/sixsaude' },
+    { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/ameliasaude' },
+    { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/company/ameliasaude' },
+    { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/ameliasaude' },
   ]
 
   const certifications = [
@@ -84,8 +84,8 @@ export const Footer = () => {
               <Link href="/" className="inline-block mb-4">
                 <div className="relative w-32 h-10">
                   <Image
-                    src="/Logos/SIX SAÚDE LOGO FINAL - Branca.png"
-                    alt="SIX Saúde"
+                    src="/Logos/AMÉLIA SAÚDE LOGO FINAL - Branca.png"
+                    alt="Amélia Saúde"
                     fill
                     className="object-contain"
                   />
@@ -237,7 +237,7 @@ export const Footer = () => {
           >
             {/* Copyright */}
             <p className="text-platinum/70 text-sm text-center md:text-left">
-              {currentYear} Six Saúde Administradora de Benefícios S.A. Todos os direitos reservados.
+              {currentYear} Amélia Saúde Administradora de Benefícios S.A. Todos os direitos reservados.
             </p>
 
             {/* ANS Registration */}

@@ -1,6 +1,6 @@
-# Documento de Entrega - SIX Saúde
+# Documento de Entrega - Amélia Saúde
 
-**Cliente:** SIX Saúde Administradora de Benefícios
+**Cliente:** Amélia Saúde Administradora de Benefícios
 **Projeto:** Desenvolvimento de Plataforma Digital Institucional
 **Data de Entrega:** Fevereiro de 2026
 **Status:** Concluído e Pronto para Produção
@@ -9,7 +9,7 @@
 
 ## Sumário Executivo
 
-Desenvolvemos uma plataforma digital completa e moderna para a SIX Saúde, combinando uma **landing page institucional de alta conversão**, um **portal de conteúdo com CMS próprio** e um **assistente virtual com inteligência artificial**. O projeto foi construído com as tecnologias mais avançadas do mercado, garantindo performance excepcional, segurança e escalabilidade.
+Desenvolvemos uma plataforma digital completa e moderna para a Amélia Saúde, combinando uma **landing page institucional de alta conversão**, um **portal de conteúdo com CMS próprio** e um **assistente virtual com inteligência artificial**. O projeto foi construído com as tecnologias mais avançadas do mercado, garantindo performance excepcional, segurança e escalabilidade.
 
 ---
 
@@ -23,9 +23,9 @@ Uma landing page sofisticada projetada para maximizar conversões, com design pr
 
 - **Hero Section** — Apresentação impactante com imagem cinematográfica de família, texto animado e chamadas para ação estratégicas
 - **Área do Cliente** — Acesso rápido aos serviços mais utilizados (2ª via de boleto, Comprovante IR, Download do App, Dúvidas Frequentes)
-- **Por Que Escolher a SIX** — Apresentação da missão, visão e valores da empresa com design elegante
+- **Por Que Escolher a Amélia** — Apresentação da missão, visão e valores da empresa com design elegante
 - **Nossos Planos** — Cards interativos destacando os planos por Adesão e Empresarial com benefícios detalhados
-- **Aplicativo SIX Saúde** — Showcase do aplicativo móvel com mockup de iPhone e botões de download
+- **Aplicativo Amélia Saúde** — Showcase do aplicativo móvel com mockup de iPhone e botões de download
 - **Prova Social** — Estatísticas impactantes (+2.500 famílias atendidas) e depoimentos de clientes
 - **FAQ Interativo** — Perguntas frequentes em formato accordion para fácil navegação
 - **Últimas Notícias** — Preview dos artigos mais recentes do blog
@@ -33,7 +33,7 @@ Uma landing page sofisticada projetada para maximizar conversões, com design pr
 
 ### 2. Página Institucional "Sobre Nós"
 
-Página completa apresentando a história e identidade da SIX Saúde:
+Página completa apresentando a história e identidade da Amélia Saúde:
 
 - História da empresa desde 2014
 - Timeline de marcos importantes
@@ -63,7 +63,7 @@ Um sistema de blog profissional com todas as funcionalidades necessárias:
 
 ### 4. Painel Administrativo (CMS) Completo
 
-Um sistema de gerenciamento de conteúdo exclusivo para a equipe SIX Saúde:
+Um sistema de gerenciamento de conteúdo exclusivo para a equipe Amélia Saúde:
 
 **Dashboard Principal:**
 - Visão geral com estatísticas em tempo real
@@ -116,7 +116,7 @@ Assistente virtual 24/7 integrado ao site:
 - Widget flutuante no canto inferior direito
 - Animação de pulso para chamar atenção
 - Respostas em tempo real via streaming
-- Treinado com informações da SIX Saúde
+- Treinado com informações da Amélia Saúde
 - Conhece os planos, serviços e contatos
 - Opção de transferir para WhatsApp
 - Histórico de conversa mantido na sessão
@@ -471,7 +471,7 @@ A plataforma foi desenvolvida com código limpo, documentado e seguindo as melho
 
 ## Considerações Finais
 
-A plataforma digital desenvolvida para a SIX Saúde representa um investimento significativo em presença digital moderna e eficiente. Com tecnologias de ponta, design premium e recursos de inteligência artificial, o site está preparado para:
+A plataforma digital desenvolvida para a Amélia Saúde representa um investimento significativo em presença digital moderna e eficiente. Com tecnologias de ponta, design premium e recursos de inteligência artificial, o site está preparado para:
 
 - **Converter visitantes em clientes** através de uma experiência premium
 - **Reduzir custos de atendimento** com chat inteligente 24/7
@@ -483,6 +483,6 @@ Estamos à disposição para quaisquer dúvidas, ajustes ou futuras evoluções 
 
 ---
 
-**Desenvolvido com excelência para a SIX Saúde.**
+**Desenvolvido com excelência para a Amélia Saúde.**
 
 *Documento gerado em Fevereiro de 2026*

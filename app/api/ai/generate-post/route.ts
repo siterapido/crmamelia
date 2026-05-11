@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
         const { topic, category, tone, targetAudience, length, keywords } = result.data
 
-        const prompt = `Você é um especialista em criação de conteúdo para a SIX Saúde, uma administradora de benefícios de saúde no Brasil.
+        const prompt = `Você é um especialista em criação de conteúdo para a Amélia Saúde, uma administradora de benefícios de saúde no Brasil.
 
 ${LENGTH_INSTRUCTIONS[length]} sobre o tema: "${topic}"
 
@@ -89,7 +89,7 @@ Diretrizes:
 - Escreva em português brasileiro
 - Use linguagem clara e acessível
 - Inclua informações úteis e práticas
-- Mencione a SIX Saúde de forma natural quando relevante
+- Mencione a Amélia Saúde de forma natural quando relevante
 - Estruture o conteúdo com títulos e subtítulos
 - Inclua uma introdução envolvente
 - Termine com uma conclusão que inclua um call-to-action

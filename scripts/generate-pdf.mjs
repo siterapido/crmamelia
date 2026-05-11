@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const logoPath = path.join(__dirname, '../public/Logos/SIX SAÚDE LOGO FINAL - Amarela.png');
+const logoPath = path.join(__dirname, '../public/Logos/AMÉLIA SAÚDE LOGO FINAL - Amarela.png');
 const logoBase64 = fs.readFileSync(logoPath).toString('base64');
 const logoDataUrl = `data:image/png;base64,${logoBase64}`;
 
@@ -16,7 +16,7 @@ const htmlContent = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documento de Entrega - SIX Saúde</title>
+  <title>Documento de Entrega - Amélia Saúde</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -463,14 +463,14 @@ const htmlContent = `
 
   <!-- Page 1: Cover -->
   <div class="page cover">
-    <img src="${logoDataUrl}" alt="SIX Saúde" class="cover-logo">
+    <img src="${logoDataUrl}" alt="Amélia Saúde" class="cover-logo">
     <h1>Documento de <span>Entrega</span></h1>
     <p class="cover-subtitle">Plataforma Digital Institucional<br>Landing Page, CMS e Assistente Virtual com Inteligência Artificial</p>
     <div class="gold-line"></div>
     <div class="cover-meta">
       <div class="cover-meta-item">
         <div class="cover-meta-label">Cliente</div>
-        <div class="cover-meta-value">SIX Saúde</div>
+        <div class="cover-meta-value">Amélia Saúde</div>
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Status</div>
@@ -486,14 +486,14 @@ const htmlContent = `
   <!-- Page 2: Summary -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
     <h2>Sumário Executivo</h2>
 
     <div class="highlight-box">
-      <p>Desenvolvemos uma plataforma digital completa e moderna para a SIX Saúde, combinando uma <strong>landing page institucional de alta conversão</strong>, um <strong>portal de conteúdo com CMS próprio</strong> e um <strong>assistente virtual com inteligência artificial</strong>.</p>
+      <p>Desenvolvemos uma plataforma digital completa e moderna para a Amélia Saúde, combinando uma <strong>landing page institucional de alta conversão</strong>, um <strong>portal de conteúdo com CMS próprio</strong> e um <strong>assistente virtual com inteligência artificial</strong>.</p>
     </div>
 
     <p>O projeto foi construído com as tecnologias mais avançadas do mercado, garantindo performance excepcional, segurança e escalabilidade. A plataforma está pronta para produção e preparada para crescer junto com a empresa.</p>
@@ -547,7 +547,7 @@ const htmlContent = `
     </div>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">2</span>
     </div>
   </div>
@@ -555,7 +555,7 @@ const htmlContent = `
   <!-- Page 3: Landing Page -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
@@ -568,16 +568,16 @@ const htmlContent = `
     <ul class="compact-list">
       <li><strong>Hero Section</strong> — Apresentação impactante com imagem cinematográfica, texto animado e CTAs estratégicos</li>
       <li><strong>Área do Cliente</strong> — Acesso rápido aos serviços (2ª via de boleto, Comprovante IR, App, FAQ)</li>
-      <li><strong>Por Que Escolher a SIX</strong> — Apresentação da missão, visão e valores com design elegante</li>
+      <li><strong>Por Que Escolher a Amélia</strong> — Apresentação da missão, visão e valores com design elegante</li>
       <li><strong>Nossos Planos</strong> — Cards interativos para planos por Adesão e Empresarial</li>
-      <li><strong>Aplicativo SIX Saúde</strong> — Showcase do app móvel com mockup de iPhone</li>
+      <li><strong>Aplicativo Amélia Saúde</strong> — Showcase do app móvel com mockup de iPhone</li>
       <li><strong>Prova Social</strong> — +2.500 famílias atendidas e depoimentos de clientes</li>
       <li><strong>FAQ Interativo</strong> — Perguntas frequentes em formato accordion</li>
       <li><strong>Últimas Notícias</strong> — Preview dos artigos mais recentes do blog</li>
     </ul>
 
     <h3>2. Página Institucional "Sobre Nós"</h3>
-    <p>Página completa apresentando a história e identidade da SIX Saúde:</p>
+    <p>Página completa apresentando a história e identidade da Amélia Saúde:</p>
     <ul class="compact-list">
       <li>História da empresa desde 2014</li>
       <li>Timeline de marcos importantes</li>
@@ -604,7 +604,7 @@ const htmlContent = `
     </div>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">3</span>
     </div>
   </div>
@@ -612,14 +612,14 @@ const htmlContent = `
   <!-- Page 4: CMS -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
     <h2>Sistema de Gestão (CMS)</h2>
 
     <h3>4. Painel Administrativo Completo</h3>
-    <p>Sistema de gerenciamento de conteúdo exclusivo para a equipe SIX Saúde:</p>
+    <p>Sistema de gerenciamento de conteúdo exclusivo para a equipe Amélia Saúde:</p>
 
     <div class="grid-2 no-break">
       <div class="card">
@@ -681,7 +681,7 @@ const htmlContent = `
     </div>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">4</span>
     </div>
   </div>
@@ -689,7 +689,7 @@ const htmlContent = `
   <!-- Page 5: AI Features -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
@@ -717,7 +717,7 @@ const htmlContent = `
         <li><strong>Motor:</strong> Gemini (Google) via OpenRouter</li>
         <li><strong>Interface:</strong> Widget flutuante com animação de pulso</li>
         <li><strong>Respostas:</strong> Streaming em tempo real</li>
-        <li><strong>Conhecimento:</strong> Treinado com informações da SIX Saúde</li>
+        <li><strong>Conhecimento:</strong> Treinado com informações da Amélia Saúde</li>
         <li><strong>Contexto:</strong> Conhece planos, serviços, contatos e horários</li>
         <li><strong>Fallback:</strong> Opção de transferir para WhatsApp</li>
         <li><strong>Histórico:</strong> Conversa mantida durante a sessão</li>
@@ -738,7 +738,7 @@ const htmlContent = `
     </div>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">5</span>
     </div>
   </div>
@@ -746,7 +746,7 @@ const htmlContent = `
   <!-- Page 6: Design System -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
@@ -853,7 +853,7 @@ const htmlContent = `
     </div>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">6</span>
     </div>
   </div>
@@ -861,7 +861,7 @@ const htmlContent = `
   <!-- Page 7: Tech Stack -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
@@ -946,7 +946,7 @@ const htmlContent = `
     </table>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">7</span>
     </div>
   </div>
@@ -954,7 +954,7 @@ const htmlContent = `
   <!-- Page 8: Database & APIs -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
@@ -1039,7 +1039,7 @@ role, avatar_url</code></pre>
     </table>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">8</span>
     </div>
   </div>
@@ -1047,7 +1047,7 @@ role, avatar_url</code></pre>
   <!-- Page 9: Performance & Security -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
@@ -1132,7 +1132,7 @@ role, avatar_url</code></pre>
     </div>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">9</span>
     </div>
   </div>
@@ -1140,7 +1140,7 @@ role, avatar_url</code></pre>
   <!-- Page 10: Checklist -->
   <div class="page">
     <div class="header">
-      <img src="${logoDataUrl}" alt="SIX Saúde" class="header-logo">
+      <img src="${logoDataUrl}" alt="Amélia Saúde" class="header-logo">
       <div class="header-title">Documento de Entrega</div>
     </div>
 
@@ -1188,19 +1188,19 @@ JWT_SECRET=           # Chave secreta para tokens</code></pre>
     </div>
 
     <div class="footer">
-      <span>SIX Saúde - Documento de Entrega</span>
+      <span>Amélia Saúde - Documento de Entrega</span>
       <span class="page-number">10</span>
     </div>
   </div>
 
   <!-- Page 11: Closing -->
   <div class="page cover" style="background: var(--black);">
-    <img src="${logoDataUrl}" alt="SIX Saúde" style="width: 180px; margin-bottom: 40px;">
+    <img src="${logoDataUrl}" alt="Amélia Saúde" style="width: 180px; margin-bottom: 40px;">
 
     <h2 style="border: none; margin: 0 0 24px 0; font-size: 18pt;">Considerações Finais</h2>
 
     <div class="highlight-box" style="max-width: 500px; text-align: left;">
-      <p style="font-size: 10pt;">A plataforma digital desenvolvida para a SIX Saúde representa um investimento significativo em presença digital moderna e eficiente.</p>
+      <p style="font-size: 10pt;">A plataforma digital desenvolvida para a Amélia Saúde representa um investimento significativo em presença digital moderna e eficiente.</p>
     </div>
 
     <div style="max-width: 450px; margin-top: 24px; text-align: left;">
@@ -1217,7 +1217,7 @@ JWT_SECRET=           # Chave secreta para tokens</code></pre>
     <div class="gold-line" style="margin: 36px auto;"></div>
 
     <p style="color: var(--gold); font-family: 'Syne', sans-serif; font-size: 12pt; font-weight: 600;">
-      Desenvolvido com excelência para a SIX Saúde
+      Desenvolvido com excelência para a Amélia Saúde
     </p>
 
     <p style="color: var(--platinum); margin-top: 8px; font-size: 9pt;">
@@ -1250,7 +1250,7 @@ async function generatePDF() {
   // Wait for fonts to load
   await page.evaluateHandle('document.fonts.ready');
 
-  const outputPath = path.join(__dirname, '../SIX_Saude_Documento_Entrega.pdf');
+  const outputPath = path.join(__dirname, '../Amelia_Saude_Documento_Entrega.pdf');
 
   await page.pdf({
     path: outputPath,

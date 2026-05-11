@@ -1,15 +1,15 @@
-# Briefing - Site SIX Saúde Administradora de Benefícios
+# Briefing - Site Amélia Saúde Administradora de Benefícios
 
 ## 1. VISÃO GERAL
 
 ### Nome do Projeto
-**SIX Saúde - Site Institucional & Autoatendimento**
+**Amélia Saúde - Site Institucional & Autoatendimento**
 
 ### Tagline/Proposta de Valor
 *"Saúde com cuidado humano, confiança e acessibilidade"*
 
 ### Problema que Resolve
-A SIX Saúde precisa:
+A Amélia Saúde precisa:
 - **Para Clientes Atuais:** Facilitar o autoatendimento (2ª via de boleto, demonstrativo de IR) sem depender exclusivamente de canais de atendimento
 - **Para Novos Clientes:** Transmitir credibilidade, confiança e facilitar o processo de contratação em um mercado competitivo
 - **Para o Negócio:** Converter visitantes em leads qualificados sem perder o toque humano que diferencia a marca
@@ -20,7 +20,7 @@ A SIX Saúde precisa:
 ## 2. PÚBLICO-ALVO
 
 ### Persona 1: Cliente Ativo
-- **Quem é:** Beneficiário de plano de saúde da SIX Saúde
+- **Quem é:** Beneficiário de plano de saúde da Amélia Saúde
 - **Necessidade Principal:** Acessar serviços rapidamente (2ª via de boleto, demonstrativo de IR)
 - **Comportamento:** Busca praticidade, autoatendimento 24/7, respostas rápidas
 - **Dor:** Não quer ligar ou esperar atendimento para tarefas simples
@@ -50,7 +50,7 @@ Criar um **hub digital** que serve como vendedor 24/7, facilitando autoatendimen
 ### Objetivos Específicos
 1. **Reduzir fricção no atendimento:** Clientes resolvem demandas simples sozinhos
 2. **Aumentar conversão de leads:** Visitantes encontram informações e são direcionados ao WhatsApp
-3. **Transmitir credibilidade:** Design e conteúdo que posicionam a SIX como referência
+3. **Transmitir credibilidade:** Design e conteúdo que posicionam a Amélia como referência
 4. **Performance excepcional:** 100/100 no Google PageSpeed para não perder visitantes
 5. **Preparar para escalabilidade:** Estrutura que permite expansão futura (blog, portal de conteúdo)
 
@@ -71,7 +71,7 @@ Criar um **hub digital** que serve como vendedor 24/7, facilitando autoatendimen
 - **Concorrência:** Empresas como CIMED e SUPERMED com sites modernos e eficientes
 - **Tendência:** Valorização de autoatendimento digital + atendimento humano quando necessário
 
-### Diferenciais da SIX Saúde
+### Diferenciais da Amélia Saúde
 - **Proximidade:** Atendimento humano, acessível e sem burocracias
 - **Confiança:** Relacionamento de longo prazo com clientes
 - **Agilidade:** Rapidez nas respostas e na solução de problemas

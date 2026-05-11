@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { LegalPageLayout } from '@/components/layout/LegalPageLayout'
 
 export const metadata: Metadata = {
-  title: 'Politica de Privacidade | SIX Saude',
-  description: 'Saiba como a SIX Saude coleta, usa e protege seus dados pessoais. Transparencia e seguranca em primeiro lugar.',
+  title: 'Politica de Privacidade | Amélia Saúde',
+  description: 'Saiba como a Amélia Saúde coleta, usa e protege seus dados pessoais. Transparencia e seguranca em primeiro lugar.',
 }
 
 export default function PrivacidadePage() {
@@ -18,7 +18,7 @@ export default function PrivacidadePage() {
           1. Introducao
         </h2>
         <p>
-          A SIX Saude Administradora de Beneficios (&quot;SIX Saude&quot;, &quot;nos&quot; ou &quot;nosso&quot;) esta
+          A Amélia Saúde Administradora de Beneficios (&quot;Amélia Saúde&quot;, &quot;nos&quot; ou &quot;nosso&quot;) esta
           comprometida em proteger a privacidade e os dados pessoais de nossos clientes, parceiros
           e visitantes do site. Esta Politica de Privacidade descreve como coletamos, usamos,
           armazenamos e protegemos suas informacoes.
@@ -146,7 +146,7 @@ export default function PrivacidadePage() {
           com nosso Encarregado de Protecao de Dados (DPO):
         </p>
         <div className="mt-4 p-4 bg-black-deep rounded-lg border border-white/10">
-          <p><strong className="text-white">E-mail:</strong> privacidade@sixsaude.com.br</p>
+          <p><strong className="text-white">E-mail:</strong> privacidade@ameliasaude.com.br</p>
           <p><strong className="text-white">Telefone:</strong> 0800 000 0000</p>
         </div>
       </section>
