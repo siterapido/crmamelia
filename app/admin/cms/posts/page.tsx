@@ -198,7 +198,7 @@ export default function PostsPage() {
                                                 className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${post.status === 'published'
                                                         ? 'bg-green-500/10 text-green-400'
                                                         : post.status === 'draft'
-                                                            ? 'bg-yellow-500/10 text-yellow-400'
+                                                            ? 'bg-gold-primary/10 text-gold-signature'
                                                             : 'bg-gray-500/10 text-gray-400'
                                                     }`}
                                             >

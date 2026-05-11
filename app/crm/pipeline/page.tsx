@@ -86,7 +86,7 @@ const statusLabels: Record<string, string> = {
 }
 const statusColors: Record<string, string> = {
     new: 'bg-blue-500/15 text-blue-400 border-blue-500/20',
-    contacted: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20',
+    contacted: 'bg-gold-primary/15 text-gold-signature border-gold-primary/20',
     qualified: 'bg-gold/15 text-gold border-gold/20',
     proposal: 'bg-purple-500/15 text-purple-400 border-purple-500/20',
     won: 'bg-green-500/15 text-green-400 border-green-500/20',
@@ -99,7 +99,7 @@ const sourceLabels: Record<string, string> = {
 const pipelineScoreColors: Record<number, string> = {
     1: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
     2: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-    3: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
+    3: 'text-gold-signature bg-gold-primary/10 border-gold-primary/20',
     4: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
     5: 'text-red-400 bg-red-500/10 border-red-500/20',
 }
@@ -126,7 +126,7 @@ function getInactivityLevel(hours: number | null): InactivityLevel {
 }
 
 const inactivityStyles: Record<NonNullable<InactivityLevel>, { badge: string; border: string }> = {
-    alert:   { badge: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20', border: 'border-yellow-500/20' },
+    alert:   { badge: 'bg-gold-primary/15 text-gold-signature border-gold-primary/20', border: 'border-gold-primary/20' },
     critical: { badge: 'bg-orange-500/15 text-orange-400 border-orange-500/20', border: 'border-orange-500/25' },
     dormant:  { badge: 'bg-red-500/15 text-red-400 border-red-500/20', border: 'border-red-500/25' },
 }

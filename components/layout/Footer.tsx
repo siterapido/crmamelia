@@ -117,7 +117,7 @@ export const Footer = () => {
                         'bg-white/5 border border-gray-border',
                         'text-platinum hover:text-gold-signature',
                         'hover:bg-gold-signature/10 hover:border-gold-signature/40',
-                        'hover:shadow-[0_0_15px_rgba(245,166,35,0.2)]',
+                        'hover:shadow-[0_0_15px_rgba(123,107,177,0.2)]',
                         'transition-all duration-300'
                       )}
                       aria-label={social.label}

@@ -656,7 +656,7 @@ const config: Config = {
         accent: {
           green: '#10D86F',
           red: '#E63946',
-          yellow: '#FFCC00',
+          yellow: '#7B6BB1',
         },
       },
       fontFamily: {

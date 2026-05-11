@@ -33,7 +33,7 @@ export function GradientText({
     <motion.span
       className={`inline-block bg-clip-text text-transparent ${className}`}
       style={{
-        backgroundImage: 'linear-gradient(90deg, #e0b00e 0%, #f1c10f 25%, #f9dc6d 50%, #f1c10f 75%, #e0b00e 100%)',
+        backgroundImage: 'linear-gradient(90deg, #5B4B91 0%, #7B6BB1 25%, #BBB1E1 50%, #7B6BB1 75%, #5B4B91 100%)',
         backgroundSize: '200% 100%',
       }}
       animate={{

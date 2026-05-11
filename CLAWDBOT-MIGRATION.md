@@ -224,7 +224,7 @@ O projeto usa logos SVGs otimizados para web:
 #### Cores Disponíveis
 - `preta` (#000000) - Fundos claros
 - `branca` (#FFFFFF) - Fundos escuros/dark mode
-- `amarela` (#FFCC00) - Destaque/CTA
+- `amarela` (#7B6BB1) - Destaque/CTA
 
 #### Exemplo de Uso
 

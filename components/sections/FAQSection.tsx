@@ -107,8 +107,8 @@ export const FAQSection = () => {
               <motion.button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                 className={`w-full bg-black-deep/80 backdrop-blur-sm rounded-2xl p-6 text-left transition-all duration-500 ${openIndex === index
-                    ? 'border-2 border-gold-primary/60 shadow-[0_0_30px_rgba(245,166,35,0.2)]'
-                    : 'border border-gold-primary/20 hover:border-gold-primary/40 shadow-[0_0_20px_rgba(245,166,35,0.05)] hover:shadow-[0_0_25px_rgba(245,166,35,0.1)]'
+                    ? 'border-2 border-gold-primary/60 shadow-[0_0_30px_rgba(123,107,177,0.2)]'
+                    : 'border border-gold-primary/20 hover:border-gold-primary/40 shadow-[0_0_20px_rgba(123,107,177,0.05)] hover:shadow-[0_0_25px_rgba(123,107,177,0.1)]'
                   }`}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.995 }}
@@ -116,7 +116,7 @@ export const FAQSection = () => {
                 <div className="flex items-center gap-4">
                   {/* Number indicator */}
                   <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-display font-bold text-sm transition-all duration-300 ${openIndex === index
-                      ? 'bg-gradient-to-br from-gold-primary to-gold-signature text-black-premium shadow-[0_4px_15px_rgba(245,166,35,0.4)]'
+                      ? 'bg-gradient-to-br from-gold-primary to-gold-signature text-black-premium shadow-[0_4px_15px_rgba(123,107,177,0.4)]'
                       : 'bg-gold-primary/10 text-gold-primary border border-gold-primary/30'
                     }`}>
                     {String(index + 1).padStart(2, '0')}
@@ -137,7 +137,7 @@ export const FAQSection = () => {
                   >
                     <ChevronDown
                       size={20}
-                      className={`text-gold-primary transition-all duration-300 ${openIndex === index ? 'drop-shadow-[0_0_8px_rgba(245,166,35,0.6)]' : ''
+                      className={`text-gold-primary transition-all duration-300 ${openIndex === index ? 'drop-shadow-[0_0_8px_rgba(123,107,177,0.6)]' : ''
                         }`}
                     />
                   </motion.div>
@@ -153,7 +153,7 @@ export const FAQSection = () => {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    <div className="mx-4 bg-gradient-to-br from-gold-primary/5 via-black-deep/90 to-gold-signature/5 border-x-2 border-b-2 border-gold-primary/30 rounded-b-2xl p-6 shadow-[inset_0_4px_20px_rgba(245,166,35,0.05)]">
+                    <div className="mx-4 bg-gradient-to-br from-gold-primary/5 via-black-deep/90 to-gold-signature/5 border-x-2 border-b-2 border-gold-primary/30 rounded-b-2xl p-6 shadow-[inset_0_4px_20px_rgba(123,107,177,0.05)]">
                       <div className="flex gap-4">
                         <div className="flex-shrink-0 w-1 bg-gradient-to-b from-gold-primary to-gold-signature rounded-full" />
                         <p className="text-platinum/90 leading-relaxed text-base">{faq.answer}</p>
@@ -174,13 +174,13 @@ export const FAQSection = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true, margin: '-100px' }}
         >
-          <div className="inline-flex flex-col items-center gap-6 p-8 bg-gradient-to-br from-gold-primary/10 via-black-deep/50 to-gold-signature/10 border border-gold-primary/30 rounded-3xl shadow-[0_0_40px_rgba(245,166,35,0.1)]">
+          <div className="inline-flex flex-col items-center gap-6 p-8 bg-gradient-to-br from-gold-primary/10 via-black-deep/50 to-gold-signature/10 border border-gold-primary/30 rounded-3xl shadow-[0_0_40px_rgba(123,107,177,0.1)]">
             <div className="flex items-center gap-3">
               <Sparkles className="w-5 h-5 text-gold-primary" />
               <p className="text-white font-medium text-lg">Não encontrou sua resposta?</p>
             </div>
             <MagneticButton strength={0.3}>
-              <Button variant="primary" className="shadow-[0_4px_20px_rgba(245,166,35,0.3)]">
+              <Button variant="primary" className="shadow-[0_4px_20px_rgba(123,107,177,0.3)]">
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Fale com um especialista
               </Button>

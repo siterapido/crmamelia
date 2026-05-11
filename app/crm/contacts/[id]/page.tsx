@@ -76,7 +76,7 @@ const statusLabels: Record<string, string> = {
 }
 const statusColors: Record<string, string> = {
     new: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    contacted: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+    contacted: 'bg-gold-primary/10 text-gold-signature border-gold-primary/20',
     qualified: 'bg-gold/10 text-gold border-gold/20',
     proposal: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
     won: 'bg-green-500/10 text-green-400 border-green-500/20',
@@ -301,7 +301,7 @@ export default function ContactDetailPage() {
                         <span className={cn(
                             'inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium border',
                             contact.leadScore >= 4 ? 'text-orange-400 bg-orange-500/10 border-orange-500/20' :
-                            contact.leadScore >= 3 ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
+                            contact.leadScore >= 3 ? 'text-gold-signature bg-gold-primary/10 border-gold-primary/20' :
                             contact.leadScore >= 2 ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20' :
                             'text-blue-400 bg-blue-500/10 border-blue-500/20'
                         )}>

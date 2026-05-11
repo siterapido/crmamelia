@@ -479,8 +479,8 @@ ESTILO DO ACCORDION:
   - Cursor: pointer
 
 - Item aberto:
-  - Border: 1px solid rgba(245, 166, 35, 0.3) (borda dourada)
-  - Background: rgba(245, 166, 35, 0.05)
+  - Border: 1px solid rgba(123, 107, 177, 0.3) (borda dourada)
+  - Background: rgba(123, 107, 177, 0.05)
 
 - Pergunta:
   - Tamanho: 18px

@@ -101,7 +101,7 @@ export const HeroSection = () => {
         <div
           className="absolute top-1/4 left-0 w-[600px] h-[600px] opacity-20 pointer-events-none"
           style={{
-            background: 'radial-gradient(circle, rgba(241,193,15,0.15) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(123,107,177,0.15) 0%, transparent 70%)',
             filter: 'blur(80px)',
           }}
         />

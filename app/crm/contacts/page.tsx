@@ -33,7 +33,7 @@ const statusLabels: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
     new: 'bg-blue-500/10 text-blue-400',
-    contacted: 'bg-yellow-500/10 text-yellow-400',
+    contacted: 'bg-gold-primary/10 text-gold-signature',
     qualified: 'bg-gold/10 text-gold',
     proposal: 'bg-purple-500/10 text-purple-400',
     won: 'bg-green-500/10 text-green-400',
@@ -500,7 +500,7 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
 const scoreConfig: Record<number, { label: string; color: string; bg: string; border: string }> = {
     1: { label: 'Muito Frio', color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
     2: { label: 'Frio', color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
-    3: { label: 'Morno', color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+    3: { label: 'Morno', color: 'text-gold-signature', bg: 'bg-gold-primary/10', border: 'border-gold-primary/20' },
     4: { label: 'Quente', color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
     5: { label: 'Hot Lead', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
 }

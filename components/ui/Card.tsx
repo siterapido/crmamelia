@@ -54,7 +54,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
           'hover:-translate-y-1.5',
           'hover:shadow-premium-hover',
           'hover:border-gold-primary/40',
-          'hover:shadow-[0_0_40px_rgba(212,168,75,0.08)]'
+          'hover:shadow-[0_0_40px_rgba(107,91,161,0.08)]'
         ].join(' ')
       ),
       gold: cn(
@@ -66,10 +66,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       'glass-premium': cn(
         'bg-gradient-to-br from-gray-dark/90 to-black-charcoal/80',
         'border-2 border-gold-primary/30',
-        'shadow-[0_8px_40px_rgba(0,0,0,0.4),0_0_50px_rgba(212,168,75,0.06)]',
+        'shadow-[0_8px_40px_rgba(0,0,0,0.4),0_0_50px_rgba(107,91,161,0.06)]',
         !noHover && [
           'hover:border-gold-signature/55',
-          'hover:shadow-[0_12px_50px_rgba(0,0,0,0.5),0_0_70px_rgba(212,168,75,0.1)]',
+          'hover:shadow-[0_12px_50px_rgba(0,0,0,0.5),0_0_70px_rgba(107,91,161,0.1)]',
           'hover:scale-[1.015]'
         ].join(' ')
       ),
@@ -83,7 +83,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         // Hover premium mais sutil
         !noHover && [
           'hover:border-gold-primary/35',
-          'hover:shadow-[0_25px_70px_rgba(0,0,0,0.15),0_10px_30px_rgba(0,0,0,0.1),0_0_35px_rgba(212,168,75,0.08)]',
+          'hover:shadow-[0_25px_70px_rgba(0,0,0,0.15),0_10px_30px_rgba(0,0,0,0.1),0_0_35px_rgba(107,91,161,0.08)]',
           'hover:scale-[1.015]',
           'hover:-translate-y-1'
         ].join(' ')

@@ -115,7 +115,7 @@ RGB: 230, 57, 70
 
 #### Amarelo Claro (Warning)
 ```
-Hex: #FFCC00
+Hex: #7B6BB1
 RGB: 255, 204, 0
 ```
 - **Uso:** Avisos, informações importantes
@@ -199,12 +199,12 @@ Text: #0A0A0A (preto para contraste máximo)
 Border-radius: 12px (arredondado premium)
 Padding: 16px 32px (generoso)
 Font: 14px / Semibold / Uppercase / Letter-spacing 1.5px
-Box-shadow: 0 8px 24px rgba(245, 166, 35, 0.25)
+Box-shadow: 0 8px 24px rgba(123, 107, 177, 0.25)
 
 Hover:
 - Background shift (gradiente move)
 - Transform: translateY(-2px) (eleva sutilmente)
-- Box-shadow: 0 12px 32px rgba(245, 166, 35, 0.35)
+- Box-shadow: 0 12px 32px rgba(123, 107, 177, 0.35)
 - Transição: 0.3s cubic-bezier(0.4, 0, 0.2, 1)
 
 Active:
@@ -256,7 +256,7 @@ Box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3)
 Hover:
 - Transform: translateY(-8px)
 - Box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5)
-- Border: 1px solid rgba(245, 166, 35, 0.3) (borda dourada sutil)
+- Border: 1px solid rgba(123, 107, 177, 0.3) (borda dourada sutil)
 - Transição: 0.4s cubic-bezier(0.4, 0, 0.2, 1)
 ```
 
@@ -284,7 +284,7 @@ Placeholder: rgba(255, 255, 255, 0.4)
 
 Focus:
 - Border: 2px solid #FFB800
-- Box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.15)
+- Box-shadow: 0 0 0 4px rgba(123, 107, 177, 0.15)
 - Outline: none
 ```
 

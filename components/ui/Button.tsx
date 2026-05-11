@@ -70,7 +70,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       secondary: cn(
         'border-2 border-white/25 text-white bg-transparent',
         'hover:border-gold-primary hover:text-gold-signature',
-        'hover:shadow-[0_0_25px_rgba(212,168,75,0.12)]',
+        'hover:shadow-[0_0_25px_rgba(107,91,161,0.12)]',
         'active:bg-gold-primary/10',
         'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-white/25 disabled:hover:text-white'
       ),

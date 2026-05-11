@@ -727,7 +727,7 @@ export default function ConversationsPage() {
                                                 <span className={cn(
                                                     'inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-md border flex-shrink-0',
                                                     activeConv.contact.leadScore >= 4 ? 'text-orange-400 bg-orange-500/10 border-orange-500/20' :
-                                                    activeConv.contact.leadScore >= 3 ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
+                                                    activeConv.contact.leadScore >= 3 ? 'text-gold-signature bg-gold-primary/10 border-gold-primary/20' :
                                                     'text-blue-400 bg-blue-500/10 border-blue-500/20'
                                                 )}>
                                                     <Star className="w-2.5 h-2.5" fill="currentColor" />

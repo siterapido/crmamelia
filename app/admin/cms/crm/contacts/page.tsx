@@ -32,7 +32,7 @@ const statusLabels: Record<string, string> = {
 
 const statusColors: Record<string, string> = {
     new: 'bg-blue-500/10 text-blue-400',
-    contacted: 'bg-yellow-500/10 text-yellow-400',
+    contacted: 'bg-gold-primary/10 text-gold-signature',
     qualified: 'bg-gold/10 text-gold',
     proposal: 'bg-purple-500/10 text-purple-400',
     won: 'bg-green-500/10 text-green-400',

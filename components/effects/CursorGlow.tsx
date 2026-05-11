@@ -69,7 +69,7 @@ export function CursorGlow() {
         className="pointer-events-none fixed inset-0 z-[9999] transition-opacity duration-300"
         style={{
           opacity: isVisible && isHovering ? 1 : 0,
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(245, 166, 35, 0.02), transparent 40%)`,
+          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(123, 107, 177, 0.02), transparent 40%)`,
         }}
         aria-hidden="true"
       />
@@ -99,7 +99,7 @@ export function CursorGlow() {
         className="pointer-events-none fixed inset-0 z-[9999] transition-opacity duration-100"
         style={{
           opacity: isVisible && isHovering ? 1 : 0,
-          background: `radial-gradient(80px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(245, 166, 35, 0.05), transparent 50%)`,
+          background: `radial-gradient(80px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(123, 107, 177, 0.05), transparent 50%)`,
         }}
         aria-hidden="true"
       />

@@ -17,9 +17,9 @@ export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
 
     const variantClasses = {
       default: 'bg-white/8 border border-white/15 text-white hover:border-white/25',
-      premium: 'bg-gold-primary/12 border border-gold-primary/30 text-gold-primary shadow-[0_0_20px_rgba(212,168,75,0.08)]',
+      premium: 'bg-gold-primary/12 border border-gold-primary/30 text-gold-primary shadow-[0_0_20px_rgba(107,91,161,0.08)]',
       success: 'bg-success-premium/18 border border-success-premium text-success-premium',
-      gold: 'bg-gradient-to-r from-gold-primary/15 to-gold-signature/15 border border-gold-primary/40 text-gold-signature shadow-[0_0_25px_rgba(212,168,75,0.1)]',
+      gold: 'bg-gradient-to-r from-gold-primary/15 to-gold-signature/15 border border-gold-primary/40 text-gold-signature shadow-[0_0_25px_rgba(107,91,161,0.1)]',
     }
 
     const glowClasses = glow ? 'animate-glow-pulse' : ''

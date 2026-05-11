@@ -10,7 +10,7 @@ Localização: `public/`
 |---------|-----|---------|-----------------|
 | `amelia-saude-logo-preta.svg` | Preto (#000000) | 3.9KB | Fundos claros |
 | `amelia-saude-logo-branca.svg` | Branco (#FFFFFF) | 3.9KB | Fundos escuros, dark mode |
-| `amelia-saude-logo-amarela.svg` | Amarelo (#FFCC00) | 3.9KB | Destaque, CTA |
+| `amelia-saude-logo-amarela.svg` | Amarelo (#7B6BB1) | 3.9KB | Destaque, CTA |
 
 ## 🎨 Componentes Disponíveis
 
@@ -227,7 +227,7 @@ Uso:
 |------|-----|-----------|
 | Preto | `#000000` | `text-black` |
 | Branco | `#FFFFFF` | `text-white` |
-| Amarelo | `#FFCC00` | `bg-yellow-400` |
+| Amarelo | `#7B6BB1` | `bg-yellow-400` |
 
 ## 📄 Acessibilidade
 

@@ -123,7 +123,7 @@ export default function SobrePage() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-gold-signature/10 via-transparent to-transparent" />
           {/* Animated grid lines */}
           <div className="absolute inset-0 opacity-[0.03]" style={{
-            backgroundImage: `linear-gradient(rgba(212, 175, 55, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.3) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(rgba(123, 107, 177, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(123, 107, 177, 0.3) 1px, transparent 1px)`,
             backgroundSize: '60px 60px'
           }} />
         </div>

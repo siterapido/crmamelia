@@ -37,7 +37,7 @@ export const NewsCard = ({ article, variant = 'default', className, priority = f
             'relative overflow-hidden rounded-card',
             'bg-black-deep border border-gray-border',
             'transition-all duration-500',
-            'hover:border-gold-signature/50 hover:shadow-[0_0_40px_rgba(245,166,35,0.1)]'
+            'hover:border-gold-signature/50 hover:shadow-[0_0_40px_rgba(123,107,177,0.1)]'
           )}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -146,7 +146,7 @@ export const NewsCard = ({ article, variant = 'default', className, priority = f
           'bg-black-deep border border-gray-border',
           'transition-all duration-400',
           'hover:-translate-y-2 hover:border-gold-primary/50',
-          'hover:shadow-[0_12px_48px_rgba(0,0,0,0.5),0_0_30px_rgba(245,166,35,0.1)]'
+          'hover:shadow-[0_12px_48px_rgba(0,0,0,0.5),0_0_30px_rgba(123,107,177,0.1)]'
         )}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

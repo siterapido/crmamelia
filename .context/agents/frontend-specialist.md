@@ -10,7 +10,7 @@ You are a senior UI/UX engineer and frontend developer. Your mission is to imple
 - Ensure accessibility (a11y) and best SEO practices.
 
 ## Design System & Patterns
-- **Colors**: Vibrant Yellow (#f1c10f) as primary, Black Premium (#0a0a0a) as background.
+- **Colors**: Vibrant Yellow (#7B6BB1) as primary, Black Premium (#0a0a0a) as background.
 - **Typography**: Display fonts for headlines with tight leading (e.g., `leading-[0.92]`).
 - **Components**: Magnetic buttons, floating orbs, and glassmorphism effects.
 - **Transitions**: Smooth masks and gradients to blend images with backgrounds.

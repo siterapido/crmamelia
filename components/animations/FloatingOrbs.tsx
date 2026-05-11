@@ -48,7 +48,7 @@ export function FloatingOrbs({ count = 3, className = '' }: FloatingOrbsProps) {
             height: orb.size,
             left: orb.x,
             top: orb.y,
-            background: 'radial-gradient(circle, rgba(241,193,15,0.15) 0%, rgba(241,193,15,0.05) 50%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(123,107,177,0.15) 0%, rgba(123,107,177,0.05) 50%, transparent 70%)',
             filter: 'blur(60px)',
             willChange: 'transform',
           }}
