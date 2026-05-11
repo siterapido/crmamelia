@@ -83,7 +83,7 @@ export function Sidebar() {
                 <Link href="/admin" className="flex items-center gap-3">
                     <div className="relative w-28 h-9">
                         <Image
-                            src="/Logos/AMÉLIA SAÚDE LOGO FINAL - Branca.png"
+                            src="/logo-amelia-branca.png"
                             alt="Amélia Saúde"
                             fill
                             className="object-contain"

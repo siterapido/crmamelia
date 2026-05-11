@@ -49,7 +49,7 @@ export function LoginForm() {
                 <div className="text-center mb-8">
                     <div className="relative w-40 h-12 mx-auto mb-4">
                         <Image
-                            src="/Logos/AMÉLIA SAÚDE LOGO FINAL - Branca.png"
+                            src="/logo-amelia-branca.png"
                             alt="Amélia Saúde"
                             fill
                             className="object-contain"

@@ -84,7 +84,7 @@ export const Footer = () => {
               <Link href="/" className="inline-block mb-4">
                 <div className="relative w-32 h-10">
                   <Image
-                    src="/Logos/AMÉLIA SAÚDE LOGO FINAL - Branca.png"
+                    src="/logo-amelia-branca.png"
                     alt="Amélia Saúde"
                     fill
                     className="object-contain"

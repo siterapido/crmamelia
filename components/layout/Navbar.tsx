@@ -77,11 +77,9 @@ export const Navbar = () => {
               >
                 <Image
                     src={
-                      isScrolled
-                        ? '/Logos/AMÉLIA SAÚDE LOGO FINAL - Preta.png'
-                        : isGoldHero
-                          ? '/Logos/AMÉLIA SAÚDE LOGO FINAL - Preta.png'
-                          : '/Logos/AMÉLIA SAÚDE LOGO FINAL - Amarela.png'
+                      isScrolled || isGoldHero
+                        ? '/logo-amelia.png'
+                        : '/logo-amelia-branca.png'
                     }
                   alt="Amélia Saúde"
                   fill
