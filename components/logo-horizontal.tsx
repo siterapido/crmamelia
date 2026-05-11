@@ -19,7 +19,7 @@ export default function LogoHorizontal({
 }: LogoHorizontalProps) {
   const colorMap: Record<LogoColor, string> = {
     preta: '/amelia-saude-logo-preta-horizontal.svg',
-    branca: '/amelia-saude-logo-branca-horizontal.svg',
+    branca: '/logo-amelia-branca.png',
     amarela: '/amelia-saude-logo-amarela-horizontal.svg',
   };
 

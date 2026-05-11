@@ -24,7 +24,7 @@ export default function LogoImage({
 }: LogoImageProps) {
   const colorMap: Record<LogoColor, string> = {
     preta: '/amelia-saude-logo-preta.svg',
-    branca: '/amelia-saude-logo-branca.svg',
+    branca: '/logo-amelia-branca.png',
     amarela: '/amelia-saude-logo-amarela.svg',
   };
 
