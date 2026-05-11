@@ -1,0 +1,27 @@
+{
+  "name": "Amélia Saúde - CRM",
+  "short_name": "Amélia CRM",
+  "description": "CRM e CMS da Amélia Saúde - Administradora de Benefícios Premium",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#7B6BB1",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "pt-BR",
+  "categories": ["healthcare", "business", "productivity"],
+  "icons": [
+    {
+      "src": "/logo-amelia.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-amelia.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

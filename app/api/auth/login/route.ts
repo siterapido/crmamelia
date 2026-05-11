@@ -73,9 +73,12 @@ export async function POST(request: NextRequest) {
             },
         })
     } catch (error) {
-        console.error('Login error:', error)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        const errorStack = error instanceof Error ? error.stack : ''
+        console.error('Login error:', errorMessage)
+        console.error('Stack:', errorStack)
         return NextResponse.json(
-            { error: 'Erro interno do servidor' },
+            { error: 'Erro interno do servidor', details: errorMessage },
             { status: 500 }
         )
     }
