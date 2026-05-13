@@ -124,28 +124,23 @@ function slugify(text: string): string {
 }
 
 async function generateCoverImage(title: string, excerpt: string): Promise<string | null> {
-    if (!process.env.OPENROUTER_API_KEY) {
-        console.log('⚠️ OPENROUTER_API_KEY not set, skipping image generation')
-        return null
-    }
-
     try {
-        const imagePrompt = `Create a professional, modern cover image for a health and wellness blog post.
-Title: "${title}"
-Topic: ${excerpt}
+        const imagePrompt = `Professional modern healthcare blog cover, ${title}, ${excerpt}, clean welcoming aesthetic, soft green blue white colors, no text no words, photography style, health insurance company`
 
-Style: Clean, modern, welcoming healthcare aesthetic with soft colors (greens, blues, whites). Professional photography style. No text or words in the image. Suitable for a Brazilian health insurance company blog.`
+        console.log('🎨 Generating cover image via Pollinations.ai...')
 
-        const { image } = await generateImage({
-            model: openrouter.image('openai/gpt-5-image-mini'),
-            prompt: imagePrompt,
-            size: '1024x1024',
-        })
+        // Use Pollinations.ai (free image generation)
+        const encodedPrompt = encodeURIComponent(imagePrompt)
+        const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${Date.now()}`
 
-        if (!image || !image.base64) {
-            console.error('No image data returned from OpenRouter')
+        const response = await fetch(pollinationsUrl)
+
+        if (!response.ok) {
+            console.error('❌ Pollinations.ai failed:', response.status)
             return null
         }
+
+        const imageBuffer = Buffer.from(await response.arrayBuffer())
 
         // Ensure directory exists
         if (!existsSync(AI_UPLOAD_DIR)) {
@@ -157,8 +152,7 @@ Style: Clean, modern, welcoming healthcare aesthetic with soft colors (greens, b
         const fileName = `post-cover-${timestamp}.png`
         const filePath = join(AI_UPLOAD_DIR, fileName)
 
-        const buffer = Buffer.from(image.base64, 'base64')
-        await writeFile(filePath, buffer)
+        await writeFile(filePath, imageBuffer)
 
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ameliasaude.vercel.app'
         const imageUrl = `${baseUrl}/uploads/ai-generated/${fileName}`
@@ -254,7 +248,7 @@ Retorne APENAS o JSON, sem markdown ou texto adicional.`
 
         console.log('🤖 Generating content with AI...')
         const response = await streamText({
-            model: openrouter('anthropic/claude-sonnet-4-20250514'),
+            model: openrouter('anthropic/claude-3.5-sonnet'),
             prompt,
         })
 
