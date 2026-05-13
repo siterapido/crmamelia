@@ -7,15 +7,68 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
-import { streamText } from 'ai'
+import { streamText, generateImage } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { z } from 'zod'
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
+import { existsSync } from 'fs'
 
 // Configure OpenRouter as OpenAI-compatible provider
 const openrouter = createOpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
     apiKey: process.env.OPENROUTER_API_KEY,
 })
+
+const AI_UPLOAD_DIR = join(process.cwd(), 'public', 'uploads', 'ai-generated')
+
+async function generateCoverImage(title: string, excerpt: string): Promise<string | null> {
+    if (!process.env.OPENROUTER_API_KEY) {
+        console.log('⚠️ OPENROUTER_API_KEY not set, skipping image generation')
+        return null
+    }
+
+    try {
+        const imagePrompt = `Create a professional, modern cover image for a health and wellness blog post.
+Title: "${title}"
+Topic: ${excerpt}
+
+Style: Clean, modern, welcoming healthcare aesthetic with soft colors (greens, blues, whites). Professional photography style. No text or words in the image. Suitable for a Brazilian health insurance company blog.`
+
+        const { image } = await generateImage({
+            model: openrouter.image('openai/gpt-5-image-mini'),
+            prompt: imagePrompt,
+            size: '1024x1024',
+        })
+
+        if (!image || !image.base64) {
+            console.error('No image data returned from OpenRouter')
+            return null
+        }
+
+        // Ensure directory exists
+        if (!existsSync(AI_UPLOAD_DIR)) {
+            await mkdir(AI_UPLOAD_DIR, { recursive: true })
+        }
+
+        // Save image
+        const timestamp = Date.now()
+        const fileName = `post-cover-${timestamp}.png`
+        const filePath = join(AI_UPLOAD_DIR, fileName)
+
+        const buffer = Buffer.from(image.base64, 'base64')
+        await writeFile(filePath, buffer)
+
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ameliasaude.vercel.app'
+        const imageUrl = `${baseUrl}/uploads/ai-generated/${fileName}`
+
+        console.log('✅ Cover image generated:', imageUrl)
+        return imageUrl
+    } catch (error) {
+        console.error('Error generating cover image:', error)
+        return null
+    }
+}
 
 const generatePostSchema = z.object({
     topic: z.string().min(1, 'Tema é obrigatório'),
@@ -126,6 +179,17 @@ Retorne APENAS o JSON, sem markdown ou texto adicional.`
                 .trim()
 
             const generatedPost = JSON.parse(cleanContent)
+
+            // Generate cover image
+            console.log('🎨 Generating cover image for post:', generatedPost.title)
+            const coverImage = await generateCoverImage(
+                generatedPost.title,
+                generatedPost.excerpt
+            )
+
+            if (coverImage) {
+                generatedPost.coverImage = coverImage
+            }
 
             return NextResponse.json({
                 success: true,
