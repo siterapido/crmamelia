@@ -48,13 +48,13 @@ export async function processSDRMessage(
     }
 
     const systemPrompt = buildSDRPrompt(contact, history)
-    console.log(`[SDR] Calling OpenRouter (google/gemini-2.0-flash-001) for conversation ${conversationId}...`)
+    console.log(`[SDR] Calling OpenRouter (google/gemini-3.1-flash-lite) for conversation ${conversationId}...`)
 
     let text: string
     let usage: { inputTokens?: number; outputTokens?: number } | undefined
 
     const aiPromise = generateText({
-        model: openrouter('google/gemini-2.0-flash-001'),
+        model: openrouter('google/gemini-3.1-flash-lite'),
         system: systemPrompt,
         prompt: inboundMessage,
         maxOutputTokens: 500,
@@ -123,7 +123,7 @@ export async function processSDRMessage(
         inputSummary: inboundMessage.slice(0, 500),
         outputSummary: reply.slice(0, 500),
         confidence: actions.length > 0 ? 80 : 60,
-        model: 'google/gemini-2.0-flash-001',
+        model: 'google/gemini-3.1-flash-lite',
         tokensUsed: (usage?.inputTokens || 0) + (usage?.outputTokens || 0),
     })
 
