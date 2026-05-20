@@ -4,7 +4,8 @@
  */
 
 import { createOpenAI } from '@ai-sdk/openai'
-import { generateText } from 'ai'
+import { generateObject } from 'ai'
+import { z } from 'zod'
 import { buildSDRPrompt } from './sdr-prompt'
 import { db } from '@/lib/db'
 import { aiInteractions } from '@/lib/db/schema'
@@ -26,6 +27,22 @@ export interface SDRResponse {
     actions: SDRAction[]
 }
 
+const sdrActionSchema = z.object({
+    type: z.enum(['qualify', 'update_stage', 'handoff', 'schedule_followup', 'score_lead']),
+    field: z.string().optional(),
+    value: z.string().optional(),
+    stage: z.string().optional(),
+    reason: z.string().optional(),
+    delay_hours: z.number().optional(),
+    message: z.string().optional(),
+    score: z.number().optional(),
+})
+
+const sdrResponseSchema = z.object({
+    reply: z.string().min(1),
+    actions: z.array(sdrActionSchema).default([]),
+})
+
 const openrouter = createOpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
     apiKey: process.env.OPENROUTER_API_KEY!,
@@ -35,7 +52,8 @@ const openrouter = createOpenAI({
     },
 })
 
-const SDR_TIMEOUT_MS = 6000
+const SDR_MODEL = 'google/gemini-3.1-flash-lite'
+const SDR_TIMEOUT_MS = 20_000
 
 export async function processSDRMessage(
     conversationId: string,
@@ -48,26 +66,27 @@ export async function processSDRMessage(
     }
 
     const systemPrompt = buildSDRPrompt(contact, history)
-    console.log(`[SDR] Calling OpenRouter (google/gemini-3.1-flash-lite) for conversation ${conversationId}...`)
+    console.log(`[SDR] Calling OpenRouter (${SDR_MODEL}) for conversation ${conversationId}...`)
 
-    let text: string
-    let usage: { inputTokens?: number; outputTokens?: number } | undefined
-
-    const aiPromise = generateText({
-        model: openrouter('google/gemini-3.1-flash-lite'),
+    const aiPromise = generateObject({
+        model: openrouter(SDR_MODEL),
+        schema: sdrResponseSchema,
         system: systemPrompt,
         prompt: inboundMessage,
         maxOutputTokens: 500,
         temperature: 0.7,
     })
 
-    const timeoutPromise = new Promise((_, reject) => 
+    const timeoutPromise = new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error('SDR processing timeout')), SDR_TIMEOUT_MS)
     )
 
+    let object: z.infer<typeof sdrResponseSchema>
+    let usage: { inputTokens?: number; outputTokens?: number } | undefined
+
     try {
-        const result = await Promise.race([aiPromise, timeoutPromise]) as Awaited<ReturnType<typeof generateText>>
-        text = result.text
+        const result = await Promise.race([aiPromise, timeoutPromise])
+        object = result.object
         usage = result.usage as { inputTokens?: number; outputTokens?: number } | undefined
         console.log(`[SDR] OpenRouter responded. Tokens: ${(usage?.inputTokens || 0) + (usage?.outputTokens || 0)}`)
     } catch (apiError) {
@@ -88,34 +107,13 @@ export async function processSDRMessage(
         throw new Error(`OpenRouter API error: ${msg}`)
     }
 
-    // Parse structured response
-    let reply = ''
-    let actions: SDRAction[] = []
+    const reply = object.reply.trim()
+    const actions = object.actions as SDRAction[]
 
-    try {
-        // Try to extract JSON from response
-        const jsonMatch = text.match(/\{[\s\S]*\}/)
-        if (jsonMatch) {
-            const parsed = JSON.parse(jsonMatch[0])
-            reply = parsed.reply || ''
-            actions = Array.isArray(parsed.actions) ? parsed.actions : []
-        } else {
-            // Fallback: use raw text as reply
-            reply = text.trim()
-        }
-    } catch {
-        // If JSON parsing fails, use text as-is
-        reply = text.replace(/```json\n?|\n?```/g, '').trim()
-        try {
-            const parsed = JSON.parse(reply)
-            reply = parsed.reply || reply
-            actions = parsed.actions || []
-        } catch {
-            // Just use the text directly
-        }
+    if (!reply) {
+        throw new Error('SDR agent returned empty reply')
     }
 
-    // Log AI interaction
     const primaryAction = actions[0]?.type || 'respond'
     await db.insert(aiInteractions).values({
         conversationId,
@@ -123,7 +121,7 @@ export async function processSDRMessage(
         inputSummary: inboundMessage.slice(0, 500),
         outputSummary: reply.slice(0, 500),
         confidence: actions.length > 0 ? 80 : 60,
-        model: 'google/gemini-3.1-flash-lite',
+        model: SDR_MODEL,
         tokensUsed: (usage?.inputTokens || 0) + (usage?.outputTokens || 0),
     })
 

@@ -75,24 +75,102 @@ export async function GET() {
         }
     }
 
-    // 4. Check OpenRouter API
+    // 4. Check Evolution webhook points to this deployment
+    const expectedWebhookUrl =
+        process.env.WEBHOOK_URL ||
+        (process.env.NEXT_PUBLIC_APP_URL
+            ? `${process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')}/api/whatsapp/webhook`
+            : 'https://crmamelia.vercel.app/api/whatsapp/webhook')
+
     try {
-        if (process.env.OPENROUTER_API_KEY) {
-            const res = await fetch('https://openrouter.ai/api/v1/models', {
-                headers: { 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}` },
+        const apiUrl = process.env.EVOLUTION_API_URL?.replace(/\/$/, '')
+        const apiKey = process.env.EVOLUTION_API_KEY
+        const instance = process.env.EVOLUTION_INSTANCE_NAME
+
+        if (apiUrl && apiKey && instance) {
+            const res = await fetch(`${apiUrl}/webhook/find/${instance}`, {
+                headers: { apikey: apiKey },
                 signal: AbortSignal.timeout(5000),
             })
 
             if (res.ok) {
-                diagnostics['openrouter_api'] = { status: '✅ OK', detail: 'API key valid' }
+                const data = await res.json()
+                const config = data?.webhook ?? data
+                const configuredUrl = config?.url || ''
+                const enabled = config?.enabled ?? false
+                const events: string[] = config?.events || []
+                const hasUpsert = events.includes('MESSAGES_UPSERT')
+                const urlMatch = configuredUrl === expectedWebhookUrl
+
+                if (enabled && urlMatch && hasUpsert) {
+                    diagnostics['evolution_webhook'] = {
+                        status: '✅ OK',
+                        detail: configuredUrl,
+                    }
+                } else {
+                    const issues: string[] = []
+                    if (!enabled) issues.push('disabled')
+                    if (!urlMatch) issues.push(`url=${configuredUrl || 'empty'}`)
+                    if (!hasUpsert) issues.push('missing MESSAGES_UPSERT')
+                    diagnostics['evolution_webhook'] = {
+                        status: '⚠️ MISCONFIGURED',
+                        detail: `${issues.join(', ')} | expected: ${expectedWebhookUrl}`,
+                    }
+                }
+            } else {
+                const text = await res.text()
+                diagnostics['evolution_webhook'] = {
+                    status: '❌ ERROR',
+                    detail: `HTTP ${res.status}: ${text.slice(0, 150)}`,
+                }
+            }
+        } else {
+            diagnostics['evolution_webhook'] = { status: '⏭️ SKIPPED', detail: 'Missing Evolution env vars' }
+        }
+    } catch (err) {
+        diagnostics['evolution_webhook'] = {
+            status: '❌ UNREACHABLE',
+            detail: err instanceof Error ? err.message : String(err),
+        }
+    }
+
+    // 5. Check OpenRouter API + SDR model availability
+    try {
+        if (process.env.OPENROUTER_API_KEY) {
+            const res = await fetch('https://openrouter.ai/api/v1/models', {
+                headers: { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}` },
+                signal: AbortSignal.timeout(5000),
+            })
+
+            if (res.ok) {
+                const modelsData = await res.json()
+                const modelIds: string[] = (modelsData?.data || []).map(
+                    (m: { id?: string }) => m.id
+                )
+                const sdrModel = 'google/gemini-3.1-flash-lite'
+                const modelAvailable = modelIds.includes(sdrModel)
+                diagnostics['openrouter_api'] = {
+                    status: '✅ OK',
+                    detail: 'API key valid',
+                }
+                diagnostics['sdr_model'] = {
+                    status: modelAvailable ? '✅ OK' : '⚠️ NOT LISTED',
+                    detail: sdrModel,
+                }
             } else {
                 diagnostics['openrouter_api'] = { status: '❌ ERROR', detail: `HTTP ${res.status}` }
+                diagnostics['sdr_model'] = { status: '⏭️ SKIPPED', detail: 'OpenRouter check failed' }
             }
         } else {
             diagnostics['openrouter_api'] = { status: '⏭️ SKIPPED', detail: 'Missing API key' }
+            diagnostics['sdr_model'] = { status: '⏭️ SKIPPED', detail: 'Missing API key' }
         }
     } catch (err) {
         diagnostics['openrouter_api'] = {
+            status: '❌ UNREACHABLE',
+            detail: err instanceof Error ? err.message : String(err),
+        }
+        diagnostics['sdr_model'] = {
             status: '❌ UNREACHABLE',
             detail: err instanceof Error ? err.message : String(err),
         }

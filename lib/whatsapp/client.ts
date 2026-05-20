@@ -158,13 +158,18 @@ export async function testConnection(): Promise<{ success: boolean; phoneNumber?
 // ==================== HELPERS ====================
 
 /**
- * Normalize phone number to WhatsApp format (digits only, with country code)
- * Examples: "+55 (11) 99999-9999" → "5511999999999"
+ * Normalize phone number to digits-only with country code (Evolution API format).
+ * Handles JIDs (5511999999999@s.whatsapp.net), LID suffixes (5511:1), and formatted numbers.
  */
 export function normalizePhone(phone: string): string {
-    let normalized = phone.replace(/\D/g, '')
+    // Strip companion/LID suffix before @ (e.g. 5511999999999:1@s.whatsapp.net)
+    const withoutCompanion = phone.split(':')[0]
+    const localPart = withoutCompanion.includes('@')
+        ? withoutCompanion.split('@')[0]
+        : withoutCompanion
 
-    // If it doesn't start with country code (55 for Brazil), prepend it
+    let normalized = localPart.replace(/\D/g, '')
+
     if (normalized.length <= 11) {
         normalized = `55${normalized}`
     }
