@@ -7,62 +7,15 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
-import { streamText, generateImage } from 'ai'
+import { streamText } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { z } from 'zod'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
 
 // Configure OpenRouter as OpenAI-compatible provider
 const openrouter = createOpenAI({
     baseURL: 'https://openrouter.ai/api/v1',
     apiKey: process.env.OPENROUTER_API_KEY,
 })
-
-const AI_UPLOAD_DIR = join(process.cwd(), 'public', 'uploads', 'ai-generated')
-
-async function generateCoverImage(title: string, excerpt: string): Promise<string | null> {
-    try {
-        const imagePrompt = `Professional modern healthcare blog cover, ${title}, ${excerpt}, clean welcoming aesthetic, soft green blue white colors, no text no words, photography style, health insurance company`
-
-        console.log('🎨 Generating cover image via Pollinations.ai...')
-
-        // Use Pollinations.ai (free image generation)
-        const encodedPrompt = encodeURIComponent(imagePrompt)
-        const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${Date.now()}`
-
-        const response = await fetch(pollinationsUrl)
-
-        if (!response.ok) {
-            console.error('❌ Pollinations.ai failed:', response.status)
-            return null
-        }
-
-        const imageBuffer = Buffer.from(await response.arrayBuffer())
-
-        // Ensure directory exists
-        if (!existsSync(AI_UPLOAD_DIR)) {
-            await mkdir(AI_UPLOAD_DIR, { recursive: true })
-        }
-
-        // Save image
-        const timestamp = Date.now()
-        const fileName = `post-cover-${timestamp}.png`
-        const filePath = join(AI_UPLOAD_DIR, fileName)
-
-        await writeFile(filePath, imageBuffer)
-
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ameliasaude.vercel.app'
-        const imageUrl = `${baseUrl}/uploads/ai-generated/${fileName}`
-
-        console.log('✅ Cover image generated:', imageUrl)
-        return imageUrl
-    } catch (error) {
-        console.error('Error generating cover image:', error)
-        return null
-    }
-}
 
 const generatePostSchema = z.object({
     topic: z.string().min(1, 'Tema é obrigatório'),
@@ -154,7 +107,7 @@ Retorne o conteúdo em JSON com a seguinte estrutura:
 Retorne APENAS o JSON, sem markdown ou texto adicional.`
 
         const response = await streamText({
-            model: openrouter('anthropic/claude-3.5-sonnet'),
+            model: openrouter('anthropic/claude-sonnet-4-20250514'),
             prompt,
         })
 
@@ -173,17 +126,6 @@ Retorne APENAS o JSON, sem markdown ou texto adicional.`
                 .trim()
 
             const generatedPost = JSON.parse(cleanContent)
-
-            // Generate cover image
-            console.log('🎨 Generating cover image for post:', generatedPost.title)
-            const coverImage = await generateCoverImage(
-                generatedPost.title,
-                generatedPost.excerpt
-            )
-
-            if (coverImage) {
-                generatedPost.coverImage = coverImage
-            }
 
             return NextResponse.json({
                 success: true,

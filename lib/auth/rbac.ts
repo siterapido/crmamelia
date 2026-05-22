@@ -131,14 +131,13 @@ export function denyAccess(user: { role: string }, area: AccessArea): Response |
 
 export function getDefaultRedirect(role: string): string {
     switch (role) {
-        case 'admin':
-            return '/admin'
-        case 'gestor':
-        case 'vendedor':
-            return '/crm'
         case 'produtor':
             return '/admin'
+        case 'admin':
+        case 'gestor':
+        case 'vendedor':
+            return '/crm/pipeline'
         default:
-            return '/admin'
+            return '/crm/pipeline'
     }
 }

@@ -15,17 +15,26 @@ import { executeSDRActions, ensureDeal } from '@/lib/ai/sdr-actions'
 
 export const maxDuration = 60
 
-const FALLBACK_MESSAGE = 'Olá! Desculpe, estou com uma instabilidade temporária. Um atendente humano vai te responder em breve. 🙏'
+const FALLBACK_MESSAGE =
+    'Olá! Desculpe, estou com uma instabilidade temporária. Um atendente humano vai te responder em breve. 🙏'
 
-// Validate critical env vars at module load
-const REQUIRED_ENV_VARS = ['EVOLUTION_API_URL', 'EVOLUTION_API_KEY', 'EVOLUTION_INSTANCE_NAME', 'OPENROUTER_API_KEY'] as const
+const REQUIRED_ENV_VARS = [
+    'EVOLUTION_API_URL',
+    'EVOLUTION_API_KEY',
+    'EVOLUTION_INSTANCE_NAME',
+    'OPENROUTER_API_KEY',
+] as const
 for (const envVar of REQUIRED_ENV_VARS) {
     if (!process.env[envVar]) {
-        console.error(`[Webhook] ⚠️ CRITICAL: Missing environment variable ${envVar} — the AI agent will NOT work.`)
+        console.error(
+            `[Webhook] ⚠️ CRITICAL: Missing environment variable ${envVar} — the AI agent will NOT work.`
+        )
     }
 }
 if (process.env.EVOLUTION_API_URL?.includes('localhost')) {
-    console.warn('[Webhook] ⚠️ WARNING: EVOLUTION_API_URL points to localhost. This will NOT work in production/Vercel.')
+    console.warn(
+        '[Webhook] ⚠️ WARNING: EVOLUTION_API_URL points to localhost. This will NOT work in production/Vercel.'
+    )
 }
 
 // ==================== GET: Webhook verification ====================
@@ -36,8 +45,89 @@ export async function GET() {
 
 // ==================== POST: Receive messages ====================
 
+function normalizeWebhookEvent(event: string | undefined): string {
+    if (!event) return ''
+    const e = event.toLowerCase().replace(/_/g, '.')
+    if (e === 'messages.upsert') return 'messages.upsert'
+    if (e === 'messages.update') return 'messages.update'
+    return e
+}
+
+function isReplyableJid(jid: string): boolean {
+    return jid.endsWith('@s.whatsapp.net') || jid.endsWith('@c.us')
+}
+
+function jidToPhone(jid: string | undefined): string | null {
+    if (!jid || jid.includes('@lid')) return null
+    const local = jid.split('@')[0].split(':')[0]
+    const digits = local.replace(/\D/g, '')
+    return digits.length >= 10 ? digits : null
+}
+
+function resolveReplyJid(jid: string | undefined): string | null {
+    if (!jid || jid.includes('@lid')) return null
+    return isReplyableJid(jid) ? jid : null
+}
+
+function resolveContactFromUpsert(
+    messageData: Record<string, unknown>,
+    payload: Record<string, unknown>
+): { phone: string; replyJid: string } | null {
+    const key = messageData.key as
+        | {
+              remoteJid?: string
+              remoteJidAlt?: string
+              participant?: string
+              fromMe?: boolean
+              id?: string
+          }
+        | undefined
+    if (!key?.remoteJid) return null
+
+    const candidates: string[] = [
+        key.remoteJid,
+        key.remoteJidAlt,
+        messageData.remoteJidAlt as string | undefined,
+        payload.sender as string | undefined,
+        messageData.sender as string | undefined,
+        key.participant,
+    ].filter((v): v is string => typeof v === 'string')
+
+    let replyJid: string | null = null
+    for (const candidate of candidates) {
+        replyJid = resolveReplyJid(candidate)
+        if (replyJid) break
+    }
+
+    if (!replyJid) {
+        console.error(
+            '[Webhook] LID unresolved — no @s.whatsapp.net JID:',
+            key.remoteJid,
+            'alt:',
+            key.remoteJidAlt ?? messageData.remoteJidAlt,
+            'sender:',
+            payload.sender
+        )
+        return null
+    }
+
+    const phone = jidToPhone(replyJid)
+    if (!phone) {
+        console.error('[Webhook] Could not extract phone from JID:', replyJid)
+        return null
+    }
+
+    return { phone, replyJid }
+}
+
+function collectUpsertMessages(data: unknown): Record<string, unknown>[] {
+    if (!data) return []
+    if (Array.isArray(data)) return data as Record<string, unknown>[]
+    return [data as Record<string, unknown>]
+}
+
 export async function POST(request: NextRequest) {
-    let payload
+    let payload: Record<string, unknown>
     try {
         payload = await request.json()
     } catch {
@@ -45,67 +135,118 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ status: 'invalid_payload' }, { status: 400 })
     }
 
-    const eventType = payload.event
-    const instance = payload.instance
+    const eventType = normalizeWebhookEvent(payload.event as string | undefined)
+    const instance = payload.instance as string | undefined
+    const expectedInstance = process.env.EVOLUTION_INSTANCE_NAME
 
-    console.log(`[Webhook] Received event: ${eventType} | Instance: ${instance}`)
+    console.log(`[Webhook] Received event: ${payload.event} → ${eventType} | Instance: ${instance}`)
+
+    if (expectedInstance && instance && instance !== expectedInstance) {
+        console.warn(`[Webhook] Instance mismatch: got ${instance}, expected ${expectedInstance}`)
+    }
+
+    let persistFailures = 0
+    let persistedCount = 0
+    const skipped: { reason: string; remoteJid?: string }[] = []
 
     try {
         if (eventType === 'messages.upsert') {
-            const messageData = payload.data
-            const key = messageData?.key
-            const message = messageData?.message
-
-            if (!key?.remoteJid || !message) {
-                console.error('[Webhook] Invalid messages.upsert payload: missing key or message')
+            const items = collectUpsertMessages(payload.data)
+            if (items.length === 0) {
+                console.error('[Webhook] Invalid messages.upsert: empty data')
                 return NextResponse.json({ status: 'invalid_payload' }, { status: 400 })
             }
 
-            const pushName = messageData.pushName || 'WhatsApp User'
-            const remoteJid = key.remoteJid as string
-            const phone = remoteJid.split('@')[0].split(':')[0]
+            for (const messageData of items) {
+                const key = messageData.key as
+                    | { remoteJid?: string; fromMe?: boolean; id?: string }
+                    | undefined
+                const message = messageData.message as Record<string, unknown> | undefined
 
-            console.log(`[Webhook] Message from ${phone} (${pushName}) | Key ID: ${key.id}`)
+                if (!key?.remoteJid || !message) {
+                    console.error('[Webhook] Skipping upsert item: missing key or message')
+                    continue
+                }
 
-            if (key.fromMe) {
-                console.log(`[Webhook] Ignoring outbound message from ${phone}`)
-                return NextResponse.json({ status: 'ignored_outbound' })
-            }
+                if (key.fromMe) {
+                    console.log(`[Webhook] Ignoring outbound message ${key.id}`)
+                    continue
+                }
 
-            const messageContent = extractEvolutionMessageContent(message)
-            const messageType = message.imageMessage
-                ? 'image'
-                : message.videoMessage
-                  ? 'video'
-                  : message.documentMessage
-                    ? 'document'
-                    : 'text'
-
-            console.log(`[Webhook] Content: ${messageContent.slice(0, 50)}... | Type: ${messageType}`)
-
-            after(async () => {
-                try {
-                    await handleInboundMessage(
-                        phone,
+                const resolved = resolveContactFromUpsert(messageData, payload)
+                if (!resolved) {
+                    const remoteJid = key.remoteJid
+                    skipped.push({
+                        reason: remoteJid?.includes('@lid') ? 'lid_unresolved' : 'contact_unresolved',
                         remoteJid,
+                    })
+                    continue
+                }
+
+                const { phone, replyJid } = resolved
+                const pushName = (messageData.pushName as string) || 'WhatsApp User'
+                const messageContent = extractEvolutionMessageContent(message)
+                const messageType = message.imageMessage
+                    ? 'image'
+                    : message.videoMessage
+                      ? 'video'
+                      : message.documentMessage
+                        ? 'document'
+                        : 'text'
+                const whatsappMessageId = (key.id as string) || `unknown-${Date.now()}`
+
+                console.log(
+                    `[Webhook] Inbound ${phone} (${pushName}) | replyJid: ${replyJid} | ${messageContent.slice(0, 50)}`
+                )
+
+                try {
+                    const ctx = await persistInboundMessage(
+                        phone,
+                        replyJid,
                         pushName,
                         messageContent,
                         messageType,
-                        key.id as string
+                        whatsappMessageId
                     )
-                    console.log(`[Webhook] ✅ Processed message from ${phone}`)
+                    persistedCount++
+                    console.log(`[Webhook] ✅ Persisted inbound from ${phone} (conv ${ctx.conversationId})`)
+
+                    if (ctx.aiEnabled) {
+                        after(async () => {
+                            try {
+                                await runSDRAgent(
+                                    ctx.contactId,
+                                    ctx.conversationId,
+                                    ctx.replyJid,
+                                    ctx.phone,
+                                    messageContent
+                                )
+                                console.log(`[Webhook] ✅ AI processed message from ${phone}`)
+                            } catch (err) {
+                                console.error(
+                                    `[Webhook] ❌ AI error for ${phone}:`,
+                                    err instanceof Error ? err.message : err
+                                )
+                            }
+                        })
+                    } else {
+                        console.log(`[Webhook] AI disabled for conversation ${ctx.conversationId}`)
+                    }
                 } catch (err) {
+                    persistFailures++
                     console.error(
-                        `[Webhook] ❌ Error processing message from ${phone}:`,
+                        `[Webhook] ❌ Persist failed for ${phone}:`,
                         err instanceof Error ? err.message : err
                     )
                 }
-            })
-        }
+            }
 
-        if (eventType === 'messages.update') {
-            const data = payload.data
-            const messageId = data?.keyId || data?.key?.id
+            if (persistFailures > 0 && persistedCount === 0) {
+                return NextResponse.json({ status: 'persist_failed' }, { status: 500 })
+            }
+        } else if (eventType === 'messages.update') {
+            const data = payload.data as Record<string, unknown> | undefined
+            const messageId = (data?.keyId as string) || (data?.key as { id?: string })?.id
             console.log(`[Webhook] Message update: ${messageId} | Status: ${data?.status}`)
 
             if (messageId) {
@@ -117,7 +258,7 @@ export async function POST(request: NextRequest) {
                     PLAYED: 'read',
                     ERROR: 'failed',
                 }
-                const newStatus = statusMap[data.status] || data.status
+                const newStatus = statusMap[data?.status as string] || (data?.status as string)
 
                 try {
                     await db
@@ -128,12 +269,18 @@ export async function POST(request: NextRequest) {
                     console.error('[Webhook] Failed to update message status:', err)
                 }
             }
+        } else {
+            console.warn(`[Webhook] Unhandled event: ${payload.event}`)
         }
 
-        return NextResponse.json({ status: 'ok' })
+        return NextResponse.json({
+            status: 'ok',
+            persisted: persistedCount,
+            ...(skipped.length > 0 ? { skipped } : {}),
+        })
     } catch (error) {
         console.error('[Webhook] Major error:', error)
-        return NextResponse.json({ status: 'received' }, { status: 200 })
+        return NextResponse.json({ status: 'error' }, { status: 500 })
     }
 }
 
@@ -153,146 +300,127 @@ async function updateProfilePictureAsync(contactId: string, phone: string) {
     }
 }
 
-async function handleInboundMessage(
+interface PersistedInboundContext {
+    contactId: string
+    conversationId: string
+    phone: string
+    replyJid: string
+    aiEnabled: boolean
+}
+
+/** Synchronous: contact, conversation, inbound message — must complete before HTTP 200 */
+async function persistInboundMessage(
     phone: string,
-    whatsappId: string,
+    replyJid: string,
     senderName: string,
     messageContent: string,
     messageType: string,
     whatsappMessageId: string
-) {
-    console.log(`[Handler] Processing ${phone} | MsgId: ${whatsappMessageId}`)
+): Promise<PersistedInboundContext> {
+    console.log(`[Handler] Persisting ${phone} | MsgId: ${whatsappMessageId}`)
 
-    let contactId: string
-    let conversationId: string | undefined
+    let [contact] = await db.select().from(contacts).where(eq(contacts.phone, phone)).limit(1)
 
-    try {
-        // 1. Upsert contact
-        console.log(`[Handler] Finding contact for ${phone}...`)
-        let [contact] = await db
-            .select()
-            .from(contacts)
-            .where(eq(contacts.phone, phone))
-            .limit(1)
-
-        if (!contact) {
-            console.log(`[Handler] Creating new contact for ${senderName} (${phone})...`)
-            const [newContact] = await db
-                .insert(contacts)
-                .values({
-                    name: senderName,
-                    phone,
-                    whatsappId,
-                    source: 'whatsapp',
-                    status: 'new',
-                    lastContactAt: new Date(),
-                })
-                .returning()
-            contact = newContact
-            console.log(`[Handler] Created contact ID: ${contact.id}`)
-
-            try {
-                await ensureDeal(contact)
-            } catch (err) {
-                console.error(`[Handler] Failed to create deal for new contact:`, err)
-            }
-
-            void updateProfilePictureAsync(contact.id, phone)
-        } else {
-            console.log(`[Handler] Found contact ID: ${contact.id}`)
-            await db
-                .update(contacts)
-                .set({
-                    whatsappId,
-                    lastContactAt: new Date(),
-                    updatedAt: new Date(),
-                    ...(senderName !== phone && senderName !== 'WhatsApp User' ? { name: senderName } : {}),
-                })
-                .where(eq(contacts.id, contact.id))
-
-            try {
-                await ensureDeal(contact)
-            } catch (err) {
-                console.error(`[Handler] Failed to ensure deal:`, err)
-            }
-
-            if (!contact.profilePictureUrl) {
-                void updateProfilePictureAsync(contact.id, phone)
-            }
-        }
-        contactId = contact.id
-
-        // 2. Find or create active conversation
-        console.log(`[Handler] Finding active conversation for contact ${contactId}...`)
-        let [conversation] = await db
-            .select()
-            .from(conversations)
-            .where(and(eq(conversations.contactId, contactId), eq(conversations.status, 'active')))
-            .orderBy(desc(conversations.createdAt))
-            .limit(1)
-
-        if (!conversation) {
-            const [newConv] = await db
-                .insert(conversations)
-                .values({
-                    contactId,
-                    status: 'active',
-                    aiEnabled: true,
-                    lastMessageAt: new Date(),
-                    lastInboundAt: new Date(),
-                })
-                .returning()
-            conversation = newConv
-            console.log(`[Handler] Created conversation ID: ${conversation.id}`)
-        } else {
-            await db
-                .update(conversations)
-                .set({
-                    lastMessageAt: new Date(),
-                    lastInboundAt: new Date(),
-                    flowState: 'active',
-                })
-                .where(eq(conversations.id, conversation.id))
-        }
-        conversationId = conversation.id
-        const aiEnabled = conversation.aiEnabled
-
-        // 3. Save inbound message
-        try {
-            await db.insert(messages).values({
-                conversationId,
-                whatsappMessageId,
-                direction: 'inbound',
-                sender: 'contact',
-                content: messageContent,
-                messageType,
-                status: 'read',
+    if (!contact) {
+        console.log(`[Handler] Creating new contact for ${senderName} (${phone})...`)
+        const [newContact] = await db
+            .insert(contacts)
+            .values({
+                name: senderName,
+                phone,
+                whatsappId: replyJid,
+                source: 'whatsapp',
+                status: 'new',
+                lastContactAt: new Date(),
             })
+            .returning()
+        contact = newContact
+        console.log(`[Handler] Created contact ID: ${contact.id}`)
+
+        try {
+            await ensureDeal(contact)
         } catch (err) {
-            console.error('[Handler] ❌ Failed to save inbound message:', err)
+            console.error(`[Handler] Failed to create deal for new contact:`, err)
         }
 
-        // 4. Route to AI agent if enabled
-        console.log(`[Handler] AI enabled: ${aiEnabled}`)
-        if (!aiEnabled) {
-            console.log('[Handler] AI disabled for this conversation, skipping')
-            return
+        void updateProfilePictureAsync(contact.id, phone)
+    } else {
+        console.log(`[Handler] Found contact ID: ${contact.id}`)
+        await db
+            .update(contacts)
+            .set({
+                whatsappId: replyJid,
+                lastContactAt: new Date(),
+                updatedAt: new Date(),
+                ...(senderName !== phone && senderName !== 'WhatsApp User' ? { name: senderName } : {}),
+            })
+            .where(eq(contacts.id, contact.id))
+
+        try {
+            await ensureDeal(contact)
+        } catch (err) {
+            console.error(`[Handler] Failed to ensure deal:`, err)
         }
 
-        await runSDRAgent(contactId, conversationId, whatsappId, phone, messageContent)
-    } catch (err) {
-        console.error('[Handler] ❌ Pipeline error:', err instanceof Error ? err.message : err)
-        if (conversationId) {
-            await sendFallback(whatsappId, conversationId, phone)
+        if (!contact.profilePictureUrl) {
+            void updateProfilePictureAsync(contact.id, phone)
         }
-        throw err
+    }
+
+    let [conversation] = await db
+        .select()
+        .from(conversations)
+        .where(and(eq(conversations.contactId, contact.id), eq(conversations.status, 'active')))
+        .orderBy(desc(conversations.createdAt))
+        .limit(1)
+
+    if (!conversation) {
+        const [newConv] = await db
+            .insert(conversations)
+            .values({
+                contactId: contact.id,
+                status: 'active',
+                aiEnabled: true,
+                lastMessageAt: new Date(),
+                lastInboundAt: new Date(),
+            })
+            .returning()
+        conversation = newConv
+        console.log(`[Handler] Created conversation ID: ${conversation.id}`)
+    } else {
+        await db
+            .update(conversations)
+            .set({
+                lastMessageAt: new Date(),
+                lastInboundAt: new Date(),
+                flowState: 'active',
+            })
+            .where(eq(conversations.id, conversation.id))
+    }
+
+    await db.insert(messages).values({
+        conversationId: conversation.id,
+        whatsappMessageId,
+        direction: 'inbound',
+        sender: 'contact',
+        content: messageContent,
+        messageType,
+        status: 'read',
+    })
+
+    return {
+        contactId: contact.id,
+        conversationId: conversation.id,
+        phone,
+        replyJid,
+        aiEnabled: conversation.aiEnabled,
     }
 }
 
 async function runSDRAgent(
     contactId: string,
     conversationId: string,
-    whatsappId: string,
+    replyJid: string,
     phone: string,
     messageContent: string
 ) {
@@ -343,17 +471,17 @@ async function runSDRAgent(
             await executeSDRActions(result.actions, contact, conversationId)
         }
 
-        await sendAndSaveReply(whatsappId, result.reply, conversationId, true)
+        await sendAndSaveReply(replyJid, result.reply, conversationId, true)
     } catch (aiError) {
         console.error('[AI] ❌ Agent error:', aiError instanceof Error ? aiError.message : aiError)
-        await sendFallback(whatsappId, conversationId, phone)
+        await sendFallback(replyJid, conversationId, phone)
     }
 }
 
-async function sendFallback(whatsappId: string, conversationId: string, phone: string) {
+async function sendFallback(replyJid: string, conversationId: string, phone: string) {
     try {
         console.log(`[AI] Sending fallback message to ${phone}...`)
-        await sendAndSaveReply(whatsappId, FALLBACK_MESSAGE, conversationId, true)
+        await sendAndSaveReply(replyJid, FALLBACK_MESSAGE, conversationId, true)
     } catch (fallbackError) {
         console.error(
             '[AI] ❌ Even fallback message failed:',
@@ -364,12 +492,12 @@ async function sendFallback(whatsappId: string, conversationId: string, phone: s
 }
 
 async function sendAndSaveReply(
-    whatsappId: string,
+    replyJid: string,
     text: string,
     conversationId: string,
     aiGenerated: boolean
 ) {
-    const number = normalizePhone(whatsappId)
+    const number = normalizePhone(replyJid)
     console.log(`[Send] Sending to ${number} via Evolution API (${process.env.EVOLUTION_API_URL})...`)
     const response = await sendTextMessage(number, text)
     console.log(`[Send] Evolution API response: ${JSON.stringify(response)}`)
@@ -408,7 +536,9 @@ function extractEvolutionMessageContent(message: Record<string, unknown>): strin
     if (message.stickerMessage) return '[Figurinha]'
     const contactMsg = message.contactMessage as { displayName?: string } | undefined
     if (contactMsg) return `[Contato: ${contactMsg.displayName}]`
-    const location = message.locationMessage as { degreesLatitude?: number; degreesLongitude?: number } | undefined
+    const location = message.locationMessage as
+        | { degreesLatitude?: number; degreesLongitude?: number }
+        | undefined
     if (location) {
         return `[Localização: ${location.degreesLatitude}, ${location.degreesLongitude}]`
     }

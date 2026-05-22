@@ -147,7 +147,7 @@ export async function GET() {
                 const modelIds: string[] = (modelsData?.data || []).map(
                     (m: { id?: string }) => m.id
                 )
-                const sdrModel = 'google/gemini-3.1-flash-lite'
+                const sdrModel = 'moonshotai/kimi-k2.6'
                 const modelAvailable = modelIds.includes(sdrModel)
                 diagnostics['openrouter_api'] = {
                     status: '✅ OK',
@@ -176,8 +176,16 @@ export async function GET() {
         }
     }
 
-    // Overall status
-    const allOk = Object.values(diagnostics).every(d => d.status.includes('✅'))
+    diagnostics['webhook_smoke_test'] = {
+        status: 'ℹ️ MANUAL',
+        detail:
+            'Run: npx tsx scripts/test-webhook-post.ts https://crmamelia.vercel.app valid — expect persisted:1. Real WhatsApp must show inbound in CRM within 30s.',
+    }
+
+    // Overall status (exclude manual-only checks)
+    const allOk = Object.entries(diagnostics)
+        .filter(([key]) => key !== 'webhook_smoke_test')
+        .every(([, d]) => d.status.includes('✅'))
 
     return NextResponse.json({
         overall: allOk ? '✅ ALL SYSTEMS OK' : '⚠️ ISSUES FOUND',

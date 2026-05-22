@@ -1,7 +1,7 @@
 # Design: Agente Amélia + Evolution API em Produção
 
 **Data:** 2026-05-20  
-**Status:** Aprovado (design) — aguardando revisão do spec antes do plano de implementação
+**Status:** Implementado (webhook Evolution configurado em 2026-05-20)
 
 ## Problema
 
@@ -127,10 +127,10 @@ Garantir que o projeto Vercel use runtime com limite ≥ 10s para a rota do webh
 
 ## Critérios de sucesso
 
-- [ ] Mensagem inbound no WhatsApp gera resposta automática do agente SDR
+- [ ] Mensagem inbound no WhatsApp gera resposta automática do agente SDR (teste manual pendente)
 - [ ] Mensagem e contato aparecem no CRM em `crmamelia.vercel.app`
-- [ ] `diagnostics` permanece `ALL SYSTEMS OK`
-- [ ] Webhook Evolution aponta exclusivamente para `https://crmamelia.vercel.app/api/whatsapp/webhook`
+- [x] `diagnostics` permanece `ALL SYSTEMS OK` (pré-deploy)
+- [x] Webhook Evolution aponta para `https://crmamelia.vercel.app/api/whatsapp/webhook` (via `pnpm whatsapp:setup-webhook`)
 
 ## Referências
 

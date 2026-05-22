@@ -23,7 +23,6 @@ interface GeneratedPost {
     title: string
     excerpt: string
     content: string
-    coverImage?: string
     tags: string[]
     readingTime: number
 }
@@ -122,7 +121,6 @@ export default function AIGeneratorPage() {
                     slug,
                     excerpt: generatedPost.excerpt,
                     content: generatedPost.content,
-                    coverImage: generatedPost.coverImage,
                     categoryId: selectedCategoryId || undefined,
                     status: 'draft',
                     aiGenerated: true,
@@ -339,20 +337,6 @@ export default function AIGeneratorPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="space-y-4"
                         >
-                            {/* Cover Image */}
-                            {generatedPost.coverImage && (
-                                <div>
-                                    <p className="text-platinum text-xs uppercase tracking-wide mb-2">Imagem de Capa</p>
-                                    <div className="relative w-full h-48 rounded-xl overflow-hidden bg-black-deep">
-                                        <img
-                                            src={generatedPost.coverImage}
-                                            alt={generatedPost.title}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
                             {/* Title */}
                             <div>
                                 <p className="text-platinum text-xs uppercase tracking-wide mb-1">Título</p>

@@ -178,9 +178,6 @@ async function handleQualify(contact: Contact, action: SDRAction) {
         case 'lives_count':
             updateData.livesCount = parseInt(action.value) || null
             break
-        case 'plan_interest':
-            updateData.planInterest = action.value
-            break
         case 'company':
             updateData.company = action.value
             break
@@ -190,6 +187,21 @@ async function handleQualify(contact: Contact, action: SDRAction) {
         case 'address':
             updateData.address = action.value
             break
+        case 'has_plan':
+        case 'plan_interest':
+            updateData.planInterest = action.value?.slice(0, 50) ?? null
+            break
+        case 'urgency': {
+            const prefix = `Urgência: ${action.value}`
+            const [fresh] = await db.select().from(contacts).where(eq(contacts.id, contact.id)).limit(1)
+            const existing = fresh?.notes || ''
+            updateData.notes = existing.includes('Urgência:')
+                ? existing.replace(/Urgência:[^\n]*/i, prefix)
+                : existing
+                  ? `${prefix}\n${existing}`
+                  : prefix
+            break
+        }
         default:
             return
     }

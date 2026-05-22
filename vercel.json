@@ -7,10 +7,6 @@
     {
       "path": "/api/cron/inactivity",
       "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/generate-post",
-      "schedule": "0 9 * * *"
     }
   ]
 }

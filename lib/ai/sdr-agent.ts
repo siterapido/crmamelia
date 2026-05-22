@@ -52,8 +52,8 @@ const openrouter = createOpenAI({
     },
 })
 
-const SDR_MODEL = 'google/gemini-3.1-flash-lite'
-const SDR_TIMEOUT_MS = 20_000
+export const SDR_MODEL = 'moonshotai/kimi-k2.6'
+const SDR_TIMEOUT_MS = 35_000
 
 export async function processSDRMessage(
     conversationId: string,
@@ -73,7 +73,7 @@ export async function processSDRMessage(
         schema: sdrResponseSchema,
         system: systemPrompt,
         prompt: inboundMessage,
-        maxOutputTokens: 500,
+        maxOutputTokens: 600,
         temperature: 0.7,
     })
 

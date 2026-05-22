@@ -3,10 +3,10 @@
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { AuthProvider, useAuth } from '@/lib/auth/context'
-import { canAccess, hasPermission, isAdmin } from '@/lib/auth/rbac'
+import { canAccess, hasPermission } from '@/lib/auth/rbac'
 import { Sidebar } from '@/components/admin/Sidebar'
 import { motion } from 'framer-motion'
-import { Loader2, ShieldX } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth()
@@ -19,14 +19,25 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         if (!loading && !user && !isLoginPage) {
             router.push('/login')
         }
+    }, [user, loading, router, isLoginPage])
+
+    useEffect(() => {
         if (!loading && user && isAdminArea && !hasPermission(user, 'users:manage')) {
-            if (canAccess(user, 'blog')) {
-                router.push('/admin/cms')
-            } else if (canAccess(user, 'crm')) {
-                router.push('/crm')
+            if (canAccess(user, 'crm')) {
+                router.push('/crm/pipeline')
             }
+            // Perfis apenas de conteúdo (ex.: produtor) permanecem em /admin
         }
-    }, [user, loading, router, isLoginPage, isAdminArea])
+    }, [user, loading, router, isAdminArea])
+
+    useEffect(() => {
+        if (loading || !user || !pathname.startsWith('/admin/cms')) return
+        if (canAccess(user, 'crm')) {
+            router.replace('/crm/pipeline')
+        } else {
+            router.replace('/admin')
+        }
+    }, [loading, user, pathname, router])
 
     if (isLoginPage) {
         return <>{children}</>
@@ -51,22 +62,17 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         return null
     }
 
-    const isCMSArea = pathname.startsWith('/admin/cms')
-    const canAccessCMS = isAdmin(user) // Only admin can access /admin/cms
-    const canAccessAdminSystem = hasPermission(user, 'users:manage')
-
-    if (isCMSArea && !canAccessCMS) {
-        if (canAccess(user, 'crm')) {
-            router.push('/crm')
-            return null
-        }
+    if (user && pathname.startsWith('/admin/cms')) {
         return (
             <div className="min-h-screen bg-black-deep flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4 text-center">
-                    <ShieldX className="w-12 h-12 text-red-400" />
-                    <h2 className="text-xl font-bold text-white">Acesso Negado</h2>
-                    <p className="text-platinum">Você não tem permissão para acessar esta área.</p>
-                </div>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col items-center gap-4"
+                >
+                    <Loader2 className="w-8 h-8 text-gold animate-spin" />
+                    <p className="text-platinum">Redirecionando...</p>
+                </motion.div>
             </div>
         )
     }

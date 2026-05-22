@@ -9,7 +9,12 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:seed": "npx tsx lib/db/seed.ts"
+    "db:seed": "npx tsx lib/db/seed.ts",
+    "whatsapp:setup-webhook": "npx tsx scripts/setup-evolution-webhook.ts",
+    "whatsapp:test-connection": "npx tsx scripts/test-connection.ts",
+    "docs:fluxo-cliente": "docs/.venv/bin/python docs/gerar_fluxo_cliente.py",
+    "docs:fluxo-tecnico": "docs/.venv/bin/python docs/gerar_fluxo_agente.py",
+    "docs:setup": "python3 -m venv docs/.venv && docs/.venv/bin/pip install -r docs/requirements-docs.txt"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.23",

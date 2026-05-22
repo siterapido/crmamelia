@@ -32,6 +32,7 @@ export const Footer = () => {
         { label: 'Canal de Atendimento', href: '/#faq' },
         { label: 'Sobre Nos', href: '/sobre' },
         { label: 'FAQ', href: '/#faq' },
+        { label: 'Como funciona a Amélia', href: '/como-funciona' },
       ],
     },
     {

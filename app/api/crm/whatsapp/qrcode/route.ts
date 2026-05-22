@@ -23,7 +23,7 @@ export async function GET() {
                 return NextResponse.json({
                     connected: true,
                     status: 'open',
-                    phone: status?.instance?.profileName || status?.instance?.wuid?.split('@')[0] || null,
+                    phone: status?.instance?.profileName || status?.instance?.wuid?.split('@')[0]?.split(':')[0] || null,
                     profilePicture: status?.instance?.profilePictureUrl || null,
                 })
             }
