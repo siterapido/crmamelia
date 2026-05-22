@@ -26,7 +26,7 @@
  * - Apenas dados atribuídos a ele (conversas, leads, deals)
  * - Pode assumir conversas não atribuídas
  * - NÃO pode ver dados de outros vendedores
- * - NÃO pode acessar configurações
+ * - Acessa configurações apenas para Perfil
  * - NÃO pode gerenciar usuários
  */
 
@@ -93,10 +93,30 @@ const ACCESS_MAP = {
     blog: ['admin', 'gestor', 'produtor'] as UserRole[],
     crm: ['admin', 'gestor', 'vendedor'] as UserRole[],
     users: ['admin'] as UserRole[],
-    settings: ['admin', 'gestor'] as UserRole[],
+    settings: ['admin', 'gestor', 'vendedor'] as UserRole[],
 } as const
 
 export type AccessArea = keyof typeof ACCESS_MAP
+
+export type SettingsSection = 'profile' | 'team' | 'templates' | 'integrations'
+
+export function canAccessSettingsSection(
+    user: { role: string },
+    section: SettingsSection
+): boolean {
+    const role = user.role as UserRole
+    switch (section) {
+        case 'profile':
+            return canAccess(user, 'crm')
+        case 'team':
+        case 'templates':
+            return role === 'admin' || role === 'gestor'
+        case 'integrations':
+            return role === 'admin'
+        default:
+            return false
+    }
+}
 
 export function isAdmin(user: { role: string }): boolean {
     return user.role === 'admin'
@@ -132,12 +152,12 @@ export function denyAccess(user: { role: string }, area: AccessArea): Response |
 export function getDefaultRedirect(role: string): string {
     switch (role) {
         case 'produtor':
-            return '/admin'
+            return '/admin/cms/posts'
         case 'admin':
         case 'gestor':
         case 'vendedor':
-            return '/crm/pipeline'
+            return '/crm/dashboard'
         default:
-            return '/crm/pipeline'
+            return '/crm/dashboard'
     }
 }

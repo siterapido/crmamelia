@@ -265,8 +265,8 @@ export default function ContactDetailPage() {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="animate-pulse h-8 bg-white/10 rounded w-1/3" />
-                <div className="animate-pulse h-64 bg-white/10 rounded-2xl" />
+                <div className="animate-pulse h-8 bg-[var(--crm-surface-2)] rounded w-1/3" />
+                <div className="animate-pulse h-64 bg-[var(--crm-surface-2)] rounded-2xl" />
             </div>
         )
     }
@@ -277,7 +277,7 @@ export default function ContactDetailPage() {
         <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center gap-4">
-                <Link href="/crm/contacts" className="p-2 rounded-lg bg-white/5 text-platinum hover:bg-white/10 hover:text-white transition-colors">
+                <Link href="/crm/contacts" className="p-2 rounded-lg bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)] hover:text-[var(--crm-text)] transition-colors">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
                 <div className="flex items-center gap-3 flex-1">
@@ -290,12 +290,12 @@ export default function ContactDetailPage() {
                         </div>
                     )}
                     <div>
-                        <h1 className="text-3xl font-bold text-white">{contact.name}</h1>
-                        <p className="text-platinum">{contact.phone}</p>
+                        <h1 className="text-3xl font-bold text-[var(--crm-text)]">{contact.name}</h1>
+                        <p className="text-[var(--crm-text-muted)]">{contact.phone}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[contact.status] || 'bg-white/10 text-platinum border-white/10'}`}>
+                    <span className={`px-3 py-1.5 rounded-full text-sm font-medium border ${statusColors[contact.status] || 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] border-[var(--crm-border)]'}`}>
                         {statusLabels[contact.status] || contact.status}
                     </span>
                     {contact.leadScore && (
@@ -336,7 +336,7 @@ export default function ContactDetailPage() {
                         onChange={e => setNewTag(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && addTag()}
                         placeholder="+ Adicionar tag"
-                        className="px-3 py-1 bg-white/5 rounded-full border border-white/10 text-platinum text-xs focus:outline-none focus:border-gold/50 w-32"
+                        className="px-3 py-1 bg-[var(--crm-surface-2)] rounded-full border border-[var(--crm-border)] text-[var(--crm-text-muted)] text-xs focus:outline-none focus:border-gold/50 w-32"
                     />
                     {newTag.trim() && (
                         <button
@@ -354,7 +354,7 @@ export default function ContactDetailPage() {
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Tabs */}
-                    <div className="flex gap-1 bg-white/5 p-1 rounded-xl">
+                    <div className="flex gap-1 bg-[var(--crm-surface-2)] p-1 rounded-xl">
                         {[
                             { key: 'info', label: 'Informações' },
                             { key: 'activities', label: `Atividades (${activities.length})` },
@@ -366,8 +366,8 @@ export default function ContactDetailPage() {
                                 className={cn(
                                     'flex-1 py-2 rounded-lg text-sm font-medium transition-all',
                                     activeTab === tab.key
-                                        ? 'bg-charcoal text-white shadow'
-                                        : 'text-platinum hover:text-white'
+                                        ? 'bg-[var(--crm-surface)] text-[var(--crm-text)] shadow-sm border border-[var(--crm-border)]'
+                                        : 'text-[var(--crm-text-muted)] hover:text-[var(--crm-text)]'
                                 )}
                             >
                                 {tab.label}
@@ -380,10 +380,10 @@ export default function ContactDetailPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-charcoal rounded-2xl p-6 border border-white/10"
+                            className="bg-white rounded-2xl p-6 border border-[var(--crm-border)]"
                         >
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                                <h2 className="text-xl font-semibold text-[var(--crm-text)] flex items-center gap-2">
                                     <User className="w-5 h-5 text-gold" />
                                     Informações
                                 </h2>
@@ -393,7 +393,7 @@ export default function ContactDetailPage() {
                                     </button>
                                 ) : (
                                     <div className="flex gap-2">
-                                        <button onClick={() => setEditing(false)} className="flex items-center gap-1 text-platinum text-sm hover:text-white">
+                                        <button onClick={() => setEditing(false)} className="flex items-center gap-1 text-[var(--crm-text-muted)] text-sm hover:text-[var(--crm-text)]">
                                             <X className="w-4 h-4" /> Cancelar
                                         </button>
                                         <button onClick={handleSave} disabled={saving} className="flex items-center gap-1 text-gold text-sm hover:underline">
@@ -407,24 +407,24 @@ export default function ContactDetailPage() {
                                 {editing ? (
                                     <>
                                         <div>
-                                            <label className="block text-platinum text-sm mb-1">Nome</label>
-                                            <input value={editForm.name || ''} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white focus:outline-none focus:border-gold/50" />
+                                            <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Nome</label>
+                                            <input value={editForm.name || ''} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] focus:outline-none focus:border-gold/50" />
                                         </div>
                                         <div>
-                                            <label className="block text-platinum text-sm mb-1">Telefone</label>
-                                            <input value={editForm.phone || ''} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white focus:outline-none focus:border-gold/50" />
+                                            <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Telefone</label>
+                                            <input value={editForm.phone || ''} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] focus:outline-none focus:border-gold/50" />
                                         </div>
                                         <div>
-                                            <label className="block text-platinum text-sm mb-1">Email</label>
-                                            <input value={editForm.email || ''} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))} className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white focus:outline-none focus:border-gold/50" />
+                                            <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Email</label>
+                                            <input value={editForm.email || ''} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))} className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] focus:outline-none focus:border-gold/50" />
                                         </div>
                                         <div>
-                                            <label className="block text-platinum text-sm mb-1">Empresa</label>
-                                            <input value={editForm.company || ''} onChange={e => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white focus:outline-none focus:border-gold/50" />
+                                            <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Empresa</label>
+                                            <input value={editForm.company || ''} onChange={e => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] focus:outline-none focus:border-gold/50" />
                                         </div>
                                         <div className="md:col-span-2">
-                                            <label className="block text-platinum text-sm mb-1">Notas</label>
-                                            <textarea value={editForm.notes || ''} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))} rows={3} className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white focus:outline-none focus:border-gold/50 resize-none" />
+                                            <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Notas</label>
+                                            <textarea value={editForm.notes || ''} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))} rows={3} className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] focus:outline-none focus:border-gold/50 resize-none" />
                                         </div>
                                     </>
                                 ) : (
@@ -436,9 +436,9 @@ export default function ContactDetailPage() {
                                         <InfoField icon={Calendar} label="Criado em" value={new Date(contact.createdAt).toLocaleDateString('pt-BR')} />
                                         <InfoField icon={Calendar} label="Último Contato" value={contact.lastContactAt ? new Date(contact.lastContactAt).toLocaleDateString('pt-BR') : '-'} />
                                         {contact.notes && (
-                                            <div className="md:col-span-2 p-4 bg-white/5 rounded-xl">
-                                                <p className="text-platinum text-sm mb-1">Notas</p>
-                                                <p className="text-white">{contact.notes}</p>
+                                            <div className="md:col-span-2 p-4 bg-[var(--crm-surface-2)] rounded-xl">
+                                                <p className="text-[var(--crm-text-muted)] text-sm mb-1">Notas</p>
+                                                <p className="text-[var(--crm-text)]">{contact.notes}</p>
                                             </div>
                                         )}
                                     </>
@@ -446,8 +446,8 @@ export default function ContactDetailPage() {
                             </div>
 
                             {/* Status Changer */}
-                            <div className="mt-6 pt-4 border-t border-white/10">
-                                <p className="text-platinum text-sm mb-3">Alterar Status</p>
+                            <div className="mt-6 pt-4 border-t border-[var(--crm-border)]">
+                                <p className="text-[var(--crm-text-muted)] text-sm mb-3">Alterar Status</p>
                                 <div className="flex gap-2 flex-wrap">
                                     {Object.entries(statusLabels).map(([key, label]) => (
                                         <button
@@ -457,7 +457,7 @@ export default function ContactDetailPage() {
                                                 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all border',
                                                 contact.status === key
                                                     ? statusColors[key]
-                                                    : 'bg-white/5 text-platinum border-white/10 hover:bg-white/10'
+                                                    : 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] border-[var(--crm-border)] hover:bg-[var(--crm-surface-2)]'
                                             )}
                                         >
                                             {label}
@@ -473,10 +473,10 @@ export default function ContactDetailPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-charcoal rounded-2xl p-6 border border-white/10"
+                            className="bg-white rounded-2xl p-6 border border-[var(--crm-border)]"
                         >
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-semibold text-white">Atividades</h2>
+                                <h2 className="text-xl font-semibold text-[var(--crm-text)]">Atividades</h2>
                                 <button
                                     onClick={() => setShowActivityForm(v => !v)}
                                     className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold border border-gold/20 rounded-xl text-sm hover:bg-gold/20 transition-colors"
@@ -487,12 +487,12 @@ export default function ContactDetailPage() {
                             </div>
 
                             {showActivityForm && (
-                                <div className="mb-6 p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
+                                <div className="mb-6 p-4 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] space-y-3">
                                     <div className="grid grid-cols-2 gap-3">
                                         <select
                                             value={activityForm.type}
                                             onChange={e => setActivityForm(f => ({ ...f, type: e.target.value }))}
-                                            className="px-3 py-2 bg-white/5 rounded-xl border border-white/10 text-white text-sm focus:outline-none focus:border-gold/50"
+                                            className="px-3 py-2 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] text-sm focus:outline-none focus:border-gold/50"
                                         >
                                             {Object.entries(activityLabels).map(([k, v]) => (
                                                 <option key={k} value={k}>{v}</option>
@@ -502,7 +502,7 @@ export default function ContactDetailPage() {
                                             value={activityForm.title}
                                             onChange={e => setActivityForm(f => ({ ...f, title: e.target.value }))}
                                             placeholder="Título *"
-                                            className="px-3 py-2 bg-white/5 rounded-xl border border-white/10 text-white text-sm focus:outline-none focus:border-gold/50"
+                                            className="px-3 py-2 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] text-sm focus:outline-none focus:border-gold/50"
                                         />
                                     </div>
                                     <textarea
@@ -510,12 +510,12 @@ export default function ContactDetailPage() {
                                         onChange={e => setActivityForm(f => ({ ...f, description: e.target.value }))}
                                         placeholder="Descrição (opcional)"
                                         rows={2}
-                                        className="w-full px-3 py-2 bg-white/5 rounded-xl border border-white/10 text-white text-sm focus:outline-none focus:border-gold/50 resize-none"
+                                        className="w-full px-3 py-2 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] text-sm focus:outline-none focus:border-gold/50 resize-none"
                                     />
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => setShowActivityForm(false)}
-                                            className="px-3 py-2 bg-white/5 rounded-xl border border-white/10 text-platinum text-sm hover:bg-white/10"
+                                            className="px-3 py-2 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text-muted)] text-sm hover:bg-[var(--crm-surface-2)]"
                                         >
                                             Cancelar
                                         </button>
@@ -540,23 +540,23 @@ export default function ContactDetailPage() {
                                                     <Icon className="w-4 h-4 text-gold" />
                                                 </div>
                                                 {i < activities.length - 1 && (
-                                                    <div className="w-0.5 flex-1 bg-white/10 mt-2" />
+                                                    <div className="w-0.5 flex-1 bg-[var(--crm-surface-2)] mt-2" />
                                                 )}
                                             </div>
                                             <div className="flex-1 pb-4">
                                                 <div className="flex items-start justify-between">
                                                     <div>
-                                                        <p className="text-white font-medium">{activity.title}</p>
+                                                        <p className="text-[var(--crm-text)] font-medium">{activity.title}</p>
                                                         {activity.description && (
-                                                            <p className="text-platinum text-sm mt-1">{activity.description}</p>
+                                                            <p className="text-[var(--crm-text-muted)] text-sm mt-1">{activity.description}</p>
                                                         )}
                                                     </div>
-                                                    <span className="text-platinum/50 text-xs flex-shrink-0 ml-3">
+                                                    <span className="text-[var(--crm-text-muted)]/50 text-xs flex-shrink-0 ml-3">
                                                         {new Date(activity.createdAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
                                                     </span>
                                                 </div>
                                                 {activity.user && (
-                                                    <p className="text-platinum/50 text-xs mt-1">por {activity.user.name}</p>
+                                                    <p className="text-[var(--crm-text-muted)]/50 text-xs mt-1">por {activity.user.name}</p>
                                                 )}
                                             </div>
                                         </div>
@@ -564,8 +564,8 @@ export default function ContactDetailPage() {
                                 })}
                                 {activities.length === 0 && (
                                     <div className="text-center py-8">
-                                        <Clock className="w-10 h-10 text-platinum/30 mx-auto mb-3" />
-                                        <p className="text-platinum text-sm">Nenhuma atividade registrada</p>
+                                        <Clock className="w-10 h-10 text-[var(--crm-text-muted)]/30 mx-auto mb-3" />
+                                        <p className="text-[var(--crm-text-muted)] text-sm">Nenhuma atividade registrada</p>
                                     </div>
                                 )}
                             </div>
@@ -577,10 +577,10 @@ export default function ContactDetailPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-charcoal rounded-2xl p-6 border border-white/10"
+                            className="bg-white rounded-2xl p-6 border border-[var(--crm-border)]"
                         >
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-semibold text-white">Follow-ups Agendados</h2>
+                                <h2 className="text-xl font-semibold text-[var(--crm-text)]">Follow-ups Agendados</h2>
                                 <button
                                     onClick={() => setShowFollowupForm(v => !v)}
                                     className="flex items-center gap-2 px-4 py-2 bg-gold/10 text-gold border border-gold/20 rounded-xl text-sm hover:bg-gold/20 transition-colors"
@@ -591,30 +591,30 @@ export default function ContactDetailPage() {
                             </div>
 
                             {showFollowupForm && (
-                                <div className="mb-6 p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
+                                <div className="mb-6 p-4 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] space-y-3">
                                     <div>
-                                        <label className="block text-platinum text-sm mb-1">Data e Hora</label>
+                                        <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Data e Hora</label>
                                         <input
                                             type="datetime-local"
                                             value={followupForm.scheduledAt}
                                             onChange={e => setFollowupForm(f => ({ ...f, scheduledAt: e.target.value }))}
-                                            className="w-full px-3 py-2 bg-white/5 rounded-xl border border-white/10 text-white text-sm focus:outline-none focus:border-gold/50"
+                                            className="w-full px-3 py-2 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] text-sm focus:outline-none focus:border-gold/50"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-platinum text-sm mb-1">Mensagem de lembrete</label>
+                                        <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Mensagem de lembrete</label>
                                         <textarea
                                             value={followupForm.message}
                                             onChange={e => setFollowupForm(f => ({ ...f, message: e.target.value }))}
                                             rows={2}
                                             placeholder="Ex: Ligar para fechar proposta"
-                                            className="w-full px-3 py-2 bg-white/5 rounded-xl border border-white/10 text-white text-sm focus:outline-none focus:border-gold/50 resize-none"
+                                            className="w-full px-3 py-2 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] text-sm focus:outline-none focus:border-gold/50 resize-none"
                                         />
                                     </div>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => setShowFollowupForm(false)}
-                                            className="px-3 py-2 bg-white/5 rounded-xl border border-white/10 text-platinum text-sm hover:bg-white/10"
+                                            className="px-3 py-2 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text-muted)] text-sm hover:bg-[var(--crm-surface-2)]"
                                         >
                                             Cancelar
                                         </button>
@@ -633,20 +633,20 @@ export default function ContactDetailPage() {
                                 {followups.map(f => (
                                     <div
                                         key={f.id}
-                                        className="flex items-start gap-4 p-4 bg-white/5 rounded-xl border border-white/10"
+                                        className="flex items-start gap-4 p-4 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)]"
                                     >
                                         <div className="w-9 h-9 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
                                             <Bell className="w-4 h-4 text-gold" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-white text-sm">{f.message}</p>
+                                            <p className="text-[var(--crm-text)] text-sm">{f.message}</p>
                                             <p className="text-gold text-xs mt-1">
                                                 {new Date(f.scheduledAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
                                             </p>
                                         </div>
                                         <button
                                             onClick={() => deleteFollowup(f.id)}
-                                            className="p-1.5 rounded-lg text-platinum hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
+                                            className="p-1.5 rounded-lg text-[var(--crm-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -654,8 +654,8 @@ export default function ContactDetailPage() {
                                 ))}
                                 {followups.length === 0 && (
                                     <div className="text-center py-8">
-                                        <Bell className="w-10 h-10 text-platinum/30 mx-auto mb-3" />
-                                        <p className="text-platinum text-sm">Nenhum follow-up agendado</p>
+                                        <Bell className="w-10 h-10 text-[var(--crm-text-muted)]/30 mx-auto mb-3" />
+                                        <p className="text-[var(--crm-text-muted)] text-sm">Nenhum follow-up agendado</p>
                                     </div>
                                 )}
                             </div>
@@ -670,9 +670,9 @@ export default function ContactDetailPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-charcoal rounded-2xl p-6 border border-white/10"
+                        className="bg-white rounded-2xl p-6 border border-[var(--crm-border)]"
                     >
-                        <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <h3 className="text-lg font-semibold text-[var(--crm-text)] flex items-center gap-2 mb-4">
                             <MessageSquare className="w-5 h-5 text-gold" />
                             Conversas ({contact.conversations.length})
                         </h3>
@@ -682,17 +682,17 @@ export default function ContactDetailPage() {
                                     <Link
                                         key={conv.id}
                                         href={`/crm/conversations`}
-                                        className="block p-3 rounded-xl bg-white/5 hover:bg-gold/10 border border-white/10 hover:border-gold/20 transition-all"
+                                        className="block p-3 rounded-xl bg-[var(--crm-surface-2)] hover:bg-gold/10 border border-[var(--crm-border)] hover:border-gold/20 transition-all"
                                     >
                                         <div className="flex items-center justify-between">
-                                            <span className="text-white text-sm font-medium">
+                                            <span className="text-[var(--crm-text)] text-sm font-medium">
                                                 {conv.aiEnabled && <Sparkles className="w-3 h-3 text-gold inline mr-1" />}
                                                 {conv.status === 'active' ? 'Ativa' : 'Encerrada'}
                                             </span>
-                                            <span className="text-platinum text-xs">{conv.messageCount} msgs</span>
+                                            <span className="text-[var(--crm-text-muted)] text-xs">{conv.messageCount} msgs</span>
                                         </div>
                                         {conv.lastMessageAt && (
-                                            <p className="text-platinum text-xs mt-1">
+                                            <p className="text-[var(--crm-text-muted)] text-xs mt-1">
                                                 {new Date(conv.lastMessageAt).toLocaleString('pt-BR')}
                                             </p>
                                         )}
@@ -700,7 +700,7 @@ export default function ContactDetailPage() {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-platinum text-sm">Nenhuma conversa</p>
+                            <p className="text-[var(--crm-text-muted)] text-sm">Nenhuma conversa</p>
                         )}
                     </motion.div>
 
@@ -709,21 +709,21 @@ export default function ContactDetailPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="bg-charcoal rounded-2xl p-6 border border-white/10"
+                        className="bg-white rounded-2xl p-6 border border-[var(--crm-border)]"
                     >
-                        <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                        <h3 className="text-lg font-semibold text-[var(--crm-text)] flex items-center gap-2 mb-4">
                             <Target className="w-5 h-5 text-gold" />
                             Deals ({contact.deals.length})
                         </h3>
                         {contact.deals.length > 0 ? (
                             <div className="space-y-3">
                                 {contact.deals.map(deal => (
-                                    <div key={deal.id} className="p-3 rounded-xl bg-white/5 border border-white/10">
-                                        <p className="text-white text-sm font-medium">{deal.title}</p>
+                                    <div key={deal.id} className="p-3 rounded-xl bg-[var(--crm-surface-2)] border border-[var(--crm-border)]">
+                                        <p className="text-[var(--crm-text)] text-sm font-medium">{deal.title}</p>
                                         <div className="flex items-center gap-2 mt-2">
                                             {deal.stage && (
                                                 <span
-                                                    className="px-2 py-0.5 rounded text-[10px] font-medium text-white"
+                                                    className="px-2 py-0.5 rounded text-[10px] font-medium text-[var(--crm-text)]"
                                                     style={{ backgroundColor: deal.stage.color || '#666' }}
                                                 >
                                                     {deal.stage.name}
@@ -739,7 +739,7 @@ export default function ContactDetailPage() {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-platinum text-sm">Nenhum deal</p>
+                            <p className="text-[var(--crm-text-muted)] text-sm">Nenhum deal</p>
                         )}
                     </motion.div>
                 </div>
@@ -750,11 +750,11 @@ export default function ContactDetailPage() {
 
 function InfoField({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
     return (
-        <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5">
+        <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--crm-surface-2)]">
             <Icon className="w-5 h-5 text-gold mt-0.5" />
             <div>
-                <p className="text-platinum text-xs">{label}</p>
-                <p className="text-white">{value}</p>
+                <p className="text-[var(--crm-text-muted)] text-xs">{label}</p>
+                <p className="text-[var(--crm-text)]">{value}</p>
             </div>
         </div>
     )

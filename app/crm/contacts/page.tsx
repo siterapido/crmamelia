@@ -95,8 +95,8 @@ export default function ContactsPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Contatos</h1>
-                    <p className="text-platinum mt-1">{total} contatos encontrados</p>
+                    <h1 className="text-3xl font-bold text-[var(--crm-text)]">Contatos</h1>
+                    <p className="text-[var(--crm-text-muted)] mt-1">{total} contatos encontrados</p>
                 </div>
                 <button
                     onClick={() => setShowNewForm(true)}
@@ -110,18 +110,18 @@ export default function ContactsPage() {
             {/* Search & Filters */}
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-platinum" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--crm-text-muted)]" />
                     <input
                         type="text"
                         placeholder="Buscar por nome, telefone, email ou empresa..."
                         value={searchInput}
                         onChange={e => setSearchInput(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 bg-charcoal rounded-xl border border-white/10 text-white placeholder:text-platinum/50 focus:outline-none focus:border-gold/50 transition-colors"
+                        className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border border-[var(--crm-border)] shadow-sm text-[var(--crm-text)] placeholder:text-[var(--crm-text-muted)]/50 focus:outline-none focus:border-gold/50 transition-colors"
                     />
                     {searchInput && (
                         <button
                             onClick={() => setSearchInput('')}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-platinum hover:text-white"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--crm-text-muted)] hover:text-[var(--crm-text)]"
                         >
                             <X className="w-4 h-4" />
                         </button>
@@ -139,7 +139,7 @@ export default function ContactsPage() {
                             'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                             statusFilter === status
                                 ? 'bg-gold/10 text-gold border border-gold/20'
-                                : 'bg-white/5 text-platinum border border-white/10 hover:bg-white/10'
+                                : 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] border border-[var(--crm-border)] hover:bg-[var(--crm-surface-2)]'
                         )}
                     >
                         {status === 'all' ? 'Todos' : statusLabels[status]}
@@ -151,27 +151,27 @@ export default function ContactsPage() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-charcoal rounded-2xl border border-white/10 overflow-hidden"
+                className="bg-white rounded-2xl border border-[var(--crm-border)] shadow-sm overflow-hidden"
             >
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b border-white/10">
-                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4">Nome</th>
-                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4">Telefone</th>
-                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden md:table-cell">Empresa</th>
-                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden lg:table-cell">Fonte</th>
-                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4">Status</th>
-                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden md:table-cell">Score</th>
-                                <th className="text-left text-platinum text-xs uppercase tracking-wider px-6 py-4 hidden lg:table-cell">Último Contato</th>
+                            <tr className="border-b border-[var(--crm-border)]">
+                                <th className="text-left text-[var(--crm-text-muted)] text-xs uppercase tracking-wider px-6 py-4">Nome</th>
+                                <th className="text-left text-[var(--crm-text-muted)] text-xs uppercase tracking-wider px-6 py-4">Telefone</th>
+                                <th className="text-left text-[var(--crm-text-muted)] text-xs uppercase tracking-wider px-6 py-4 hidden md:table-cell">Empresa</th>
+                                <th className="text-left text-[var(--crm-text-muted)] text-xs uppercase tracking-wider px-6 py-4 hidden lg:table-cell">Fonte</th>
+                                <th className="text-left text-[var(--crm-text-muted)] text-xs uppercase tracking-wider px-6 py-4">Status</th>
+                                <th className="text-left text-[var(--crm-text-muted)] text-xs uppercase tracking-wider px-6 py-4 hidden md:table-cell">Score</th>
+                                <th className="text-left text-[var(--crm-text-muted)] text-xs uppercase tracking-wider px-6 py-4 hidden lg:table-cell">Último Contato</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 Array.from({ length: 5 }).map((_, i) => (
-                                    <tr key={i} className="border-b border-white/5">
+                                    <tr key={i} className="border-b border-[var(--crm-border)]">
                                         <td className="px-6 py-4" colSpan={7}>
-                                            <div className="animate-pulse h-5 bg-white/10 rounded w-3/4" />
+                                            <div className="animate-pulse h-5 bg-[var(--crm-surface-2)] rounded w-3/4" />
                                         </td>
                                     </tr>
                                 ))
@@ -180,39 +180,39 @@ export default function ContactsPage() {
                                     <tr
                                         key={contact.id}
                                         onClick={() => setSelectedContact(contact)}
-                                        className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer"
+                                        className="border-b border-[var(--crm-border)] hover:bg-[var(--crm-surface-2)] transition-colors cursor-pointer"
                                     >
                                         <td className="px-6 py-4">
-                                            <p className="text-white font-medium hover:text-gold transition-colors">
+                                            <p className="text-[var(--crm-text)] font-medium hover:text-gold transition-colors">
                                                 {contact.name}
                                             </p>
                                             {contact.email && (
-                                                <p className="text-platinum text-sm">{contact.email}</p>
+                                                <p className="text-[var(--crm-text-muted)] text-sm">{contact.email}</p>
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="text-platinum flex items-center gap-2">
+                                            <span className="text-[var(--crm-text-muted)] flex items-center gap-2">
                                                 <Phone className="w-4 h-4" />
                                                 {contact.phone}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 hidden md:table-cell">
                                             {contact.company ? (
-                                                <span className="text-platinum flex items-center gap-2">
+                                                <span className="text-[var(--crm-text-muted)] flex items-center gap-2">
                                                     <Building2 className="w-4 h-4" />
                                                     {contact.company}
                                                 </span>
                                             ) : (
-                                                <span className="text-platinum/50">-</span>
+                                                <span className="text-[var(--crm-text-muted)]/50">-</span>
                                             )}
                                         </td>
                                         <td className="px-6 py-4 hidden lg:table-cell">
-                                            <span className="text-platinum text-sm">
+                                            <span className="text-[var(--crm-text-muted)] text-sm">
                                                 {sourceLabels[contact.source] || contact.source}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[contact.status] || 'bg-white/10 text-platinum'}`}>
+                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[contact.status] || 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)]'}`}>
                                                 {statusLabels[contact.status] || contact.status}
                                             </span>
                                         </td>
@@ -220,11 +220,11 @@ export default function ContactsPage() {
                                             {contact.leadScore ? (
                                                 <LeadScoreBadge score={contact.leadScore} />
                                             ) : (
-                                                <span className="text-platinum/30 text-sm">-</span>
+                                                <span className="text-[var(--crm-text-muted)]/30 text-sm">-</span>
                                             )}
                                         </td>
                                         <td className="px-6 py-4 hidden lg:table-cell">
-                                            <span className="text-platinum text-sm">
+                                            <span className="text-[var(--crm-text-muted)] text-sm">
                                                 {contact.lastContactAt
                                                     ? new Date(contact.lastContactAt).toLocaleDateString('pt-BR')
                                                     : '-'}
@@ -235,8 +235,8 @@ export default function ContactsPage() {
                             ) : (
                                 <tr>
                                     <td colSpan={7} className="px-6 py-12 text-center">
-                                        <UserCheck className="w-12 h-12 text-platinum/50 mx-auto mb-3" />
-                                        <p className="text-platinum">Nenhum contato encontrado</p>
+                                        <UserCheck className="w-12 h-12 text-[var(--crm-text-muted)]/50 mx-auto mb-3" />
+                                        <p className="text-[var(--crm-text-muted)]">Nenhum contato encontrado</p>
                                     </td>
                                 </tr>
                             )}
@@ -246,22 +246,22 @@ export default function ContactsPage() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="flex items-center justify-between px-6 py-4 border-t border-white/10">
-                        <p className="text-platinum text-sm">
+                    <div className="flex items-center justify-between px-6 py-4 border-t border-[var(--crm-border)]">
+                        <p className="text-[var(--crm-text-muted)] text-sm">
                             Página {page} de {totalPages}
                         </p>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setPage(p => Math.max(1, p - 1))}
                                 disabled={page === 1}
-                                className="px-4 py-2 rounded-lg text-sm bg-white/5 text-platinum hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 rounded-lg text-sm bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Anterior
                             </button>
                             <button
                                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                                 disabled={page === totalPages}
-                                className="px-4 py-2 rounded-lg text-sm bg-white/5 text-platinum hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 rounded-lg text-sm bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Próximo
                             </button>
@@ -322,7 +322,7 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
             onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
         >
             <motion.div
@@ -330,26 +330,26 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
                 transition={{ duration: 0.15 }}
-                className="bg-[#161616] rounded-2xl border border-white/10 w-full max-w-lg md:max-w-2xl lg:max-w-3xl overflow-hidden shadow-2xl"
+                className="bg-white rounded-2xl border border-[var(--crm-border)] shadow-sm w-full max-w-lg md:max-w-2xl lg:max-w-3xl overflow-hidden shadow-2xl"
             >
                 {/* Header */}
-                <div className="flex items-start justify-between p-5 border-b border-white/8">
+                <div className="flex items-start justify-between p-5 border-b border-[var(--crm-border)]">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold ring-2 ring-white/10 bg-gradient-to-br from-gold/30 to-gold/10 text-gold">
                             {c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                            <p className="text-white font-semibold text-lg leading-tight">{c.name}</p>
+                            <p className="text-[var(--crm-text)] font-semibold text-lg leading-tight">{c.name}</p>
                             <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${statusColors[c.status] || 'bg-white/10 text-platinum border-white/10'}`}>
+                                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${statusColors[c.status] || 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] border-[var(--crm-border)]'}`}>
                                     {statusLabels[c.status] || c.status}
                                 </span>
                                 {c.leadScore && <LeadScoreBadge score={c.leadScore} size="sm" />}
-                                <span className="text-platinum/50 text-xs">{sourceLabels[c.source] || c.source}</span>
+                                <span className="text-[var(--crm-text-muted)]/50 text-xs">{sourceLabels[c.source] || c.source}</span>
                             </div>
                         </div>
                     </div>
-                    <button onClick={onClose} className="text-platinum/60 hover:text-white transition-colors flex-shrink-0 ml-2">
+                    <button onClick={onClose} className="text-[var(--crm-text-muted)]/60 hover:text-[var(--crm-text)] transition-colors flex-shrink-0 ml-2">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -358,38 +358,38 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
                     {/* Contact Info */}
                     <div className="space-y-2.5">
                         <div className="flex items-center gap-2.5">
-                            <Phone className="w-4 h-4 text-platinum/40 flex-shrink-0" />
-                            <span className="text-white/80 text-sm">{c.phone}</span>
+                            <Phone className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                            <span className="text-[var(--crm-text)]/80 text-sm">{c.phone}</span>
                         </div>
                         {c.email && (
                             <div className="flex items-center gap-2.5">
-                                <Mail className="w-4 h-4 text-platinum/40 flex-shrink-0" />
-                                <span className="text-white/80 text-sm">{c.email}</span>
+                                <Mail className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                <span className="text-[var(--crm-text)]/80 text-sm">{c.email}</span>
                             </div>
                         )}
                         {c.company && (
                             <div className="flex items-center gap-2.5">
-                                <Building2 className="w-4 h-4 text-platinum/40 flex-shrink-0" />
-                                <span className="text-white/80 text-sm">{c.company}</span>
+                                <Building2 className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                <span className="text-[var(--crm-text)]/80 text-sm">{c.company}</span>
                             </div>
                         )}
                         {detail?.cpfCnpj && (
                             <div className="flex items-center gap-2.5">
-                                <User className="w-4 h-4 text-platinum/40 flex-shrink-0" />
-                                <span className="text-platinum/60 text-sm">CPF/CNPJ: {detail.cpfCnpj}</span>
+                                <User className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                <span className="text-[var(--crm-text-muted)]/60 text-sm">CPF/CNPJ: {detail.cpfCnpj}</span>
                             </div>
                         )}
                         <div className="flex items-center gap-2.5">
-                            <Calendar className="w-4 h-4 text-platinum/40 flex-shrink-0" />
-                            <span className="text-platinum/60 text-sm">
+                            <Calendar className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                            <span className="text-[var(--crm-text-muted)]/60 text-sm">
                                 Criado em {new Date(c.createdAt).toLocaleDateString('pt-BR')}
                                 {c.lastContactAt && ` · Último contato ${new Date(c.lastContactAt).toLocaleDateString('pt-BR')}`}
                             </span>
                         </div>
                         {c.assignedUser && (
                             <div className="flex items-center gap-2.5">
-                                <User className="w-4 h-4 text-platinum/40 flex-shrink-0" />
-                                <span className="text-platinum/60 text-sm">Atendente: {c.assignedUser.name}</span>
+                                <User className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                <span className="text-[var(--crm-text-muted)]/60 text-sm">Atendente: {c.assignedUser.name}</span>
                             </div>
                         )}
                     </div>
@@ -400,10 +400,10 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
                             {c.leadScore && (
                                 <div className={cn(
                                     'rounded-xl p-3 border col-span-2',
-                                    scoreConfig[c.leadScore]?.bg || 'bg-white/5',
-                                    scoreConfig[c.leadScore]?.border || 'border-white/8'
+                                    scoreConfig[c.leadScore]?.bg || 'bg-[var(--crm-surface-2)]',
+                                    scoreConfig[c.leadScore]?.border || 'border-[var(--crm-border)]'
                                 )}>
-                                    <p className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold mb-1">Lead Score</p>
+                                    <p className="text-[var(--crm-text-muted)]/50 text-[10px] uppercase tracking-wider font-semibold mb-1">Lead Score</p>
                                     <div className="flex items-center gap-2">
                                         <LeadScoreBadge score={c.leadScore} size="md" />
                                     </div>
@@ -416,9 +416,9 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
                                 </div>
                             )}
                             {c.livesCount && (
-                                <div className="bg-white/5 border border-white/8 rounded-xl p-3">
-                                    <p className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold mb-1">Vidas</p>
-                                    <p className="text-white font-semibold text-sm">{c.livesCount}</p>
+                                <div className="bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl p-3">
+                                    <p className="text-[var(--crm-text-muted)]/50 text-[10px] uppercase tracking-wider font-semibold mb-1">Vidas</p>
+                                    <p className="text-[var(--crm-text)] font-semibold text-sm">{c.livesCount}</p>
                                 </div>
                             )}
                         </div>
@@ -426,13 +426,13 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
 
                     {/* Tags */}
                     {loading ? (
-                        <div className="animate-pulse h-6 bg-white/10 rounded w-1/2" />
+                        <div className="animate-pulse h-6 bg-[var(--crm-surface-2)] rounded w-1/2" />
                     ) : detail?.tags && detail.tags.length > 0 ? (
                         <div className="flex items-start gap-2">
-                            <Tag className="w-4 h-4 text-platinum/40 flex-shrink-0 mt-0.5" />
+                            <Tag className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0 mt-0.5" />
                             <div className="flex flex-wrap gap-1.5">
                                 {detail.tags.map(tag => (
-                                    <span key={tag} className="text-xs px-2.5 py-0.5 bg-white/8 rounded-full text-platinum/70 border border-white/10">{tag}</span>
+                                    <span key={tag} className="text-xs px-2.5 py-0.5 bg-[var(--crm-surface-2)] rounded-full text-[var(--crm-text-muted)]/70 border border-[var(--crm-border)]">{tag}</span>
                                 ))}
                             </div>
                         </div>
@@ -441,20 +441,20 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
                     {/* Notes */}
                     {detail?.notes && (
                         <div className="flex items-start gap-2.5">
-                            <FileText className="w-4 h-4 text-platinum/40 flex-shrink-0 mt-0.5" />
-                            <p className="text-platinum/60 text-sm leading-relaxed">{detail.notes}</p>
+                            <FileText className="w-4 h-4 text-[var(--crm-text-muted)]/40 flex-shrink-0 mt-0.5" />
+                            <p className="text-[var(--crm-text-muted)]/60 text-sm leading-relaxed">{detail.notes}</p>
                         </div>
                     )}
 
                     {/* Deals */}
                     {detail?.deals && detail.deals.length > 0 && (
                         <div>
-                            <p className="text-platinum/50 text-xs uppercase tracking-wider font-semibold mb-2.5">Deals</p>
+                            <p className="text-[var(--crm-text-muted)]/50 text-xs uppercase tracking-wider font-semibold mb-2.5">Deals</p>
                             <div className="space-y-2">
                                 {detail.deals.map(deal => (
-                                    <div key={deal.id} className="flex items-center justify-between bg-white/5 border border-white/8 rounded-xl px-3.5 py-2.5">
+                                    <div key={deal.id} className="flex items-center justify-between bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl px-3.5 py-2.5">
                                         <div>
-                                            <p className="text-white/90 text-sm font-medium">{deal.title}</p>
+                                            <p className="text-[var(--crm-text)]/90 text-sm font-medium">{deal.title}</p>
                                             {deal.stage && (
                                                 <span
                                                     className="text-[10px] font-medium"
@@ -477,10 +477,10 @@ function ContactDetailModal({ contact: initialContact, onClose }: { contact: Con
                 </div>
 
                 {/* Footer */}
-                <div className="px-5 py-4 border-t border-white/8 flex gap-3">
+                <div className="px-5 py-4 border-t border-[var(--crm-border)] flex gap-3">
                     <Link
                         href={`/crm/contacts/${initialContact.id}`}
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-platinum/80 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/80 hover:text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] transition-all text-sm font-medium"
                     >
                         <ExternalLink className="w-4 h-4" />
                         Ver perfil completo
@@ -553,69 +553,69 @@ function NewContactModal({ onClose, onCreated }: { onClose: () => void; onCreate
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-charcoal rounded-2xl border border-white/10 p-8 w-full max-w-lg md:max-w-2xl lg:max-w-3xl mx-4"
+                className="bg-white rounded-2xl border border-[var(--crm-border)] shadow-sm p-8 w-full max-w-lg md:max-w-2xl lg:max-w-3xl mx-4"
             >
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-white">Novo Contato</h2>
-                    <button onClick={onClose} className="text-platinum hover:text-white">
+                    <h2 className="text-xl font-semibold text-[var(--crm-text)]">Novo Contato</h2>
+                    <button onClick={onClose} className="text-[var(--crm-text-muted)] hover:text-[var(--crm-text)]">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-platinum text-sm mb-1">Nome *</label>
+                        <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Nome *</label>
                         <input
                             type="text"
                             required
                             value={form.name}
                             onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                            className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-platinum/50 focus:outline-none focus:border-gold/50"
+                            className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] placeholder:text-[var(--crm-text-muted)]/50 focus:outline-none focus:border-gold/50"
                             placeholder="Nome completo"
                         />
                     </div>
                     <div>
-                        <label className="block text-platinum text-sm mb-1">Telefone *</label>
+                        <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Telefone *</label>
                         <input
                             type="tel"
                             required
                             value={form.phone}
                             onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                            className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-platinum/50 focus:outline-none focus:border-gold/50"
+                            className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] placeholder:text-[var(--crm-text-muted)]/50 focus:outline-none focus:border-gold/50"
                             placeholder="+5521999999999"
                         />
                     </div>
                     <div>
-                        <label className="block text-platinum text-sm mb-1">Email</label>
+                        <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Email</label>
                         <input
                             type="email"
                             value={form.email}
                             onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                            className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-platinum/50 focus:outline-none focus:border-gold/50"
+                            className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] placeholder:text-[var(--crm-text-muted)]/50 focus:outline-none focus:border-gold/50"
                             placeholder="email@exemplo.com"
                         />
                     </div>
                     <div>
-                        <label className="block text-platinum text-sm mb-1">Empresa</label>
+                        <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Empresa</label>
                         <input
                             type="text"
                             value={form.company}
                             onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
-                            className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-platinum/50 focus:outline-none focus:border-gold/50"
+                            className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] placeholder:text-[var(--crm-text-muted)]/50 focus:outline-none focus:border-gold/50"
                             placeholder="Nome da empresa"
                         />
                     </div>
                     <div>
-                        <label className="block text-platinum text-sm mb-1">Observações</label>
+                        <label className="block text-[var(--crm-text-muted)] text-sm mb-1">Observações</label>
                         <textarea
                             value={form.notes}
                             onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                             rows={3}
-                            className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-platinum/50 focus:outline-none focus:border-gold/50 resize-none"
+                            className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] placeholder:text-[var(--crm-text-muted)]/50 focus:outline-none focus:border-gold/50 resize-none"
                             placeholder="Notas sobre o contato..."
                         />
                     </div>
@@ -628,7 +628,7 @@ function NewContactModal({ onClose, onCreated }: { onClose: () => void; onCreate
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-3 rounded-xl bg-white/5 text-platinum hover:bg-white/10 transition-colors font-medium"
+                            className="flex-1 px-4 py-3 rounded-xl bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)] transition-colors font-medium"
                         >
                             Cancelar
                         </button>

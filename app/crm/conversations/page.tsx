@@ -106,8 +106,8 @@ function ContactAvatar({ name, profilePictureUrl, size = 10 }: { name: string; p
 
 function MessageStatusIcon({ status }: { status: string }) {
     if (status === 'read') return <CheckCheck className="w-3.5 h-3.5 text-blue-400 inline ml-1" />
-    if (status === 'delivered') return <CheckCheck className="w-3.5 h-3.5 text-platinum/50 inline ml-1" />
-    if (status === 'sent') return <Check className="w-3.5 h-3.5 text-platinum/50 inline ml-1" />
+    if (status === 'delivered') return <CheckCheck className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/50 inline ml-1" />
+    if (status === 'sent') return <Check className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/50 inline ml-1" />
     if (status === 'failed') return <AlertCircle className="w-3.5 h-3.5 text-red-400 inline ml-1" />
     return null
 }
@@ -132,11 +132,11 @@ function MessageBubble({ msg, lightboxSrc, setLightboxSrc }: {
                             onClick={() => setLightboxSrc(msg.mediaUrl!)}
                         />
                         {msg.content && msg.content !== '[Imagem]' && (
-                            <p className="text-white text-sm whitespace-pre-wrap">{msg.content}</p>
+                            <p className="text-[var(--crm-text)] text-sm whitespace-pre-wrap">{msg.content}</p>
                         )}
                     </div>
                 ) : (
-                    <div className="flex items-center gap-2 text-platinum">
+                    <div className="flex items-center gap-2 text-[var(--crm-text-muted)]">
                         <ImageIcon className="w-4 h-4" />
                         <span className="text-sm">{msg.content || '[Imagem]'}</span>
                     </div>
@@ -148,7 +148,7 @@ function MessageBubble({ msg, lightboxSrc, setLightboxSrc }: {
                         <source src={msg.mediaUrl} />
                     </video>
                 ) : (
-                    <div className="flex items-center gap-2 text-platinum">
+                    <div className="flex items-center gap-2 text-[var(--crm-text-muted)]">
                         <Video className="w-4 h-4" />
                         <span className="text-sm">{msg.content || '[Vídeo]'}</span>
                     </div>
@@ -160,7 +160,7 @@ function MessageBubble({ msg, lightboxSrc, setLightboxSrc }: {
                         <source src={msg.mediaUrl} />
                     </audio>
                 ) : (
-                    <div className="flex items-center gap-2 text-platinum">
+                    <div className="flex items-center gap-2 text-[var(--crm-text-muted)]">
                         <Mic className="w-4 h-4" />
                         <span className="text-sm">[Áudio]</span>
                     </div>
@@ -183,7 +183,7 @@ function MessageBubble({ msg, lightboxSrc, setLightboxSrc }: {
                                     {msg.content || 'Documento'}
                                 </a>
                             ) : (
-                                <span className="text-platinum text-sm">{msg.content || '[Documento]'}</span>
+                                <span className="text-[var(--crm-text-muted)] text-sm">{msg.content || '[Documento]'}</span>
                             )}
                         </div>
                     </div>
@@ -191,14 +191,14 @@ function MessageBubble({ msg, lightboxSrc, setLightboxSrc }: {
 
             case 'location':
                 return (
-                    <div className="flex items-center gap-2 text-platinum">
+                    <div className="flex items-center gap-2 text-[var(--crm-text-muted)]">
                         <MapPin className="w-4 h-4 text-red-400" />
                         <span className="text-sm">{msg.content || '[Localização]'}</span>
                     </div>
                 )
 
             default:
-                return <p className="text-white text-sm whitespace-pre-wrap">{msg.content}</p>
+                return <p className="text-[var(--crm-text)] text-sm whitespace-pre-wrap">{msg.content}</p>
         }
     }
 
@@ -207,7 +207,7 @@ function MessageBubble({ msg, lightboxSrc, setLightboxSrc }: {
             'max-w-[75%] rounded-2xl px-4 py-3',
             isOutbound
                 ? 'bg-gold/10 border border-gold/20 ml-auto'
-                : 'bg-white/5 border border-white/10 mr-auto'
+                : 'bg-[var(--crm-surface-2)] border border-[var(--crm-border)] mr-auto'
         )}>
             {msg.aiGenerated && (
                 <div className="flex items-center gap-1 mb-1">
@@ -217,7 +217,7 @@ function MessageBubble({ msg, lightboxSrc, setLightboxSrc }: {
             )}
             {renderContent()}
             <div className="flex items-center justify-end gap-1 mt-1">
-                <span className="text-platinum/50 text-[10px]">
+                <span className="text-[var(--crm-text-muted)]/50 text-[10px]">
                     {new Date(msg.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </span>
                 {isOutbound && <MessageStatusIcon status={msg.status} />}
@@ -469,8 +469,8 @@ export default function ConversationsPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold text-white">Conversas</h1>
-                <p className="text-platinum mt-1">Inbox do WhatsApp</p>
+                <h1 className="text-3xl font-bold text-[var(--crm-text)]">Conversas</h1>
+                <p className="text-[var(--crm-text-muted)] mt-1">Inbox do WhatsApp</p>
             </div>
 
             <div className="flex gap-6 h-[calc(100vh-220px)]">
@@ -478,10 +478,10 @@ export default function ConversationsPage() {
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="w-96 flex-shrink-0 bg-charcoal rounded-2xl border border-white/10 flex flex-col overflow-hidden"
+                    className="w-96 flex-shrink-0 bg-white rounded-2xl border border-[var(--crm-border)] shadow-sm flex flex-col overflow-hidden"
                 >
                     {/* Filters */}
-                    <div className="p-4 border-b border-white/10 space-y-3">
+                    <div className="p-4 border-b border-[var(--crm-border)] space-y-3">
                         <div className="flex items-center justify-between gap-2">
                             <div className="flex gap-1 flex-wrap flex-1">
                                 {filterOptions.map(opt => (
@@ -492,7 +492,7 @@ export default function ConversationsPage() {
                                             'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                                             filter === opt.value && !filterAgent
                                                 ? 'bg-gold/10 text-gold'
-                                                : 'text-platinum hover:bg-white/5'
+                                                : 'text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)]'
                                         )}
                                     >
                                         {opt.label}
@@ -503,7 +503,7 @@ export default function ConversationsPage() {
                                 onClick={() => setShowFilters(v => !v)}
                                 className={cn(
                                     'p-2 rounded-lg transition-all',
-                                    showFilters ? 'bg-gold/10 text-gold' : 'text-platinum hover:bg-white/5'
+                                    showFilters ? 'bg-gold/10 text-gold' : 'text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)]'
                                 )}
                                 title="Filtros avançados"
                             >
@@ -514,11 +514,11 @@ export default function ConversationsPage() {
                         {/* Advanced Filters */}
                         {showFilters && (
                             <div className="flex items-center gap-2">
-                                <Users className="w-4 h-4 text-platinum" />
+                                <Users className="w-4 h-4 text-[var(--crm-text-muted)]" />
                                 <select
                                     value={filterAgent}
                                     onChange={(e) => { setFilterAgent(e.target.value); setFilter('all') }}
-                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-gold/50"
+                                    className="flex-1 bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-1.5 text-xs text-[var(--crm-text)] focus:outline-none focus:border-gold/50"
                                 >
                                     <option value="">Todos os agentes</option>
                                     <option value="me">Meus atendimentos</option>
@@ -546,14 +546,14 @@ export default function ConversationsPage() {
                                     </button>
                                     <button
                                         onClick={handleBulkClose}
-                                        className="p-1.5 rounded bg-white/10 text-platinum hover:text-white"
+                                        className="p-1.5 rounded bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] hover:text-[var(--crm-text)]"
                                         title="Encerrar"
                                     >
                                         <XCircle className="w-3.5 h-3.5" />
                                     </button>
                                     <button
                                         onClick={() => setSelectedConversations(new Set())}
-                                        className="p-1.5 rounded bg-white/10 text-platinum hover:text-white"
+                                        className="p-1.5 rounded bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] hover:text-[var(--crm-text)]"
                                         title="Limpar seleção"
                                     >
                                         <X className="w-3.5 h-3.5" />
@@ -564,14 +564,14 @@ export default function ConversationsPage() {
 
                         {/* Bulk Assign Dropdown */}
                         {showBulkActions && (
-                            <div className="absolute left-4 top-24 w-56 bg-charcoal border border-white/10 rounded-xl shadow-xl z-30 overflow-hidden">
-                                <div className="px-3 py-2 border-b border-white/10">
-                                    <p className="text-white text-sm font-medium">Atribuir {selectedConversations.size} conversa(s)</p>
+                            <div className="absolute left-4 top-24 w-56 bg-white border border-[var(--crm-border)] shadow-sm rounded-xl shadow-xl z-30 overflow-hidden">
+                                <div className="px-3 py-2 border-b border-[var(--crm-border)]">
+                                    <p className="text-[var(--crm-text)] text-sm font-medium">Atribuir {selectedConversations.size} conversa(s)</p>
                                 </div>
                                 {currentUser && (
                                     <button
                                         onClick={() => handleBulkAssign(currentUser.id)}
-                                        className="w-full text-left px-4 py-2.5 text-sm text-white hover:bg-gold/10 flex items-center gap-2"
+                                        className="w-full text-left px-4 py-2.5 text-sm text-[var(--crm-text)] hover:bg-gold/10 flex items-center gap-2"
                                     >
                                         <UserCheck className="w-4 h-4 text-gold" />
                                         Assumir conversa(s)
@@ -581,15 +581,15 @@ export default function ConversationsPage() {
                                     <button
                                         key={agent.id}
                                         onClick={() => handleBulkAssign(agent.id)}
-                                        className="w-full text-left px-4 py-2.5 text-sm text-platinum hover:bg-white/5 flex items-center gap-2"
+                                        className="w-full text-left px-4 py-2.5 text-sm text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)] flex items-center gap-2"
                                     >
-                                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs">
+                                        <div className="w-6 h-6 rounded-full bg-[var(--crm-surface-2)] flex items-center justify-center text-xs">
                                             {agent.name.charAt(0)}
                                         </div>
                                         {agent.name}
                                     </button>
                                 ))}
-                                <div className="border-t border-white/10" />
+                                <div className="border-t border-[var(--crm-border)]" />
                                 <button
                                     onClick={() => handleBulkAssign(null)}
                                     className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10"
@@ -598,7 +598,7 @@ export default function ConversationsPage() {
                                 </button>
                                 <button
                                     onClick={() => setShowBulkActions(false)}
-                                    className="w-full text-left px-4 py-2.5 text-sm text-platinum hover:bg-white/5 border-t border-white/10"
+                                    className="w-full text-left px-4 py-2.5 text-sm text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)] border-t border-[var(--crm-border)]"
                                 >
                                     Cancelar
                                 </button>
@@ -611,16 +611,16 @@ export default function ConversationsPage() {
                         {loading ? (
                             <div className="p-4 space-y-3">
                                 {[1, 2, 3].map(i => (
-                                    <div key={i} className="animate-pulse h-16 bg-white/5 rounded-xl" />
+                                    <div key={i} className="animate-pulse h-16 bg-[var(--crm-surface-2)] rounded-xl" />
                                 ))}
                             </div>
                         ) : conversations.length > 0 ? (
                             <div className="relative">
                                 {/* Select All */}
-                                <div className="sticky top-0 bg-charcoal border-b border-white/10 px-4 py-2 flex items-center gap-2 z-10">
+                                <div className="sticky top-0 bg-white border-b border-[var(--crm-border)] px-4 py-2 flex items-center gap-2 z-10">
                                     <button
                                         onClick={toggleSelectAll}
-                                        className="text-platinum hover:text-white"
+                                        className="text-[var(--crm-text-muted)] hover:text-[var(--crm-text)]"
                                     >
                                         {selectedConversations.size === conversations.length && conversations.length > 0 ? (
                                             <CheckSquare className="w-4 h-4" />
@@ -628,19 +628,19 @@ export default function ConversationsPage() {
                                             <Square className="w-4 h-4" />
                                         )}
                                     </button>
-                                    <span className="text-xs text-platinum">Selecionar todas</span>
+                                    <span className="text-xs text-[var(--crm-text-muted)]">Selecionar todas</span>
                                 </div>
                                 {conversations.map(conv => (
                                     <div
                                         key={conv.id}
                                         className={cn(
-                                            'flex items-start gap-2 px-4 py-3 border-b border-white/5 hover:bg-white/5 transition-colors',
+                                            'flex items-start gap-2 px-4 py-3 border-b border-[var(--crm-border)] hover:bg-[var(--crm-surface-2)] transition-colors',
                                             activeConv?.id === conv.id && 'bg-gold/5 border-l-2 border-l-gold'
                                         )}
                                     >
                                         <button
                                             onClick={(e) => { e.stopPropagation(); toggleSelect(conv.id) }}
-                                            className="mt-2 text-platinum hover:text-white"
+                                            className="mt-2 text-[var(--crm-text-muted)] hover:text-[var(--crm-text)]"
                                         >
                                             {selectedConversations.has(conv.id) ? (
                                                 <CheckSquare className="w-4 h-4 text-gold" />
@@ -660,7 +660,7 @@ export default function ConversationsPage() {
                                                 />
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-white font-medium truncate text-sm">
+                                                        <span className="text-[var(--crm-text)] font-medium truncate text-sm">
                                                             {conv.contact?.name || 'Desconhecido'}
                                                         </span>
                                                         <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -672,7 +672,7 @@ export default function ConversationsPage() {
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <p className="text-platinum text-xs truncate mt-0.5">
+                                                    <p className="text-[var(--crm-text-muted)] text-xs truncate mt-0.5">
                                                         {conv.lastMessage || 'Sem mensagens'}
                                                     </p>
                                                     <div className="flex items-center justify-between mt-1">
@@ -682,10 +682,10 @@ export default function ConversationsPage() {
                                                                 {conv.assignedUser.name}
                                                             </span>
                                                         ) : (
-                                                            <span className="text-platinum/30 text-[10px]">Sem atendente</span>
+                                                            <span className="text-[var(--crm-text-muted)]/30 text-[10px]">Sem atendente</span>
                                                         )}
                                                         {conv.lastMessageAt && (
-                                                            <span className="text-platinum/50 text-[10px] flex-shrink-0">
+                                                            <span className="text-[var(--crm-text-muted)]/50 text-[10px] flex-shrink-0">
                                                                 {formatTime(conv.lastMessageAt)}
                                                             </span>
                                                         )}
@@ -698,8 +698,8 @@ export default function ConversationsPage() {
                             </div>
                         ) : (
                             <div className="p-8 text-center">
-                                <MessageSquare className="w-12 h-12 text-platinum/50 mx-auto mb-3" />
-                                <p className="text-platinum">Nenhuma conversa</p>
+                                <MessageSquare className="w-12 h-12 text-[var(--crm-text-muted)]/50 mx-auto mb-3" />
+                                <p className="text-[var(--crm-text-muted)]">Nenhuma conversa</p>
                             </div>
                         )}
                     </div>
@@ -709,12 +709,12 @@ export default function ConversationsPage() {
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex-1 bg-charcoal rounded-2xl border border-white/10 flex flex-col overflow-hidden"
+                    className="flex-1 bg-white rounded-2xl border border-[var(--crm-border)] shadow-sm flex flex-col overflow-hidden"
                 >
                     {activeConv ? (
                         <>
                             {/* Chat Header */}
-                            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between gap-3">
+                            <div className="px-6 py-4 border-b border-[var(--crm-border)] flex items-center justify-between gap-3">
                                 <div className="flex items-center gap-3 min-w-0">
                                     <ContactAvatar
                                         name={activeConv.contact?.name || '?'}
@@ -722,7 +722,7 @@ export default function ConversationsPage() {
                                     />
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <p className="text-white font-medium truncate">{activeConv.contact?.name}</p>
+                                            <p className="text-[var(--crm-text)] font-medium truncate">{activeConv.contact?.name}</p>
                                             {activeConv.contact?.leadScore && (
                                                 <span className={cn(
                                                     'inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-md border flex-shrink-0',
@@ -735,7 +735,7 @@ export default function ConversationsPage() {
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="text-platinum text-sm">{activeConv.contact?.phone}</p>
+                                        <p className="text-[var(--crm-text-muted)] text-sm">{activeConv.contact?.phone}</p>
                                     </div>
                                 </div>
 
@@ -748,7 +748,7 @@ export default function ConversationsPage() {
                                                 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all border',
                                                 activeConv.assignedUser
                                                     ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                                                    : 'bg-white/5 text-platinum border-white/10'
+                                                    : 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] border-[var(--crm-border)]'
                                             )}
                                         >
                                             <UserCheck className="w-4 h-4" />
@@ -759,27 +759,27 @@ export default function ConversationsPage() {
                                         </button>
 
                                         {showAssignDropdown && (
-                                            <div className="absolute right-0 top-full mt-1 w-52 bg-charcoal border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden">
+                                            <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[var(--crm-border)] shadow-sm rounded-xl shadow-xl z-20 overflow-hidden">
                                                 {currentUser && (
                                                     <button
                                                         onClick={() => handleAssign(currentUser.id)}
-                                                        className="w-full text-left px-4 py-3 text-sm text-white hover:bg-gold/10 flex items-center gap-2"
+                                                        className="w-full text-left px-4 py-3 text-sm text-[var(--crm-text)] hover:bg-gold/10 flex items-center gap-2"
                                                     >
                                                         <UserCheck className="w-4 h-4 text-gold" />
                                                         Assumir conversa
                                                     </button>
                                                 )}
-                                                <div className="border-t border-white/10" />
+                                                <div className="border-t border-[var(--crm-border)]" />
                                                 {agents.map(agent => (
                                                     <button
                                                         key={agent.id}
                                                         onClick={() => handleAssign(agent.id)}
                                                         className={cn(
-                                                            'w-full text-left px-4 py-2.5 text-sm hover:bg-white/5 flex items-center gap-2',
-                                                            activeConv.assignedTo === agent.id ? 'text-gold' : 'text-platinum'
+                                                            'w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--crm-surface-2)] flex items-center gap-2',
+                                                            activeConv.assignedTo === agent.id ? 'text-gold' : 'text-[var(--crm-text-muted)]'
                                                         )}
                                                     >
-                                                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs">
+                                                        <div className="w-6 h-6 rounded-full bg-[var(--crm-surface-2)] flex items-center justify-center text-xs">
                                                             {agent.name.charAt(0)}
                                                         </div>
                                                         {agent.name}
@@ -787,7 +787,7 @@ export default function ConversationsPage() {
                                                 ))}
                                                 {activeConv.assignedTo && (
                                                     <>
-                                                        <div className="border-t border-white/10" />
+                                                        <div className="border-t border-[var(--crm-border)]" />
                                                         <button
                                                             onClick={() => handleAssign(null)}
                                                             className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10"
@@ -807,7 +807,7 @@ export default function ConversationsPage() {
                                             'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all border',
                                             activeConv.aiEnabled
                                                 ? 'bg-gold/10 text-gold border-gold/20'
-                                                : 'bg-white/5 text-platinum border-white/10'
+                                                : 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] border-[var(--crm-border)]'
                                         )}
                                     >
                                         {activeConv.aiEnabled ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
@@ -816,7 +816,7 @@ export default function ConversationsPage() {
 
                                     <button
                                         onClick={() => setActiveConv(null)}
-                                        className="text-platinum hover:text-white lg:hidden"
+                                        className="text-[var(--crm-text-muted)] hover:text-[var(--crm-text)] lg:hidden"
                                     >
                                         <X className="w-5 h-5" />
                                     </button>
@@ -846,21 +846,21 @@ export default function ConversationsPage() {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: 10 }}
-                                        className="mx-6 mb-1 bg-black border border-white/10 rounded-xl overflow-hidden shadow-xl"
+                                        className="mx-6 mb-1 bg-white border border-[var(--crm-border)] rounded-xl overflow-hidden shadow-xl"
                                     >
                                         {filteredQuickReplies.slice(0, 5).map(qr => (
                                             <button
                                                 key={qr.id}
                                                 onClick={() => applyQuickReply(qr)}
-                                                className="w-full text-left px-4 py-3 hover:bg-white/5 transition-colors flex items-start gap-3 border-b border-white/5 last:border-0"
+                                                className="w-full text-left px-4 py-3 hover:bg-[var(--crm-surface-2)] transition-colors flex items-start gap-3 border-b border-[var(--crm-border)] last:border-0"
                                             >
                                                 <div className="flex items-center gap-2 flex-shrink-0">
                                                     <Zap className="w-3.5 h-3.5 text-gold" />
                                                     <code className="text-gold text-xs font-mono">{qr.shortcut}</code>
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="text-white text-sm font-medium">{qr.title}</p>
-                                                    <p className="text-platinum text-xs truncate">{qr.content}</p>
+                                                    <p className="text-[var(--crm-text)] text-sm font-medium">{qr.title}</p>
+                                                    <p className="text-[var(--crm-text-muted)] text-xs truncate">{qr.content}</p>
                                                 </div>
                                             </button>
                                         ))}
@@ -869,7 +869,7 @@ export default function ConversationsPage() {
                             </AnimatePresence>
 
                             {/* Input */}
-                            <div className="px-6 py-4 border-t border-white/10">
+                            <div className="px-6 py-4 border-t border-[var(--crm-border)]">
                                 <div className="flex gap-3 items-center">
                                     {/* Attachment button */}
                                     <input
@@ -886,7 +886,7 @@ export default function ConversationsPage() {
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={uploading}
-                                        className="p-3 bg-white/5 rounded-xl border border-white/10 text-platinum hover:bg-white/10 hover:text-white transition-colors disabled:opacity-50"
+                                        className="p-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text-muted)] hover:bg-[var(--crm-surface-2)] hover:text-[var(--crm-text)] transition-colors disabled:opacity-50"
                                         title="Enviar arquivo"
                                     >
                                         {uploading ? (
@@ -909,7 +909,7 @@ export default function ConversationsPage() {
                                                 if (e.key === 'Escape') setShowQuickReplies(false)
                                             }}
                                             placeholder="Digite sua mensagem... (/ para respostas rápidas)"
-                                            className="w-full px-4 py-3 bg-white/5 rounded-xl border border-white/10 text-white placeholder:text-platinum/50 focus:outline-none focus:border-gold/50"
+                                            className="w-full px-4 py-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] text-[var(--crm-text)] placeholder:text-[var(--crm-text-muted)]/50 focus:outline-none focus:border-gold/50"
                                         />
                                     </div>
 
@@ -926,9 +926,9 @@ export default function ConversationsPage() {
                     ) : (
                         <div className="flex-1 flex items-center justify-center">
                             <div className="text-center">
-                                <MessageSquare className="w-16 h-16 text-platinum/30 mx-auto mb-4" />
-                                <p className="text-platinum text-lg">Selecione uma conversa</p>
-                                <p className="text-platinum/50 text-sm mt-1">Escolha uma conversa ao lado para visualizar</p>
+                                <MessageSquare className="w-16 h-16 text-[var(--crm-text-muted)]/30 mx-auto mb-4" />
+                                <p className="text-[var(--crm-text-muted)] text-lg">Selecione uma conversa</p>
+                                <p className="text-[var(--crm-text-muted)]/50 text-sm mt-1">Escolha uma conversa ao lado para visualizar</p>
                             </div>
                         </div>
                     )}
@@ -938,7 +938,7 @@ export default function ConversationsPage() {
             {/* Lightbox */}
             {lightboxSrc && (
                 <div
-                    className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+                    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
                     onClick={() => setLightboxSrc(null)}
                 >
                     {/* eslint-disable-next-line @next/next/no-img-element */}

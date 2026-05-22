@@ -17,7 +17,7 @@ export default function ConversationDetailPage() {
 
     return (
         <div className="flex items-center justify-center h-64">
-            <div className="animate-pulse text-platinum">Redirecionando...</div>
+            <div className="animate-pulse text-[var(--crm-text-muted)]">Redirecionando...</div>
         </div>
     )
 }

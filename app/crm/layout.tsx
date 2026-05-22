@@ -24,14 +24,14 @@ function CrmLayoutContent({ children }: { children: React.ReactNode }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-black-deep flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--crm-bg)] flex items-center justify-center">
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="flex flex-col items-center gap-4"
                 >
-                    <Loader2 className="w-8 h-8 text-gold animate-spin" />
-                    <p className="text-platinum">Carregando CRM...</p>
+                    <Loader2 className="w-8 h-8 text-[var(--crm-accent)] animate-spin" />
+                    <p className="text-[var(--crm-text-muted)]">Carregando CRM...</p>
                 </motion.div>
             </div>
         )
@@ -43,18 +43,18 @@ function CrmLayoutContent({ children }: { children: React.ReactNode }) {
 
     if (!canAccess(user, 'crm')) {
         return (
-            <div className="min-h-screen bg-black-deep flex items-center justify-center">
+            <div className="min-h-screen bg-[var(--crm-bg)] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4 text-center">
-                    <ShieldX className="w-12 h-12 text-red-400" />
-                    <h2 className="text-xl font-bold text-white">Acesso Negado</h2>
-                    <p className="text-platinum">Você não tem permissão para acessar o CRM.</p>
+                    <ShieldX className="w-12 h-12 text-red-500" />
+                    <h2 className="text-xl font-bold text-[var(--crm-text)]">Acesso Negado</h2>
+                    <p className="text-[var(--crm-text-muted)]">Você não tem permissão para acessar o CRM.</p>
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="h-screen bg-black-deep flex overflow-hidden">
+        <div className="h-screen bg-[var(--crm-bg)] flex overflow-hidden">
             <CrmSidebar />
             <main className="flex-1 ml-64 p-8 overflow-y-auto flex flex-col">
                 <motion.div

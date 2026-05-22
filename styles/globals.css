@@ -25,6 +25,16 @@
   --color-platinum-warm: #c4b8a8;
   --color-border-subtle: #2a2a2a;
 
+  /* CRM light theme tokens */
+  --crm-bg: #f4f4f5;
+  --crm-surface: #ffffff;
+  --crm-surface-2: #f4f4f5;
+  --crm-text: #18181b;
+  --crm-text-muted: #71717a;
+  --crm-accent: #7B6BB1;
+  --crm-accent-bg: rgba(123, 107, 177, 0.12);
+  --crm-border: #e4e4e7;
+
   /* Transitions */
   --transition-premium: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

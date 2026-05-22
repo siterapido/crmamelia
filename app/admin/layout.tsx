@@ -24,7 +24,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (!loading && user && isAdminArea && !hasPermission(user, 'users:manage')) {
             if (canAccess(user, 'crm')) {
-                router.push('/crm/pipeline')
+                router.push('/crm/dashboard')
             }
             // Perfis apenas de conteúdo (ex.: produtor) permanecem em /admin
         }
@@ -33,7 +33,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (loading || !user || !pathname.startsWith('/admin/cms')) return
         if (canAccess(user, 'crm')) {
-            router.replace('/crm/pipeline')
+            router.replace('/crm/dashboard')
         } else {
             router.replace('/admin')
         }

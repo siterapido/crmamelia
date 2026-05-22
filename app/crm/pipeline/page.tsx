@@ -104,25 +104,16 @@ const pipelineScoreColors: Record<number, string> = {
     5: 'text-red-400 bg-red-500/10 border-red-500/20',
 }
 
+import {
+    getInactivityLevel,
+    hoursSince,
+    formatInactivityDuration,
+    INACTIVITY_LABELS,
+    type InactivityLevel,
+} from '@/lib/crm/inactivity'
+
 function getInactivityHours(lastInboundAt: string | null): number | null {
-    if (!lastInboundAt) return null
-    return (Date.now() - new Date(lastInboundAt).getTime()) / (1000 * 60 * 60)
-}
-
-function formatInactivityDuration(hours: number): string {
-    if (hours < 1) return `${Math.round(hours * 60)}min`
-    if (hours < 24) return `${Math.round(hours)}h`
-    return `${Math.floor(hours / 24)}d`
-}
-
-type InactivityLevel = 'alert' | 'critical' | 'dormant' | null
-
-function getInactivityLevel(hours: number | null): InactivityLevel {
-    if (hours === null) return null
-    if (hours >= 48) return 'dormant'
-    if (hours >= 24) return 'critical'
-    if (hours >= 4) return 'alert'
-    return null
+    return hoursSince(lastInboundAt)
 }
 
 const inactivityStyles: Record<NonNullable<InactivityLevel>, { badge: string; border: string }> = {
@@ -169,13 +160,13 @@ function FieldInput({ label, value, onChange, type = 'text', placeholder }: {
 }) {
     return (
         <div>
-            <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-1">{label}</label>
+            <label className="block text-[10px] uppercase tracking-wider font-semibold text-[var(--crm-text-muted)]/50 mb-1">{label}</label>
             <input
                 type={type}
                 value={value}
                 onChange={e => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-platinum/30 focus:outline-none focus:border-gold/50 focus:bg-white/8 transition-all"
+                className="w-full bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-2 text-sm text-[var(--crm-text)] placeholder-[var(--crm-text-muted)]/30 focus:outline-none focus:border-gold/50 focus:bg-[var(--crm-surface-2)] transition-all"
             />
         </div>
     )
@@ -187,13 +178,13 @@ function FieldSelect({ label, value, onChange, options }: {
 }) {
     return (
         <div>
-            <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-1">{label}</label>
+            <label className="block text-[10px] uppercase tracking-wider font-semibold text-[var(--crm-text-muted)]/50 mb-1">{label}</label>
             <select
                 value={value}
                 onChange={e => onChange(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 transition-all appearance-none"
+                className="w-full bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-2 text-sm text-[var(--crm-text)] focus:outline-none focus:border-gold/50 transition-all appearance-none"
             >
-                {options.map(o => <option key={o.value} value={o.value} className="bg-[#1a1a1a]">{o.label}</option>)}
+                {options.map(o => <option key={o.value} value={o.value} className="bg-white">{o.label}</option>)}
             </select>
         </div>
     )
@@ -204,13 +195,13 @@ function FieldTextarea({ label, value, onChange, placeholder }: {
 }) {
     return (
         <div>
-            <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-1">{label}</label>
+            <label className="block text-[10px] uppercase tracking-wider font-semibold text-[var(--crm-text-muted)]/50 mb-1">{label}</label>
             <textarea
                 value={value}
                 onChange={e => onChange(e.target.value)}
                 placeholder={placeholder}
                 rows={3}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-platinum/30 focus:outline-none focus:border-gold/50 focus:bg-white/8 transition-all resize-none"
+                className="w-full bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-2 text-sm text-[var(--crm-text)] placeholder-[var(--crm-text-muted)]/30 focus:outline-none focus:border-gold/50 focus:bg-[var(--crm-surface-2)] transition-all resize-none"
             />
         </div>
     )
@@ -470,7 +461,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
             onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
         >
             <motion.div
@@ -478,13 +469,13 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
                 transition={{ duration: 0.15 }}
-                className="bg-[#161616] rounded-2xl border border-white/10 w-full max-w-2xl md:max-w-3xl lg:max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
+                className="bg-white rounded-2xl border border-[var(--crm-border)] shadow-sm w-full max-w-2xl md:max-w-3xl lg:max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
             >
-                <div className="flex items-start justify-between px-5 pt-5 pb-4 border-b border-white/8 flex-shrink-0">
+                <div className="flex items-start justify-between px-5 pt-5 pb-4 border-b border-[var(--crm-border)] flex-shrink-0">
                     <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
                         {deal.contact && <ContactAvatarLg contact={deal.contact} />}
                         <div className="min-w-0">
-                            <p className="text-white font-semibold text-base leading-snug truncate">{deal.title}</p>
+                            <p className="text-[var(--crm-text)] font-semibold text-base leading-snug truncate">{deal.title}</p>
                             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                 <span
                                     className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border"
@@ -493,7 +484,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                     {deal.stage?.name || 'Sem etapa'}
                                 </span>
                                 {contact?.status && (
-                                    <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${statusColors[contact.status] || 'bg-white/10 text-platinum border-white/10'}`}>
+                                    <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${statusColors[contact.status] || 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)] border-[var(--crm-border)]'}`}>
                                         {statusLabels[contact.status] || contact.status}
                                     </span>
                                 )}
@@ -501,12 +492,12 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                             </div>
                         </div>
                     </div>
-                    <button onClick={onClose} className="text-platinum/50 hover:text-white transition-colors flex-shrink-0 mt-0.5">
+                    <button onClick={onClose} className="text-[var(--crm-text-muted)]/50 hover:text-[var(--crm-text)] transition-colors flex-shrink-0 mt-0.5">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="flex border-b border-white/8 flex-shrink-0 px-1">
+                <div className="flex border-b border-[var(--crm-border)] flex-shrink-0 px-1">
                     {TABS.map(t => (
                         <button
                             key={t.id}
@@ -515,7 +506,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                 'px-5 py-3 text-sm font-medium transition-all border-b-2 -mb-px',
                                 tab === t.id
                                     ? 'text-gold border-gold'
-                                    : 'text-platinum/50 border-transparent hover:text-platinum/80'
+                                    : 'text-[var(--crm-text-muted)]/50 border-transparent hover:text-[var(--crm-text-muted)]/80'
                             )}
                         >
                             {t.label}
@@ -555,55 +546,55 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                     </div>
                                 )}
                                 {deal.livesCount != null && (
-                                    <div className="bg-white/5 border border-white/8 rounded-xl p-3">
+                                    <div className="bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl p-3">
                                         <div className="flex items-center gap-1.5 mb-1">
-                                            <Users className="w-3.5 h-3.5 text-platinum/60" />
-                                            <span className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold">Vidas</span>
+                                            <Users className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/60" />
+                                            <span className="text-[var(--crm-text-muted)]/50 text-[10px] uppercase tracking-wider font-semibold">Vidas</span>
                                         </div>
-                                        <p className="text-white font-semibold text-sm">{deal.livesCount}</p>
+                                        <p className="text-[var(--crm-text)] font-semibold text-sm">{deal.livesCount}</p>
                                     </div>
                                 )}
-                                <div className="bg-white/5 border border-white/8 rounded-xl p-3">
+                                <div className="bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl p-3">
                                     <div className="flex items-center gap-1.5 mb-1">
-                                        <Calendar className="w-3.5 h-3.5 text-platinum/60" />
-                                        <span className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold">Criado em</span>
+                                        <Calendar className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/60" />
+                                        <span className="text-[var(--crm-text-muted)]/50 text-[10px] uppercase tracking-wider font-semibold">Criado em</span>
                                     </div>
-                                    <p className="text-white/80 text-sm">{new Date(deal.createdAt).toLocaleDateString('pt-BR')}</p>
+                                    <p className="text-[var(--crm-text)]/80 text-sm">{new Date(deal.createdAt).toLocaleDateString('pt-BR')}</p>
                                 </div>
                                 {deal.assignedUser && (
-                                    <div className="bg-white/5 border border-white/8 rounded-xl p-3">
+                                    <div className="bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl p-3">
                                         <div className="flex items-center gap-1.5 mb-1">
-                                            <User className="w-3.5 h-3.5 text-platinum/60" />
-                                            <span className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold">Atendente</span>
+                                            <User className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/60" />
+                                            <span className="text-[var(--crm-text-muted)]/50 text-[10px] uppercase tracking-wider font-semibold">Atendente</span>
                                         </div>
-                                        <p className="text-white/80 text-sm truncate">{deal.assignedUser.name}</p>
+                                        <p className="text-[var(--crm-text)]/80 text-sm truncate">{deal.assignedUser.name}</p>
                                     </div>
                                 )}
                             </div>
 
                             {deal.contact && (
-                                <div className="bg-white/4 border border-white/8 rounded-xl p-4 space-y-2.5">
-                                    <p className="text-platinum/50 text-[10px] uppercase tracking-wider font-semibold">Contato</p>
+                                <div className="bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl p-4 space-y-2.5">
+                                    <p className="text-[var(--crm-text-muted)]/50 text-[10px] uppercase tracking-wider font-semibold">Contato</p>
                                     <div className="flex items-center gap-2">
-                                        <Phone className="w-3.5 h-3.5 text-platinum/40 flex-shrink-0" />
-                                        <span className="text-platinum/80 text-sm">{deal.contact.phone}</span>
+                                        <Phone className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                        <span className="text-[var(--crm-text-muted)]/80 text-sm">{deal.contact.phone}</span>
                                     </div>
                                     {contact?.email && (
                                         <div className="flex items-center gap-2">
-                                            <Mail className="w-3.5 h-3.5 text-platinum/40 flex-shrink-0" />
-                                            <span className="text-platinum/80 text-sm">{contact.email}</span>
+                                            <Mail className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                            <span className="text-[var(--crm-text-muted)]/80 text-sm">{contact.email}</span>
                                         </div>
                                     )}
                                     {deal.contact.company && (
                                         <div className="flex items-center gap-2">
-                                            <Building2 className="w-3.5 h-3.5 text-platinum/40 flex-shrink-0" />
-                                            <span className="text-platinum/60 text-sm">{deal.contact.company}</span>
+                                            <Building2 className="w-3.5 h-3.5 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                            <span className="text-[var(--crm-text-muted)]/60 text-sm">{deal.contact.company}</span>
                                         </div>
                                     )}
                                     {contact?.tags && contact.tags.length > 0 && (
                                         <div className="flex flex-wrap gap-1 pt-1">
                                             {contact.tags.map(tag => (
-                                                <span key={tag} className="text-[10px] px-2 py-0.5 bg-white/8 rounded-full text-platinum/70 border border-white/10">{tag}</span>
+                                                <span key={tag} className="text-[10px] px-2 py-0.5 bg-[var(--crm-surface-2)] rounded-full text-[var(--crm-text-muted)]/70 border border-[var(--crm-border)]">{tag}</span>
                                             ))}
                                         </div>
                                     )}
@@ -615,11 +606,11 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                     {tab === 'contact' && (
                         <div className="p-5">
                             <div className="flex items-center justify-between mb-4">
-                                <p className="text-platinum/50 text-xs uppercase tracking-wider font-semibold">Dados do Contato</p>
+                                <p className="text-[var(--crm-text-muted)]/50 text-xs uppercase tracking-wider font-semibold">Dados do Contato</p>
                                 {!editingContact ? (
                                     <button
                                         onClick={() => setEditingContact(true)}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/70 hover:text-white hover:bg-white/8 transition-all text-xs font-medium"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/70 hover:text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] transition-all text-xs font-medium"
                                     >
                                         <Pencil className="w-3 h-3" /> Editar
                                     </button>
@@ -627,7 +618,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => { setEditingContact(false); setSaveError(null) }}
-                                            className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white transition-all text-xs font-medium"
+                                            className="px-3 py-1.5 rounded-lg bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/60 hover:text-[var(--crm-text)] transition-all text-xs font-medium"
                                         >
                                             Cancelar
                                         </button>
@@ -645,7 +636,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
 
                             {loadingContact ? (
                                 <div className="space-y-3">
-                                    {[...Array(6)].map((_, i) => <div key={i} className="animate-pulse h-10 bg-white/5 rounded-lg" />)}
+                                    {[...Array(6)].map((_, i) => <div key={i} className="animate-pulse h-10 bg-[var(--crm-surface-2)] rounded-lg" />)}
                                 </div>
                             ) : editingContact ? (
                                 <div className="space-y-3">
@@ -708,27 +699,27 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                         { icon: Users, label: 'Qtd. de vidas', value: contact?.livesCount ? String(contact.livesCount) : null },
                                     ].filter(r => r.value).map(({ icon: Icon, label, value }) => (
                                         <div key={label} className="flex items-center gap-3 py-2.5">
-                                            <Icon className="w-4 h-4 text-platinum/30 flex-shrink-0" />
-                                            <span className="text-platinum/50 text-sm w-36 flex-shrink-0">{label}</span>
-                                            <span className="text-white/80 text-sm flex-1 min-w-0 truncate">{value}</span>
+                                            <Icon className="w-4 h-4 text-[var(--crm-text-muted)]/30 flex-shrink-0" />
+                                            <span className="text-[var(--crm-text-muted)]/50 text-sm w-36 flex-shrink-0">{label}</span>
+                                            <span className="text-[var(--crm-text)]/80 text-sm flex-1 min-w-0 truncate">{value}</span>
                                         </div>
                                     ))}
                                     {contact?.tags && contact.tags.length > 0 && (
                                         <div className="flex items-start gap-3 py-2.5">
-                                            <Tag className="w-4 h-4 text-platinum/30 flex-shrink-0 mt-0.5" />
-                                            <span className="text-platinum/50 text-sm w-36 flex-shrink-0">Tags</span>
+                                            <Tag className="w-4 h-4 text-[var(--crm-text-muted)]/30 flex-shrink-0 mt-0.5" />
+                                            <span className="text-[var(--crm-text-muted)]/50 text-sm w-36 flex-shrink-0">Tags</span>
                                             <div className="flex flex-wrap gap-1 flex-1">
                                                 {contact.tags.map(tag => (
-                                                    <span key={tag} className="text-[10px] px-2 py-0.5 bg-white/8 rounded-full text-platinum/70 border border-white/10">{tag}</span>
+                                                    <span key={tag} className="text-[10px] px-2 py-0.5 bg-[var(--crm-surface-2)] rounded-full text-[var(--crm-text-muted)]/70 border border-[var(--crm-border)]">{tag}</span>
                                                 ))}
                                             </div>
                                         </div>
                                     )}
                                     {contact?.notes && (
                                         <div className="flex items-start gap-3 py-2.5">
-                                            <FileText className="w-4 h-4 text-platinum/30 flex-shrink-0 mt-0.5" />
-                                            <span className="text-platinum/50 text-sm w-36 flex-shrink-0">Observações</span>
-                                            <p className="text-platinum/60 text-sm flex-1 leading-relaxed">{contact.notes}</p>
+                                            <FileText className="w-4 h-4 text-[var(--crm-text-muted)]/30 flex-shrink-0 mt-0.5" />
+                                            <span className="text-[var(--crm-text-muted)]/50 text-sm w-36 flex-shrink-0">Observações</span>
+                                            <p className="text-[var(--crm-text-muted)]/60 text-sm flex-1 leading-relaxed">{contact.notes}</p>
                                         </div>
                                     )}
                                 </div>
@@ -739,11 +730,11 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                     {tab === 'deal' && (
                         <div className="p-5">
                             <div className="flex items-center justify-between mb-4">
-                                <p className="text-platinum/50 text-xs uppercase tracking-wider font-semibold">Dados do Negócio</p>
+                                <p className="text-[var(--crm-text-muted)]/50 text-xs uppercase tracking-wider font-semibold">Dados do Negócio</p>
                                 {!editingDeal ? (
                                     <button
                                         onClick={() => setEditingDeal(true)}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/70 hover:text-white hover:bg-white/8 transition-all text-xs font-medium"
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/70 hover:text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] transition-all text-xs font-medium"
                                     >
                                         <Pencil className="w-3 h-3" /> Editar
                                     </button>
@@ -751,7 +742,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => { setEditingDeal(false); setSaveError(null) }}
-                                            className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white transition-all text-xs font-medium"
+                                            className="px-3 py-1.5 rounded-lg bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/60 hover:text-[var(--crm-text)] transition-all text-xs font-medium"
                                         >
                                             Cancelar
                                         </button>
@@ -797,9 +788,9 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                         { icon: Calendar, label: 'Criado em', value: new Date(deal.createdAt).toLocaleDateString('pt-BR') },
                                     ].filter(r => r.value).map(({ icon: Icon, label, value }) => (
                                         <div key={label} className="flex items-center gap-3 py-2.5">
-                                            <Icon className="w-4 h-4 text-platinum/30 flex-shrink-0" />
-                                            <span className="text-platinum/50 text-sm w-36 flex-shrink-0">{label}</span>
-                                            <span className="text-white/80 text-sm flex-1 min-w-0 truncate">{value}</span>
+                                            <Icon className="w-4 h-4 text-[var(--crm-text-muted)]/30 flex-shrink-0" />
+                                            <span className="text-[var(--crm-text-muted)]/50 text-sm w-36 flex-shrink-0">{label}</span>
+                                            <span className="text-[var(--crm-text)]/80 text-sm flex-1 min-w-0 truncate">{value}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -809,12 +800,12 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
 
                     {tab === 'history' && (
                         <div className="p-4 space-y-4">
-                            <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+                            <div className="flex items-center gap-2 border-b border-[var(--crm-border)] pb-2">
                                 <button
                                     onClick={() => setSubTab('activities')}
                                     className={cn(
                                         'px-4 py-2 text-sm font-medium transition-colors rounded-lg',
-                                        subTab === 'activities' ? 'bg-gold/10 text-gold' : 'text-platinum/50 hover:text-white'
+                                        subTab === 'activities' ? 'bg-gold/10 text-gold' : 'text-[var(--crm-text-muted)]/50 hover:text-[var(--crm-text)]'
                                     )}
                                 >
                                     Atividades
@@ -823,7 +814,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                     onClick={() => setSubTab('followups')}
                                     className={cn(
                                         'px-4 py-2 text-sm font-medium transition-colors rounded-lg',
-                                        subTab === 'followups' ? 'bg-gold/10 text-gold' : 'text-platinum/50 hover:text-white'
+                                        subTab === 'followups' ? 'bg-gold/10 text-gold' : 'text-[var(--crm-text-muted)]/50 hover:text-[var(--crm-text)]'
                                     )}
                                 >
                                     Follow-ups
@@ -843,19 +834,19 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                 <div className="space-y-4">
                                     <button
                                         onClick={() => setShowActivityForm(v => !v)}
-                                        className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-platinum text-sm hover:bg-white/10 transition-colors"
+                                        className="flex items-center gap-2 px-3 py-2 bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg text-[var(--crm-text-muted)] text-sm hover:bg-[var(--crm-surface-2)] transition-colors"
                                     >
                                         <Plus className="w-4 h-4" />
                                         Adicionar Atividade
                                     </button>
 
                                     {showActivityForm && (
-                                        <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-2">
+                                        <div className="p-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] space-y-2">
                                             <div className="grid grid-cols-2 gap-2">
                                                 <select
                                                     value={activityForm.type}
                                                     onChange={e => setActivityForm(f => ({ ...f, type: e.target.value }))}
-                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm"
+                                                    className="px-2 py-1.5 bg-[var(--crm-surface-2)] rounded-lg border border-[var(--crm-border)] text-[var(--crm-text)] text-sm"
                                                 >
                                                     <option value="note">Nota</option>
                                                     <option value="call">Ligação</option>
@@ -868,7 +859,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                                     value={activityForm.title}
                                                     onChange={e => setActivityForm(f => ({ ...f, title: e.target.value }))}
                                                     placeholder="Título *"
-                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm"
+                                                    className="px-2 py-1.5 bg-[var(--crm-surface-2)] rounded-lg border border-[var(--crm-border)] text-[var(--crm-text)] text-sm"
                                                 />
                                             </div>
                                             <textarea
@@ -876,12 +867,12 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                                 onChange={e => setActivityForm(f => ({ ...f, description: e.target.value }))}
                                                 placeholder="Descrição (opcional)"
                                                 rows={2}
-                                                className="w-full px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm resize-none"
+                                                className="w-full px-2 py-1.5 bg-[var(--crm-surface-2)] rounded-lg border border-[var(--crm-border)] text-[var(--crm-text)] text-sm resize-none"
                                             />
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => setShowActivityForm(false)}
-                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-platinum text-xs"
+                                                    className="px-2 py-1.5 bg-[var(--crm-surface-2)] rounded-lg border border-[var(--crm-border)] text-[var(--crm-text-muted)] text-xs"
                                                 >
                                                     Cancelar
                                                 </button>
@@ -910,23 +901,23 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                                             <Icon className="w-4 h-4 text-gold" />
                                                         </div>
                                                         {i < activities.length - 1 && (
-                                                            <div className="w-0.5 flex-1 bg-white/10 mt-2" />
+                                                            <div className="w-0.5 flex-1 bg-[var(--crm-surface-2)] mt-2" />
                                                         )}
                                                     </div>
                                                     <div className="flex-1 pb-3">
                                                         <div className="flex items-start justify-between">
                                                             <div>
-                                                                <p className="text-white font-medium text-sm">{activity.title}</p>
+                                                                <p className="text-[var(--crm-text)] font-medium text-sm">{activity.title}</p>
                                                                 {activity.description && (
-                                                                    <p className="text-platinum text-xs mt-0.5">{activity.description}</p>
+                                                                    <p className="text-[var(--crm-text-muted)] text-xs mt-0.5">{activity.description}</p>
                                                                 )}
                                                             </div>
-                                                            <span className="text-platinum/50 text-[10px] flex-shrink-0 ml-2">
+                                                            <span className="text-[var(--crm-text-muted)]/50 text-[10px] flex-shrink-0 ml-2">
                                                                 {new Date(activity.createdAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
                                                             </span>
                                                         </div>
                                                         {activity.user && (
-                                                            <p className="text-platinum/50 text-[10px] mt-1">por {activity.user.name}</p>
+                                                            <p className="text-[var(--crm-text-muted)]/50 text-[10px] mt-1">por {activity.user.name}</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -934,8 +925,8 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                         })}
                                         {activities.length === 0 && (
                                             <div className="text-center py-6">
-                                                <FileText className="w-8 h-8 text-platinum/20 mx-auto mb-2" />
-                                                <p className="text-platinum text-xs">Nenhuma atividade registrada</p>
+                                                <FileText className="w-8 h-8 text-[var(--crm-text-muted)]/20 mx-auto mb-2" />
+                                                <p className="text-[var(--crm-text-muted)] text-xs">Nenhuma atividade registrada</p>
                                             </div>
                                         )}
                                     </div>
@@ -946,37 +937,37 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                 <div className="space-y-4">
                                     <button
                                         onClick={() => setShowFollowupForm(v => !v)}
-                                        className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-platinum text-sm hover:bg-white/10 transition-colors"
+                                        className="flex items-center gap-2 px-3 py-2 bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg text-[var(--crm-text-muted)] text-sm hover:bg-[var(--crm-surface-2)] transition-colors"
                                     >
                                         <Bell className="w-4 h-4" />
                                         Agendar Follow-up
                                     </button>
 
                                     {showFollowupForm && (
-                                        <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-2">
+                                        <div className="p-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)] space-y-2">
                                             <div>
-                                                <label className="block text-platinum text-xs mb-1">Data e Hora</label>
+                                                <label className="block text-[var(--crm-text-muted)] text-xs mb-1">Data e Hora</label>
                                                 <input
                                                     type="datetime-local"
                                                     value={followupForm.scheduledAt}
                                                     onChange={e => setFollowupForm(f => ({ ...f, scheduledAt: e.target.value }))}
-                                                    className="w-full px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm"
+                                                    className="w-full px-2 py-1.5 bg-[var(--crm-surface-2)] rounded-lg border border-[var(--crm-border)] text-[var(--crm-text)] text-sm"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-platinum text-xs mb-1">Mensagem</label>
+                                                <label className="block text-[var(--crm-text-muted)] text-xs mb-1">Mensagem</label>
                                                 <textarea
                                                     value={followupForm.message}
                                                     onChange={e => setFollowupForm(f => ({ ...f, message: e.target.value }))}
                                                     rows={2}
                                                     placeholder="Ex: Ligar para fechar proposta"
-                                                    className="w-full px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-white text-sm resize-none"
+                                                    className="w-full px-2 py-1.5 bg-[var(--crm-surface-2)] rounded-lg border border-[var(--crm-border)] text-[var(--crm-text)] text-sm resize-none"
                                                 />
                                             </div>
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => setShowFollowupForm(false)}
-                                                    className="px-2 py-1.5 bg-white/5 rounded-lg border border-white/10 text-platinum text-xs"
+                                                    className="px-2 py-1.5 bg-[var(--crm-surface-2)] rounded-lg border border-[var(--crm-border)] text-[var(--crm-text-muted)] text-xs"
                                                 >
                                                     Cancelar
                                                 </button>
@@ -995,15 +986,15 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                         {followups.map(f => (
                                             <div
                                                 key={f.id}
-                                                className="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/10"
+                                                className="flex items-start gap-3 p-3 bg-[var(--crm-surface-2)] rounded-xl border border-[var(--crm-border)]"
                                             >
                                                 <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
                                                     <Bell className="w-4 h-4 text-gold" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-white text-sm">{f.message}</p>
+                                                    <p className="text-[var(--crm-text)] text-sm">{f.message}</p>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <Clock className="w-3 h-3 text-platinum/40" />
+                                                        <Clock className="w-3 h-3 text-[var(--crm-text-muted)]/40" />
                                                         <p className="text-gold text-xs">
                                                             {new Date(f.scheduledAt).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
                                                         </p>
@@ -1014,7 +1005,7 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                                 </div>
                                                 <button
                                                     onClick={() => deleteFollowup(f.id)}
-                                                    className="p-1 rounded-lg text-platinum hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
+                                                    className="p-1 rounded-lg text-[var(--crm-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
@@ -1022,8 +1013,8 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                         ))}
                                         {followups.length === 0 && (
                                             <div className="text-center py-6">
-                                                <Bell className="w-8 h-8 text-platinum/20 mx-auto mb-2" />
-                                                <p className="text-platinum text-xs">Nenhum follow-up agendado</p>
+                                                <Bell className="w-8 h-8 text-[var(--crm-text-muted)]/20 mx-auto mb-2" />
+                                                <p className="text-[var(--crm-text-muted)] text-xs">Nenhum follow-up agendado</p>
                                             </div>
                                         )}
                                     </div>
@@ -1037,17 +1028,17 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                             <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
                                 {loadingMsgs ? (
                                     <div className="flex items-center justify-center h-full">
-                                        <Loader2 className="w-5 h-5 text-platinum/40 animate-spin" />
+                                        <Loader2 className="w-5 h-5 text-[var(--crm-text-muted)]/40 animate-spin" />
                                     </div>
                                 ) : !convId ? (
                                     <div className="flex flex-col items-center justify-center h-full gap-2 text-center">
-                                        <MessageSquare className="w-8 h-8 text-platinum/20" />
-                                        <p className="text-platinum/40 text-sm">Nenhuma conversa encontrada para este contato.</p>
+                                        <MessageSquare className="w-8 h-8 text-[var(--crm-text-muted)]/20" />
+                                        <p className="text-[var(--crm-text-muted)]/40 text-sm">Nenhuma conversa encontrada para este contato.</p>
                                     </div>
                                 ) : msgs.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center h-full gap-2 text-center">
-                                        <MessageSquare className="w-8 h-8 text-platinum/20" />
-                                        <p className="text-platinum/40 text-sm">Sem mensagens ainda.</p>
+                                        <MessageSquare className="w-8 h-8 text-[var(--crm-text-muted)]/20" />
+                                        <p className="text-[var(--crm-text-muted)]/40 text-sm">Sem mensagens ainda.</p>
                                     </div>
                                 ) : (
                                     msgs.map(msg => {
@@ -1058,13 +1049,13 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                                                     'max-w-[75%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed',
                                                     isOut
                                                         ? 'bg-gold/15 text-gold rounded-br-sm'
-                                                        : 'bg-white/8 text-platinum/90 rounded-bl-sm'
+                                                        : 'bg-[var(--crm-surface-2)] text-[var(--crm-text-muted)]/90 rounded-bl-sm'
                                                 )}>
                                                     {msg.mediaUrl && (
                                                         <p className="text-[10px] opacity-60 mb-1">[{msg.messageType}]</p>
                                                     )}
                                                     <p className="whitespace-pre-wrap break-words">{msg.content}</p>
-                                                    <p className={cn('text-[10px] mt-1', isOut ? 'text-gold/50 text-right' : 'text-platinum/30')}>
+                                                    <p className={cn('text-[10px] mt-1', isOut ? 'text-gold/50 text-right' : 'text-[var(--crm-text-muted)]/30')}>
                                                         {new Date(msg.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
                                                 </div>
@@ -1076,14 +1067,14 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                             </div>
 
                             {convId && (
-                                <div className="border-t border-white/8 p-3 flex gap-2 flex-shrink-0">
+                                <div className="border-t border-[var(--crm-border)] p-3 flex gap-2 flex-shrink-0">
                                     <textarea
                                         value={msgText}
                                         onChange={e => setMsgText(e.target.value)}
                                         onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
                                         placeholder="Digite uma mensagem... (Enter para enviar)"
                                         rows={2}
-                                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-platinum/30 focus:outline-none focus:border-gold/40 resize-none transition-all"
+                                        className="flex-1 bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl px-3 py-2 text-sm text-[var(--crm-text)] placeholder-[var(--crm-text-muted)]/30 focus:outline-none focus:border-gold/40 resize-none transition-all"
                                     />
                                     <button
                                         onClick={sendMessage}
@@ -1099,10 +1090,10 @@ function DealDetailModal({ deal, stages, onClose, onUpdated }: {
                 </div>
 
                 {deal.contact && (
-                    <div className="px-5 py-3.5 border-t border-white/8 flex gap-2.5 flex-shrink-0">
+                    <div className="px-5 py-3.5 border-t border-[var(--crm-border)] flex gap-2.5 flex-shrink-0">
                         <Link
                             href={`/crm/contacts/${deal.contact.id}`}
-                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-platinum/70 hover:text-white hover:bg-white/8 transition-all text-sm font-medium"
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/70 hover:text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] transition-all text-sm font-medium"
                         >
                             <ExternalLink className="w-3.5 h-3.5" />
                             Ver perfil
@@ -1215,20 +1206,20 @@ function PipelineNotificationToast({
                     )}>
                         {isNewDeal ? 'Novo Lead!' : 'Lead Movido'}
                     </p>
-                    <p className="text-white/90 text-sm font-medium truncate mt-0.5">
+                    <p className="text-[var(--crm-text)]/90 text-sm font-medium truncate mt-0.5">
                         {notification.dealTitle}
                     </p>
                     {!isNewDeal && notification.fromStage && notification.toStage && (
                         <div className="flex items-center gap-1.5 mt-1">
-                            <span className="text-white/60 text-xs">{notification.fromStage}</span>
-                            <ArrowRight className="w-3 h-3 text-white/40" />
-                            <span className="text-white/60 text-xs">{notification.toStage}</span>
+                            <span className="text-[var(--crm-text)]/60 text-xs">{notification.fromStage}</span>
+                            <ArrowRight className="w-3 h-3 text-[var(--crm-text)]/40" />
+                            <span className="text-[var(--crm-text)]/60 text-xs">{notification.toStage}</span>
                         </div>
                     )}
                 </div>
                 <button 
                     onClick={onDismiss}
-                    className="text-white/40 hover:text-white/70 transition-colors"
+                    className="text-[var(--crm-text)]/40 hover:text-[var(--crm-text)]/70 transition-colors"
                 >
                     <X className="w-4 h-4" />
                 </button>
@@ -1279,12 +1270,12 @@ function BulkActionsPanel({
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                         <CheckSquare className="w-5 h-5 text-gold" />
-                        <span className="text-white font-semibold">{selectedCount}</span>
-                        <span className="text-platinum/60 text-sm">deal{selectedCount !== 1 ? 's' : ''} selecionado{selectedCount !== 1 ? 's' : ''}</span>
+                        <span className="text-[var(--crm-text)] font-semibold">{selectedCount}</span>
+                        <span className="text-[var(--crm-text-muted)]/60 text-sm">deal{selectedCount !== 1 ? 's' : ''} selecionado{selectedCount !== 1 ? 's' : ''}</span>
                     </div>
                     <button
                         onClick={onClearSelection}
-                        className="text-platinum/50 hover:text-white text-sm transition-colors"
+                        className="text-[var(--crm-text-muted)]/50 hover:text-[var(--crm-text)] text-sm transition-colors"
                     >
                         Limpar seleção
                     </button>
@@ -1295,7 +1286,7 @@ function BulkActionsPanel({
                         <button
                             onClick={() => setShowUserDropdown(!showUserDropdown)}
                             disabled={loading}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all text-sm font-medium disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] transition-all text-sm font-medium disabled:opacity-50"
                         >
                             <Users2 className="w-4 h-4 text-gold" />
                             Atribuir
@@ -1307,12 +1298,12 @@ function BulkActionsPanel({
                                     initial={{ opacity: 0, y: 8, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                                    className="absolute top-full mt-2 right-0 w-56 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                                    className="absolute top-full mt-2 right-0 w-56 bg-white border border-[var(--crm-border)] rounded-xl shadow-2xl z-50 overflow-hidden"
                                 >
                                     <div className="p-2">
                                         <button
                                             onClick={() => { onAssignUser(null); setShowUserDropdown(false) }}
-                                            className="w-full text-left px-3 py-2 rounded-lg text-sm text-platinum/60 hover:bg-white/5 hover:text-white transition-all"
+                                            className="w-full text-left px-3 py-2 rounded-lg text-sm text-[var(--crm-text-muted)]/60 hover:bg-[var(--crm-surface-2)] hover:text-[var(--crm-text)] transition-all"
                                         >
                                             Remover atribuição
                                         </button>
@@ -1320,7 +1311,7 @@ function BulkActionsPanel({
                                             <button
                                                 key={user.id}
                                                 onClick={() => { onAssignUser(user.id); setShowUserDropdown(false) }}
-                                                className="w-full text-left px-3 py-2 rounded-lg text-sm text-platinum/70 hover:bg-white/5 hover:text-white transition-all flex items-center gap-2"
+                                                className="w-full text-left px-3 py-2 rounded-lg text-sm text-[var(--crm-text-muted)]/70 hover:bg-[var(--crm-surface-2)] hover:text-[var(--crm-text)] transition-all flex items-center gap-2"
                                             >
                                                 <div className="w-6 h-6 rounded-full bg-gold/20 flex items-center justify-center text-gold text-xs font-medium">
                                                     {user.name.charAt(0).toUpperCase()}
@@ -1338,7 +1329,7 @@ function BulkActionsPanel({
                         <button
                             onClick={() => setShowStageDropdown(!showStageDropdown)}
                             disabled={loading}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all text-sm font-medium disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] transition-all text-sm font-medium disabled:opacity-50"
                         >
                             <Layers className="w-4 h-4 text-gold" />
                             Mover para
@@ -1350,14 +1341,14 @@ function BulkActionsPanel({
                                     initial={{ opacity: 0, y: 8, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                                    className="absolute top-full mt-2 right-0 w-56 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                                    className="absolute top-full mt-2 right-0 w-56 bg-white border border-[var(--crm-border)] rounded-xl shadow-2xl z-50 overflow-hidden"
                                 >
                                     <div className="p-2 max-h-64 overflow-y-auto">
                                         {stages.map(stage => (
                                             <button
                                                 key={stage.id}
                                                 onClick={() => { onChangeStage(stage.id); setShowStageDropdown(false) }}
-                                                className="w-full text-left px-3 py-2 rounded-lg text-sm text-platinum/70 hover:bg-white/5 hover:text-white transition-all flex items-center gap-2"
+                                                className="w-full text-left px-3 py-2 rounded-lg text-sm text-[var(--crm-text-muted)]/70 hover:bg-[var(--crm-surface-2)] hover:text-[var(--crm-text)] transition-all flex items-center gap-2"
                                             >
                                                 <div 
                                                     className="w-3 h-3 rounded-full" 
@@ -1401,7 +1392,7 @@ function FilterPanel({
                     "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all text-sm font-medium",
                     hasActiveFilters
                         ? "bg-gold/15 border-gold/30 text-gold"
-                        : "bg-white/5 border-white/10 text-platinum/70 hover:text-white hover:bg-white/10"
+                        : "bg-[var(--crm-surface-2)] border-[var(--crm-border)] text-[var(--crm-text-muted)]/70 hover:text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)]"
                 )}
             >
                 <SlidersHorizontal className="w-4 h-4" />
@@ -1419,11 +1410,11 @@ function FilterPanel({
                         initial={{ opacity: 0, y: 8, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                        className="absolute top-full mt-2 right-0 w-72 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden"
+                        className="absolute top-full mt-2 right-0 w-72 bg-white border border-[var(--crm-border)] rounded-xl shadow-2xl z-50 overflow-hidden"
                     >
                         <div className="p-4 space-y-4">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-white font-semibold text-sm">Filtros</h3>
+                                <h3 className="text-[var(--crm-text)] font-semibold text-sm">Filtros</h3>
                                 {hasActiveFilters && (
                                     <button
                                         onClick={onClearFilters}
@@ -1435,58 +1426,58 @@ function FilterPanel({
                             </div>
 
                             <div>
-                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Etapa</label>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-[var(--crm-text-muted)]/50 mb-2">Etapa</label>
                                 <select
                                     value={filters.stage}
                                     onChange={(e) => onFilterChange('stage', e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                    className="w-full bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-2 text-sm text-[var(--crm-text)] focus:outline-none focus:border-gold/50 appearance-none"
                                 >
-                                    <option value="" className="bg-[#1a1a1a]">Todas as etapas</option>
+                                    <option value="" className="bg-white">Todas as etapas</option>
                                     {stages.map(stage => (
-                                        <option key={stage.id} value={stage.id} className="bg-[#1a1a1a]">{stage.name}</option>
+                                        <option key={stage.id} value={stage.id} className="bg-white">{stage.name}</option>
                                     ))}
                                 </select>
                             </div>
 
                             <div>
-                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Responsável</label>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-[var(--crm-text-muted)]/50 mb-2">Responsável</label>
                                 <select
                                     value={filters.user}
                                     onChange={(e) => onFilterChange('user', e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                    className="w-full bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-2 text-sm text-[var(--crm-text)] focus:outline-none focus:border-gold/50 appearance-none"
                                 >
-                                    <option value="" className="bg-[#1a1a1a]">Todos os usuários</option>
-                                    <option value="unassigned" className="bg-[#1a1a1a]">Não atribuídos</option>
+                                    <option value="" className="bg-white">Todos os usuários</option>
+                                    <option value="unassigned" className="bg-white">Não atribuídos</option>
                                     {users.map(user => (
-                                        <option key={user.id} value={user.id} className="bg-[#1a1a1a]">{user.name}</option>
+                                        <option key={user.id} value={user.id} className="bg-white">{user.name}</option>
                                     ))}
                                 </select>
                             </div>
 
                             <div>
-                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Valor</label>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-[var(--crm-text-muted)]/50 mb-2">Valor</label>
                                 <select
                                     value={filters.hasValue}
                                     onChange={(e) => onFilterChange('hasValue', e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                    className="w-full bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-2 text-sm text-[var(--crm-text)] focus:outline-none focus:border-gold/50 appearance-none"
                                 >
-                                    <option value="" className="bg-[#1a1a1a]">Todos os deals</option>
-                                    <option value="with" className="bg-[#1a1a1a]">Com valor</option>
-                                    <option value="without" className="bg-[#1a1a1a]">Sem valor</option>
+                                    <option value="" className="bg-white">Todos os deals</option>
+                                    <option value="with" className="bg-white">Com valor</option>
+                                    <option value="without" className="bg-white">Sem valor</option>
                                 </select>
                             </div>
 
                             <div>
-                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-platinum/50 mb-2">Inatividade</label>
+                                <label className="block text-[10px] uppercase tracking-wider font-semibold text-[var(--crm-text-muted)]/50 mb-2">Inatividade</label>
                                 <select
                                     value={filters.inactivity}
                                     onChange={(e) => onFilterChange('inactivity', e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-gold/50 appearance-none"
+                                    className="w-full bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-lg px-3 py-2 text-sm text-[var(--crm-text)] focus:outline-none focus:border-gold/50 appearance-none"
                                 >
-                                    <option value="" className="bg-[#1a1a1a]">Todos</option>
-                                    <option value="alert" className="bg-[#1a1a1a]">⚠ Alerta — +4h sem resposta</option>
-                                    <option value="critical" className="bg-[#1a1a1a]">🔶 Crítico — +24h sem resposta</option>
-                                    <option value="dormant" className="bg-[#1a1a1a]">🔴 Dormente — +48h sem resposta</option>
+                                    <option value="" className="bg-white">Todos</option>
+                                    <option value="alert" className="bg-white">⚠ Alerta — +4h sem resposta</option>
+                                    <option value="critical" className="bg-white">🔶 Crítico — +24h sem resposta</option>
+                                    <option value="dormant" className="bg-white">🔴 Dormente — +48h sem resposta</option>
                                 </select>
                             </div>
                         </div>
@@ -1770,10 +1761,10 @@ export default function PipelinePage() {
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="animate-pulse h-8 bg-white/10 rounded w-1/3" />
+                <div className="animate-pulse h-8 bg-[var(--crm-surface-2)] rounded w-1/3" />
                 <div className="flex gap-4">
                     {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="animate-pulse h-96 bg-white/10 rounded-2xl w-72 flex-shrink-0" />
+                        <div key={i} className="animate-pulse h-96 bg-[var(--crm-surface-2)] rounded-2xl w-72 flex-shrink-0" />
                     ))}
                 </div>
             </div>
@@ -1784,21 +1775,21 @@ export default function PipelinePage() {
         <div className="flex flex-col h-full space-y-4">
             <div className="flex items-center justify-between flex-shrink-0">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Pipeline</h1>
-                    <p className="text-platinum/60 text-sm mt-0.5">
+                    <h1 className="text-2xl font-bold text-[var(--crm-text)]">Pipeline</h1>
+                    <p className="text-[var(--crm-text-muted)]/60 text-sm mt-0.5">
                         {filteredDeals.length} de {deals.length} deals ativos
                     </p>
                 </div>
 
                 <div className="flex items-center gap-2 md:gap-4">
                     <div className="hidden md:block relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-platinum/40" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--crm-text-muted)]/40" />
                         <input
                             type="text"
                             placeholder="Buscar deals..."
                             value={filters.search}
                             onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
-                            className="w-48 lg:w-64 bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm text-white placeholder-platinum/30 focus:outline-none focus:border-gold/50 transition-all"
+                            className="w-48 lg:w-64 bg-[var(--crm-surface-2)] border border-[var(--crm-border)] rounded-xl pl-9 pr-3 py-2 text-sm text-[var(--crm-text)] placeholder-[var(--crm-text-muted)]/30 focus:outline-none focus:border-gold/50 transition-all"
                         />
                     </div>
 
@@ -1814,14 +1805,14 @@ export default function PipelinePage() {
                         <button
                             onClick={() => scroll('left')}
                             disabled={!canScrollLeft}
-                            className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                            className="p-1.5 rounded-lg bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/60 hover:text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => scroll('right')}
                             disabled={!canScrollRight}
-                            className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-platinum/60 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                            className="p-1.5 rounded-lg bg-[var(--crm-surface-2)] border border-[var(--crm-border)] text-[var(--crm-text-muted)]/60 hover:text-[var(--crm-text)] hover:bg-[var(--crm-surface-2)] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                         >
                             <ChevronRight className="w-4 h-4" />
                         </button>
@@ -1900,21 +1891,21 @@ export default function PipelinePage() {
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => selectAllInStage(stage.id)}
-                                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                                            className="p-0.5 hover:bg-[var(--crm-surface-2)] rounded transition-colors"
                                         >
                                             {allSelectedInStage ? (
                                                 <CheckSquare className="w-4 h-4 text-gold" />
                                             ) : selectedInStage > 0 ? (
                                                 <CheckSquare className="w-4 h-4 text-gold/50" />
                                             ) : (
-                                                <Square className="w-4 h-4 text-platinum/40" />
+                                                <Square className="w-4 h-4 text-[var(--crm-text-muted)]/40" />
                                             )}
                                         </button>
                                         <div
                                             className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                                             style={{ backgroundColor: stageColor }}
                                         />
-                                        <span className="text-white font-semibold text-sm">{stage.name}</span>
+                                        <span className="text-[var(--crm-text)] font-semibold text-sm">{stage.name}</span>
                                     </div>
                                     <span
                                         className="text-xs font-bold px-2 py-0.5 rounded-full"
@@ -1928,8 +1919,8 @@ export default function PipelinePage() {
                                 </div>
                                 {totalValue && (
                                     <div className="flex items-center gap-1 mt-1.5 ml-10">
-                                        <DollarSign className="w-3 h-3 text-platinum/40" />
-                                        <span className="text-platinum/60 text-[11px]">{totalValue}</span>
+                                        <DollarSign className="w-3 h-3 text-[var(--crm-text-muted)]/40" />
+                                        <span className="text-[var(--crm-text-muted)]/60 text-[11px]">{totalValue}</span>
                                     </div>
                                 )}
                             </div>
@@ -1938,8 +1929,8 @@ export default function PipelinePage() {
                                 className={cn(
                                     'rounded-2xl border p-3 flex-1 min-h-[400px] space-y-2.5 transition-all duration-150',
                                     isOver
-                                        ? 'border-dashed bg-charcoal/80'
-                                        : 'bg-charcoal/40 border-white/5'
+                                        ? 'border-dashed bg-[var(--crm-surface-2)]0'
+                                        : 'bg-[var(--crm-surface-2)]0 border-[var(--crm-border)]'
                                 )}
                                 style={isOver ? { borderColor: `${stageColor}60`, backgroundColor: `${stageColor}08` } : {}}
                             >
@@ -1963,15 +1954,15 @@ export default function PipelinePage() {
                                                     }
                                                 }}
                                                 className={cn(
-                                                    'bg-[#1a1a1a] rounded-xl p-3.5 border cursor-pointer active:cursor-grabbing',
-                                                    'hover:border-white/12',
+                                                    'bg-white rounded-xl p-3.5 border cursor-pointer active:cursor-grabbing',
+                                                    'hover:border-[var(--crm-border)]',
                                                     'transition-all duration-150 group',
                                                     draggedDeal === deal.id && 'opacity-40 scale-95',
                                                     isSelected
                                                         ? 'border-gold/50 bg-gold/5'
                                                         : (() => {
                                                             const level = getInactivityLevel(getInactivityHours(deal.lastInboundAt))
-                                                            return level ? inactivityStyles[level].border : 'border-white/8'
+                                                            return level ? inactivityStyles[level].border : 'border-[var(--crm-border)]'
                                                         })()
                                                 )}
                                             >
@@ -1983,10 +1974,10 @@ export default function PipelinePage() {
                                                         {isSelected ? (
                                                             <CheckSquare className="w-4 h-4 text-gold" />
                                                         ) : (
-                                                            <Square className="w-4 h-4 text-platinum/30 group-hover:text-platinum/50 transition-colors" />
+                                                            <Square className="w-4 h-4 text-[var(--crm-text-muted)]/30 group-hover:text-[var(--crm-text-muted)]/50 transition-colors" />
                                                         )}
                                                     </button>
-                                                    <p className="text-white font-medium text-sm leading-snug flex-1 group-hover:text-white/90">
+                                                    <p className="text-[var(--crm-text)] font-medium text-sm leading-snug flex-1 group-hover:text-[var(--crm-text)]/90">
                                                         {deal.title}
                                                     </p>
                                                 </div>
@@ -1995,11 +1986,11 @@ export default function PipelinePage() {
                                                     <div className="flex items-center gap-2 mb-2 ml-6">
                                                         <ContactAvatar contact={deal.contact} />
                                                         <div className="min-w-0">
-                                                            <p className="text-white/80 text-xs font-medium truncate">{deal.contact.name}</p>
+                                                            <p className="text-[var(--crm-text)]/80 text-xs font-medium truncate">{deal.contact.name}</p>
                                                             {deal.contact.company && (
                                                                 <div className="flex items-center gap-1 mt-0.5">
-                                                                    <Building2 className="w-2.5 h-2.5 text-platinum/40 flex-shrink-0" />
-                                                                    <p className="text-platinum/50 text-[10px] truncate">{deal.contact.company}</p>
+                                                                    <Building2 className="w-2.5 h-2.5 text-[var(--crm-text-muted)]/40 flex-shrink-0" />
+                                                                    <p className="text-[var(--crm-text-muted)]/50 text-[10px] truncate">{deal.contact.company}</p>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -2011,7 +2002,7 @@ export default function PipelinePage() {
                                                     const level = getInactivityLevel(hours)
                                                     if (!level) return null
                                                     const style = inactivityStyles[level]
-                                                    const labels = { alert: 'Aguardando', critical: 'Sem resposta', dormant: 'Dormente' }
+                                                    const labels = INACTIVITY_LABELS
                                                     return (
                                                         <div className={cn('flex items-center gap-1 ml-6 mb-2 px-2 py-0.5 rounded-md border w-fit text-[10px] font-medium', style.badge)}>
                                                             <Clock className="w-3 h-3" />
@@ -2020,7 +2011,7 @@ export default function PipelinePage() {
                                                     )
                                                 })()}
 
-                                                <div className="flex items-center justify-between pt-2 border-t border-white/5 ml-6">
+                                                <div className="flex items-center justify-between pt-2 border-t border-[var(--crm-border)] ml-6">
                                                     <div className="flex items-center gap-1.5">
                                                         {(() => {
                                                             const cpfCnpj = deal.contact?.cpfCnpj
@@ -2041,7 +2032,7 @@ export default function PipelinePage() {
                                                             )
                                                         })()}
                                                         {deal.livesCount != null && (
-                                                            <span className="text-white/60 text-[10px] font-medium bg-white/5 px-2 py-0.5 rounded-md border border-white/10">
+                                                            <span className="text-[var(--crm-text)]/60 text-[10px] font-medium bg-[var(--crm-surface-2)] px-2 py-0.5 rounded-md border border-[var(--crm-border)]">
                                                                 {deal.livesCount} vida{deal.livesCount !== 1 ? 's' : ''}
                                                             </span>
                                                         )}
@@ -2056,11 +2047,11 @@ export default function PipelinePage() {
                                                     </div>
                                                     <div className="flex items-center gap-2">
                                                         {deal.assignedUser && (
-                                                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/8" title={`Atribuído a: ${deal.assignedUser.name}`}>
+                                                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--crm-surface-2)] border border-[var(--crm-border)]" title={`Atribuído a: ${deal.assignedUser.name}`}>
                                                                 <div className="w-4 h-4 rounded-full bg-gold/20 flex items-center justify-center">
                                                                     <span className="text-gold text-[8px] font-bold">{deal.assignedUser.name.charAt(0).toUpperCase()}</span>
                                                                 </div>
-                                                                <span className="text-platinum/60 text-[9px] truncate max-w-[60px]">{deal.assignedUser.name.split(' ')[0]}</span>
+                                                                <span className="text-[var(--crm-text-muted)]/60 text-[9px] truncate max-w-[60px]">{deal.assignedUser.name.split(' ')[0]}</span>
                                                             </div>
                                                         )}
                                                         {deal.value != null && (
@@ -2077,14 +2068,14 @@ export default function PipelinePage() {
                                     <div
                                         className={cn(
                                             'flex flex-col items-center justify-center h-24 gap-2 rounded-xl border border-dashed',
-                                            isOver ? 'border-current' : 'border-white/10'
+                                            isOver ? 'border-current' : 'border-[var(--crm-border)]'
                                         )}
                                         style={isOver ? { borderColor: `${stageColor}50`, color: stageColor } : {}}
                                     >
                                         {isOver ? (
                                             <p className="text-xs font-medium">Soltar aqui</p>
                                         ) : (
-                                            <p className="text-platinum/25 text-xs">Sem deals</p>
+                                            <p className="text-[var(--crm-text-muted)]/25 text-xs">Sem deals</p>
                                         )}
                                     </div>
                                 )}
