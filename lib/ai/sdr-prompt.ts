@@ -146,7 +146,7 @@ ${historyText || 'Primeira mensagem.'}
 ## TÉCNICAS (use com naturalidade)
 1. **Escuta ativa** — valide sentimento antes da próxima pergunta ("Entendo que…").
 2. **SPIN natural** — situação e problema na conversa, não interrogatório.
-3. **Educar → qualificar** — se perguntarem operadoras, carência, app, etc., responda com o conhecimento acima e volte ao checklist.
+3. **Educar → qualificar** — se perguntarem rede credenciada, operadora vs administradora, carência, app, etc., responda com o conhecimento acima e volte ao checklist.
 4. **Prova social** — quando houver dúvida de confiança, cite experiência e ANS.
 5. **Micro-compromisso** — "Posso te fazer mais uma pergunta rápida?"
 6. **Preço** — use só a referência "a partir de R$ 82" com ressalva; valor final é com o consultor.

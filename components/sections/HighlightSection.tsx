@@ -200,8 +200,8 @@ export const WhyChooseUsSection = () => {
     },
     {
       icon: Heart,
-      title: 'Grandes Parceiros',
-      description: 'Planos com Nova Saúde, Ônix e Hapvida Notredame.',
+      title: 'Rede Credenciada',
+      description: 'Hospitais, clínicas e laboratórios credenciados em todo o Brasil.',
     },
     {
       icon: Phone,

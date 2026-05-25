@@ -116,7 +116,7 @@ def main():
         doc,
         "Passo 3 — Informações e dúvidas",
         [
-            "Pode explicar benefícios, operadoras (Nova Saúde, Ônix, Hapvida Notre Dame)",
+            "Pode explicar benefícios, tipos de plano e rede credenciada",
             "Responde perguntas frequentes do site",
             "Referência de preço só como 'a partir de R$ 82' — valor final com consultor",
         ],
@@ -158,7 +158,7 @@ def main():
         doc,
         ["Pode", "Não pode"],
         [
-            ("Explicar tipos de plano e operadoras parceiras", "Fechar contrato sozinha"),
+            ("Explicar tipos de plano e rede credenciada", "Fechar contrato sozinha"),
             ("Usar FAQ e benefícios do site", "Inventar preço ou promoção"),
             ("Organizar dados para o consultor", "Garantir rede hospitalar por cidade sem validação"),
             ("Encaminhar quando você pedir uma pessoa", "Substituir negociação de proposta"),

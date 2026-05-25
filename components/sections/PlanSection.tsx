@@ -24,7 +24,7 @@ export const PlanSection = () => {
     },
     { 
       title: 'Ampla cobertura', 
-      description: 'As melhores opções de atendimento na sua região com as principais operadoras.',
+      description: 'Rede credenciada ampla com opções de atendimento na sua região.',
       icon: <Map className="w-5 h-5 text-black" /> 
     },
     { 
@@ -38,8 +38,8 @@ export const PlanSection = () => {
       icon: <Briefcase className="w-5 h-5 text-black" /> 
     },
     { 
-      title: 'Planos Corporativos', 
-      description: 'Planos com Nova Saúde, Ônix e Hapvida Notredame.',
+      title: 'Planos completos',
+      description: 'Individual, familiar, empresarial e coletivo por adesão.',
       icon: <Heart className="w-5 h-5 text-black" /> 
     }
   ]
@@ -75,7 +75,7 @@ export const PlanSection = () => {
             transition={{ delay: 0.2 }}
             className="text-black/80 text-lg md:text-xl max-w-2xl px-4"
           >
-            As melhores operadoras do mercado para lhe proporcionar a melhor experiência em planos de saúde
+            Planos completos com rede credenciada de qualidade para a melhor experiência em saúde
           </motion.p>
         </div>
 

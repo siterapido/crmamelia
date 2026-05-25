@@ -166,7 +166,7 @@ export default function IntegrationsSettingsPage() {
                 </h2>
                 <ul className="text-[var(--crm-text-muted)] text-sm space-y-2">
                     <li>Acolhe e qualifica leads via WhatsApp</li>
-                    <li>Educa sobre planos e operadoras parceiras</li>
+                    <li>Educa sobre planos e rede credenciada</li>
                     <li>Transfere para consultor humano quando necessário</li>
                     <li>Agenda follow-ups automáticos</li>
                 </ul>

@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red)](#)
 
-Site institucional **premium** para **Amélia Saúde Administradora de Benefícios**. Design minimalista com paleta preto/amarelo ouro, otimizado para conversão e performance excepcional.
+Site institucional **premium** para **Amélia Saúde Operadora de Planos de Saúde**. Design minimalista com paleta preto/amarelo ouro, otimizado para conversão e performance excepcional.
 
 ## ✨ Características
 
@@ -109,7 +109,7 @@ ameliasaude/
 A home page segue estrutura persuasiva de conversão:
 
 ### 1️⃣ **Hero Section** (3 segundos max)
-- Badge "Administradora AAA Registrada"
+- Badge "Operadora registrada na ANS"
 - Headline: "Sua saúde em boas mãos..."
 - Subheadline com benefícios
 - Dual CTAs: "Sou Cliente" + "Quero Contratar"
@@ -373,7 +373,7 @@ pnpm dev
 
 ## 📄 Licença
 
-**Proprietary** - Amélia Saúde Administradora de Benefícios
+**Proprietary** - Amélia Saúde Operadora de Planos de Saúde
 
 ---
 

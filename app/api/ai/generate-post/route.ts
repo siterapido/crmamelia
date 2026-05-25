@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
         const { topic, category, tone, targetAudience, length, keywords } = result.data
 
-        const prompt = `Você é um especialista em criação de conteúdo para a Amélia Saúde, uma administradora de benefícios de saúde no Brasil.
+        const prompt = `Você é um especialista em criação de conteúdo para a Amélia Saúde, uma operadora de planos de saúde no Brasil.
 
 ${LENGTH_INSTRUCTIONS[length]} sobre o tema: "${topic}"
 

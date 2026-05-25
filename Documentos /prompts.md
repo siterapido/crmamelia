@@ -23,7 +23,7 @@ Cada prompt abaixo está pronto para ser copiado e colado no Claude Code. Os pro
 ## 1️⃣ PROMPT: SETUP INICIAL DO PROJETO
 
 ```
-Crie um projeto Next.js 14+ premium para o site da Amélia Saúde Administradora de Benefícios.
+Crie um projeto Next.js 14+ premium para o site da Amélia Saúde Operadora de Planos de Saúde.
 
 CONTEXTO:
 Estou construindo um site institucional AAA com visual premium em preto e amarelo ouro. Consulte os seguintes documentos para entender o projeto completo:
@@ -142,7 +142,7 @@ LAYOUT:
 
 ELEMENTOS:
 1. Badge opcional acima do headline:
-   - Texto: "Premium Healthcare" ou "Administradora AAA"
+   - Texto: "Premium Healthcare" ou "Operadora registrada na ANS"
    - Estilo: Pill com borda dourada, background transparente
    - Animação: Fade in com delay
 
@@ -316,7 +316,7 @@ CONTEÚDO:
    - Centralizado
 
 2. Subheadline:
-   - Texto: "Operadoras de confiança, coberturas completas e um time pronto para te ajudar a escolher"
+   - Texto: "Planos completos, coberturas amplas e um time pronto para te ajudar a escolher"
    - Cor: Cinza platinum
 
 3. Grid de Planos:
@@ -462,13 +462,14 @@ CONTEÚDO:
 
 PERGUNTAS (do landing-page-spec.md seção 7.3):
 1. Como faço para contratar um plano?
-2. Quais operadoras de saúde vocês trabalham?
+2. Quais planos de saúde vocês oferecem?
 3. Como acessar a 2ª via do boleto?
 4. Como funciona o reembolso?
-5. Qual a diferença entre administradora e operadora?
-6. Posso incluir dependentes no meu plano?
-7. Como entrar em contato com o suporte?
-8. Qual o prazo de carência?
+5. O que é a Amélia Saúde como operadora?
+6. Qual a diferença entre operadora e administradora de benefícios?
+7. Posso incluir dependentes no meu plano?
+8. Como entrar em contato com o suporte?
+9. Qual o prazo de carência?
 
 ESTILO DO ACCORDION:
 - Item fechado:
@@ -651,9 +652,9 @@ Configure SEO completo para o site Amélia Saúde.
 TAREFAS:
 
 1. METADATA (/app/layout.tsx):
-   - Title: "Amélia Saúde | Administradora de Benefícios Premium"
-   - Description: "Planos de saúde com atendimento humanizado, transparência e agilidade. Administradora de benefícios com soluções personalizadas para você e sua empresa."
-   - Keywords: administradora de benefícios, plano de saúde, [cidade], Amélia Saúde
+   - Title: "Amélia Saúde | Operadora de Planos de Saúde"
+   - Description: "Planos de saúde com atendimento humanizado, transparência e agilidade. Operadora de planos de saúde com soluções personalizadas para você e sua empresa."
+   - Keywords: operadora de planos de saúde, plano de saúde, [cidade], Amélia Saúde
    - Open Graph (OG):
      - og:title, og:description, og:image, og:url
      - og:type: website

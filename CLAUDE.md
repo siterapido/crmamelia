@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Landing page institucional premium e portal de conteúdo para **Amélia Saúde Administradora de Beneficios**. Site focado em conversão com design minimalista preto/amarelo ouro, integrando blog CMS e chatbot com IA.
+Landing page institucional premium e portal de conteúdo para **Amélia Saúde Operadora de Planos de Saúde**. Site focado em conversão com design minimalista preto/amarelo ouro, integrando blog CMS e chatbot com IA.
 
 ## Tech Stack
 

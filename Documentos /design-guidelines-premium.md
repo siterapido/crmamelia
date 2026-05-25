@@ -6,7 +6,7 @@
 ## 🎯 VISÃO DO DESIGN AAA
 
 ### Posicionamento Premium
-Amélia Saúde não é apenas uma administradora de benefícios. É **a escolha sofisticada** para quem valoriza excelência, exclusividade e atendimento de classe mundial.
+Amélia Saúde não é apenas uma operadora de planos de saúde. É **a escolha sofisticada** para quem valoriza excelência, exclusividade e atendimento de classe mundial.
 
 ### Filosofia de Design
 **"Menos é Luxo"** - Inspirado em Apple, Tesla e marcas AAA, o design comunica sofisticação através de:
@@ -457,7 +457,7 @@ Para logo e elementos únicos, considerar ícones customizados em dourado
 
 ### Elementos do Hero
 1. **Badge Premium (opcional):**
-   - "Administradora AAA" ou "Premium Healthcare"
+   - "Operadora registrada na ANS" ou "Premium Healthcare"
    - Estilo: Pill com borda dourada
    - Posição: Acima do H1
 

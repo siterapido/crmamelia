@@ -1,6 +1,6 @@
 # Documento de Entrega - Amélia Saúde
 
-**Cliente:** Amélia Saúde Administradora de Benefícios
+**Cliente:** Amélia Saúde Operadora de Planos de Saúde
 **Projeto:** Desenvolvimento de Plataforma Digital Institucional
 **Data de Entrega:** Fevereiro de 2026
 **Status:** Concluído e Pronto para Produção

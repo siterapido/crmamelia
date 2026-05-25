@@ -29,11 +29,11 @@ export default function TermosPage() {
           2. Descricao dos Servicos
         </h2>
         <p className="mb-4">
-          A Amélia Saúde e uma administradora de beneficios de saude registrada na ANS que oferece:
+          A Amélia Saúde e uma operadora de planos de saude registrada na ANS que oferece:
         </p>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Intermediacao na contratacao de planos de saude</li>
-          <li>Gestao e administracao de beneficios</li>
+          <li>Contratacao direta de planos de saude</li>
+          <li>Gestao e operacao de planos de saude</li>
           <li>Atendimento e suporte ao beneficiario</li>
           <li>Emissao de documentos (boletos, carteirinhas, demonstrativos)</li>
           <li>Aplicativo movel para gestao do plano</li>
@@ -94,12 +94,12 @@ export default function TermosPage() {
         <ul className="list-disc pl-6 space-y-2">
           <li>Interrupcoes temporarias no acesso ao site</li>
           <li>Danos decorrentes do uso ou incapacidade de uso do site</li>
-          <li>Acoes de terceiros, incluindo operadoras e prestadores de saude</li>
+          <li>Acoes de terceiros, incluindo prestadores de saude da rede credenciada</li>
           <li>Decisoes tomadas com base em informacoes do site</li>
         </ul>
         <p className="mt-4">
-          Os servicos medicos sao prestados diretamente pelas operadoras e rede credenciada,
-          sendo estas as responsaveis pela qualidade do atendimento.
+          Os servicos medicos sao prestados diretamente pela rede credenciada,
+          sendo estes os responsaveis pela qualidade do atendimento clinico.
         </p>
       </section>
 

@@ -17,6 +17,16 @@ export const FAQSection = () => {
 
   const faqs = [
     {
+      question: 'O que é a Amélia Saúde como operadora?',
+      answer:
+        'Somos operadora de planos de saúde registrada na ANS: criamos e administramos os planos, organizamos a rede credenciada e garantimos a cobertura dos procedimentos contratados. Diferente de uma administradora de benefícios — que apenas intermedia planos coletivos por adesão —, somos a empresa responsável pelo plano e pelos custos da sua assistência.',
+    },
+    {
+      question: 'Qual a diferença entre operadora e administradora de benefícios?',
+      answer:
+        'A operadora cria, gerencia e custeia o plano de saúde, com rede credenciada e cobertura dos procedimentos. A administradora de benefícios atua só como intermediária comercial na venda de planos coletivos por adesão. A Amélia Saúde é operadora.',
+    },
+    {
       question: 'Quando recebo minha carteirinha digital?',
       answer:
         'Você terá acesso à sua carteirinha digital a partir da data de início da vigência do contrato, diretamente pelo Aplicativo Amélia Saúde.',

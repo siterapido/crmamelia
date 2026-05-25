@@ -172,7 +172,7 @@ Lançar um **site institucional funcional e de alta performance** que:
 | **Palavras-chave Indexadas** | 20+ | 50+ |
 
 **Palavras-chave alvo:**
-- "administradora de benefícios [cidade]"
+- "operadora de planos de saúde [cidade]"
 - "plano de saúde [cidade]"
 - "contratar plano de saúde"
 - "2ª via de boleto Amélia Saúde"

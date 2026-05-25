@@ -1,4 +1,4 @@
-# Briefing - Site Amélia Saúde Administradora de Benefícios
+# Briefing - Site Amélia Saúde Operadora de Planos de Saúde
 
 ## 1. VISÃO GERAL
 
@@ -29,15 +29,15 @@ A Amélia Saúde precisa:
 ### Persona 2: Potencial Cliente (Pessoa Física)
 - **Quem é:** Pessoa buscando plano de saúde individual ou familiar
 - **Necessidade Principal:** Entender os planos, comparar opções, sentir confiança
-- **Comportamento:** Pesquisa online, compara administradoras, valida credibilidade
+- **Comportamento:** Pesquisa online, compara operadoras, valida credibilidade
 - **Dor:** Insegurança sobre qualidade do serviço, dificuldade de contato
 - **Expectativa:** Informações claras, transparência, facilidade de contato humano
 
 ### Persona 3: Tomador de Decisão Empresarial
-- **Quem é:** RH ou proprietário de empresa avaliando administradora de benefícios
+- **Quem é:** RH ou proprietário de empresa avaliando operadora de planos de saúde
 - **Necessidade Principal:** Validar credibilidade, entender diferenciais, avaliar parceria
 - **Comportamento:** Análise criteriosa, busca por referências e transparência
-- **Dor:** Medo de escolher uma administradora sem estrutura adequada
+- **Dor:** Medo de escolher uma operadora sem estrutura adequada
 - **Expectativa:** Site profissional que transmita solidez institucional
 
 ---
@@ -66,7 +66,7 @@ Criar um **hub digital** que serve como vendedor 24/7, facilitando autoatendimen
 ## 4. CONTEXTO DO MERCADO
 
 ### Cenário Atual
-- **Setor:** Administradoras de benefícios de saúde (alta competitividade)
+- **Setor:** Operadoras de planos de saúde (alta competitividade)
 - **Comportamento do Consumidor:** 80% do tráfego vem de mobile, decisão em 3 segundos
 - **Concorrência:** Empresas como CIMED e SUPERMED com sites modernos e eficientes
 - **Tendência:** Valorização de autoatendimento digital + atendimento humano quando necessário

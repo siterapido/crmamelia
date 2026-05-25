@@ -22,14 +22,14 @@ export const viewport: Viewport = {
  * Optimized for search engines and social media
  */
 export const metadata: Metadata = {
-  title: 'Amélia Saúde | Administradora de Benefícios Premium',
+  title: 'Amélia Saúde | Operadora de Planos de Saúde',
   description:
-    'Planos de saúde com transparência, agilidade e atendimento humano. Administradora AAA registrada na ANS com 10+ anos de experiência.',
+    'Planos de saúde com transparência, agilidade e atendimento humano. Operadora registrada na ANS com 10+ anos de experiência.',
   applicationName: 'Amélia Saúde',
   authors: [{ name: 'Amélia Saúde' }],
   keywords: [
     'plano de saúde',
-    'administradora de benefícios',
+    'operadora de planos de saúde',
     'saúde',
     'benefícios',
     'cobertura médica',
@@ -45,15 +45,15 @@ export const metadata: Metadata = {
     locale: 'pt_BR',
     url: 'https://ameliasaude.com.br',
     siteName: 'Amélia Saúde',
-    title: 'Amélia Saúde | Administradora de Benefícios Premium',
+    title: 'Amélia Saúde | Operadora de Planos de Saúde',
     description:
-      'Planos de saúde com transparência, agilidade e atendimento humano. Administradora AAA registrada na ANS.',
+      'Planos de saúde com transparência, agilidade e atendimento humano. Operadora registrada na ANS.',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Amélia Saúde - Administradora de Benefícios',
+        alt: 'Amélia Saúde - Operadora de Planos de Saúde',
         type: 'image/jpeg',
       },
     ],
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
   /* Twitter Card */
   twitter: {
     card: 'summary_large_image',
-    title: 'Amélia Saúde | Administradora de Benefícios Premium',
+    title: 'Amélia Saúde | Operadora de Planos de Saúde',
     description:
       'Planos de saúde com transparência, agilidade e atendimento humano.',
     images: ['/og-image.jpg'],
@@ -127,7 +127,7 @@ export default function RootLayout({
               '@type': 'LocalBusiness',
               '@id': 'https://ameliasaude.com.br',
               name: 'Amélia Saúde',
-              description: 'Administradora de Benefícios de Saúde Premium. Planos de saúde com transparência, agilidade e atendimento humano.',
+              description: 'Operadora de Planos de Saúde. Planos com transparência, agilidade e atendimento humano.',
               url: 'https://ameliasaude.com.br',
               logo: 'https://ameliasaude.com.br/logo.png',
               image: 'https://ameliasaude.com.br/og-image.jpg',

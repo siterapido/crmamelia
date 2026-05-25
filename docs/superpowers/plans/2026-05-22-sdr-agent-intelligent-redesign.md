@@ -26,6 +26,6 @@
 ## Manual verification (remaining)
 
 - [ ] `npx tsx scripts/test-ai.ts` with `OPENROUTER_API_KEY` — confirm JSON + tone
-- [ ] WhatsApp real message — operadoras question + natural qualify
+- [ ] WhatsApp real message — cobertura/rede question + natural qualify
 - [ ] `pnpm docs:fluxo-cliente` — open `docs/fluxo-agente-cliente.docx`
 - [ ] Visit `/como-funciona` locally

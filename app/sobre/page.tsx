@@ -30,7 +30,7 @@ export default function SobrePage() {
       icon: Eye,
       title: 'Visão',
       description:
-        'Ser referência nacional em administração de benefícios de saúde, reconhecida pela excelência no atendimento e inovação contínua.',
+        'Ser referência nacional como operadora de planos de saúde, reconhecida pela excelência no atendimento e inovação contínua.',
     },
     {
       icon: Target,
@@ -49,7 +49,7 @@ export default function SobrePage() {
     {
       year: '2017',
       title: 'Registro ANS',
-      description: 'Conquistamos o registro AAA na Agência Nacional de Saúde Suplementar.',
+      description: 'Conquistamos o registro na Agência Nacional de Saúde Suplementar.',
     },
     {
       year: '2020',
@@ -67,7 +67,7 @@ export default function SobrePage() {
     {
       icon: Shield,
       title: 'Registro ANS',
-      description: 'Administradora AAA registrada e regulamentada pela Agência Nacional de Saúde Suplementar.',
+      description: 'Operadora registrada e regulamentada pela Agência Nacional de Saúde Suplementar.',
     },
     {
       icon: Headphones,
@@ -152,7 +152,7 @@ export default function SobrePage() {
                 >
                   <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold-signature/10 border border-gold-signature/20 text-gold-signature text-sm font-medium">
                     <Shield className="w-4 h-4" />
-                    Administradora AAA Registrada
+                    Operadora Registrada na ANS
                   </span>
                 </motion.div>
 

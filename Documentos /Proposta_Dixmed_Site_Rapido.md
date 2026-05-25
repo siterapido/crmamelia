@@ -16,7 +16,7 @@ Sites que demoram mais de 3 segundos para carregar perdem 53% dos leads. Nosso f
 Certificação SSL e estrutura robusta para garantir que a área do beneficiário e dados de contato estejam blindados.
 
 #### Pronto para o Google
-Arquitetura planejada com **SEO On-Page** para que a Dixmed apareça quando alguém buscar por 'administradora de benefícios'.
+Arquitetura planejada com **SEO On-Page** para que a Dixmed apareça quando alguém buscar por 'operadora de planos de saúde'.
 
 ---
 

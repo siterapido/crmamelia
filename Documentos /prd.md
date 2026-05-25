@@ -1,5 +1,5 @@
 # PRD - Product Requirements Document
-## Site Amélia Saúde Administradora de Benefícios
+## Site Amélia Saúde Operadora de Planos de Saúde
 
 ---
 
@@ -44,7 +44,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
   - 🔵 Botão Primário: "Sou Cliente" (acesso direto aos serviços)
   - 🟢 Botão Secundário: "Quero Contratar" (WhatsApp vendas)
 - Imagem/ilustração que transmita cuidado e confiança
-- Badge opcional: "Administradora registrada na ANS"
+- Badge opcional: "Operadora registrada na ANS"
 
 **Requisitos Técnicos:**
 - Carregar em < 1 segundo
@@ -144,12 +144,13 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 - Formato accordion (expandir/recolher)
 - **Perguntas Sugeridas:**
   1. Como faço para contratar um plano?
-  2. Quais são as operadoras disponíveis?
+  2. Quais planos e coberturas vocês oferecem?
   3. Como acessar a 2ª via do boleto?
   4. Como funciona o reembolso?
-  5. Qual a diferença entre administradora e operadora?
-  6. Posso incluir dependentes no meu plano?
-  7. Como entrar em contato com o suporte?
+  5. O que é a Amélia Saúde como operadora?
+  6. Qual a diferença entre operadora e administradora de benefícios?
+  7. Posso incluir dependentes no meu plano?
+  8. Como entrar em contato com o suporte?
 - **CTA Final:** "Não encontrou sua resposta? Fale conosco" (WhatsApp)
 
 **Requisitos:**
@@ -236,7 +237,7 @@ Um site institucional de alta performance que funciona como **vendedor 24/7**, c
 - Heading hierarchy (H1, H2, H3)
 - Alt text em todas as imagens
 - **Objetivo:** Aparecer nas primeiras posições para buscas como:
-  - "administradora de benefícios"
+  - "operadora de planos de saúde"
   - "plano de saúde [cidade]"
   - "contratar plano de saúde"
 

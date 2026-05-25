@@ -23,7 +23,7 @@ const FLOW_STEPS = [
   {
     title: 'Tire dúvidas com informações reais',
     description:
-      'Ela pode explicar benefícios, operadoras parceiras (Nova Saúde, Ônix, Hapvida Notre Dame), tipos de plano e perguntas frequentes do site.',
+      'Ela pode explicar benefícios, tipos de plano, rede credenciada e perguntas frequentes do site.',
   },
   {
     title: 'Conversa para conhecer você',
@@ -38,7 +38,7 @@ const FLOW_STEPS = [
 ]
 
 const CAN_DO = [
-  'Explicar como funcionam os planos e a Amélia como administradora',
+  'Explicar o papel da Amélia como operadora de planos de saúde (e a diferença em relação à administradora de benefícios)',
   'Responder dúvidas do site (carteirinha, boleto, carência, canais de contato)',
   'Mencionar referência "a partir de R$ 82" com ressalva de confirmação pelo consultor',
   'Organizar seus dados para agilizar o atendimento humano',

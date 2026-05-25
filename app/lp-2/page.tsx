@@ -14,7 +14,7 @@ import { AIChatWidget } from '@/components/ui/AIChatWidget'
 export const metadata: Metadata = {
   title: 'Amélia Saúde | Planos de Saúde Premium com Atendimento Humano',
   description:
-    'Planos de saúde com transparência, agilidade e atendimento 24/7. Administradora AAA registrada na ANS. Autoatendimento rápido e suporte especializado.',
+    'Planos de saúde com transparência, agilidade e atendimento 24/7. Operadora registrada na ANS. Autoatendimento rápido e suporte especializado.',
 }
 
 /**

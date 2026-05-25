@@ -11,7 +11,7 @@
 O agente atual (`lib/ai/sdr-prompt.ts`) segue um roteiro rígido de 6 perguntas em ordem fixa, proíbe falar sobre planos/benefícios (contradiz a UI do admin) e soa como formulário. O objetivo é:
 
 1. **Qualificar** mantendo as 6 informações essenciais, mas em **ordem flexível** conforme a conversa.
-2. **Contextualizar** com conteúdo real da landing (`/lp`): benefícios, operadoras, FAQ, prova social — **sem** valores personalizados nem proposta fechada.
+2. **Contextualizar** com conteúdo real da landing (`/lp`): benefícios, rede credenciada, FAQ, prova social — **sem** valores personalizados nem proposta fechada.
 3. Aplicar **técnicas de venda consultiva** (escuta ativa, SPIN natural, prova social, educação) com tom de **consultora acolhedora**.
 4. Usar modelo **`moonshotai/kimi-k2.6`** via OpenRouter.
 5. Publicar **documentação para o cliente final**: página no site + DOCX/PDF (gerador python-docx).
@@ -76,7 +76,7 @@ flowchart LR
 
 | Arquivo | Responsabilidade |
 |---------|------------------|
-| `lib/ai/amelia-knowledge.ts` | Fonte única de copy permitido (benefícios, operadoras, FAQ, contatos, limites) |
+| `lib/ai/amelia-knowledge.ts` | Fonte única de copy permitido (benefícios, rede credenciada, FAQ, contatos, limites) |
 | `docs/gerar_fluxo_cliente.py` | Gera DOCX voltado ao cliente/comercial (fluxograma simples) |
 | `app/como-funciona/page.tsx` | Página pública com o mesmo fluxo (Mermaid + texto) |
 
@@ -118,8 +118,12 @@ Conteúdo extraído das seções React da landing (`HeroSection`, `PlanSection`,
 // Estrutura conceitual (implementação em TS const)
 export const ameliaKnowledge = {
   brand: { name, tagline, positioning },
-  benefits: [ /* atendimento ágil, preços competitivos, cobertura, adesão, empresarial, operadoras */ ],
-  operators: ['Nova Saúde', 'Ônix', 'Hapvida Notre Dame'],
+  benefits: [ /* atendimento ágil, preços competitivos, cobertura, adesão, empresarial, rede credenciada */ ],
+  companyRole: 'Operadora de planos de saúde registrada na ANS — cria, gerencia e custeia o plano',
+  operadora: {
+    definition: 'Empresa responsável por criar, gerenciar e administrar planos de assistência médica ou odontológica',
+    vsAdministradora: 'Administradora = intermediária comercial de planos coletivos por adesão. Operadora = dona do plano que arca com os custos. Amélia é operadora.',
+  },
   priceAnchor: 'Planos a partir de R$ 82,00 (referência do site; valor final com consultor)',
   planTypes: ['Individual/familiar', 'Empresarial', 'Coletivo por adesão'],
   faq: [{ question, answer }],
@@ -133,7 +137,7 @@ export const ameliaKnowledge = {
 
 **Pode:**
 
-- Explicar benefícios, tipos de plano, operadoras parceiras, papel administradora vs operadora.
+- Explicar benefícios, tipos de plano, rede credenciada, papel da Amélia como operadora de planos de saúde.
 - Citar “a partir de R$ 82” **uma vez por conversa quando relevante**, com ressalva de confirmação pelo consultor.
 - Responder FAQ da LP (carteirinha, boleto, carência, CPT, canais).
 - Usar prova social (10+ anos, 5.000+ clientes, suporte, satisfação).
@@ -174,7 +178,7 @@ O prompt lista **apenas pendentes**. A próxima pergunta deve conectar ao últim
 |---------|-----------|
 | Escuta ativa | Parafrasear (“Entendo que…”) |
 | SPIN natural | Situação/problema na conversa, não interrogatório |
-| Educar → qualificar | Dúvida sobre operadora/ANS → KB → retomar checklist |
+| Educar → qualificar | Dúvida sobre rede credenciada/ANS → KB → retomar checklist |
 | Prova social | Números e ANS quando houver objeção de confiança |
 | Micro-compromisso | “Posso te fazer mais uma pergunta rápida?” |
 | Objeção informativa | Informar + consultor para proposta |
@@ -271,7 +275,7 @@ Link na landing: “Como funciona a Amélia” → `/como-funciona`.
 ## Testes de aceitação
 
 1. **Conversa natural:** Lead envia nome + cidade na primeira mensagem → Amélia não repete perguntas já respondidas.
-2. **Educação:** “Quais operadoras?” → resposta com lista da KB, sem preço inventado.
+2. **Educação:** “Qual a rede credenciada?” → resposta com informações da KB, sem preço inventado.
 3. **Limite:** “Quanto custa para 3 pessoas em SP?” → âncora R$ 82 + consultor; não valor fechado.
 4. **Handoff:** Após 6 dados → `score_lead` + `handoff`; `aiEnabled` false.
 5. **Modelo:** Logs e `ai_interactions.model` = `moonshotai/kimi-k2.6`.
@@ -283,7 +287,7 @@ Link na landing: “Como funciona a Amélia” → `/como-funciona`.
 ## Fora do escopo
 
 - CMS editável para knowledge base.
-- Informar planos Essencial/Completo/Premium (não existem na LP atual; admin será corrigido para refletir operadoras reais).
+- Informar planos Essencial/Completo/Premium (não existem na LP atual; KB reflete tipos reais de plano da operadora).
 - Negociação autônoma de preços ou geração de proposta PDF pela IA.
 - Troca de provedor fora do OpenRouter.
 - Multimodal (imagens) no Kimi K2.6.

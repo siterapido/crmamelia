@@ -5,7 +5,7 @@
 
 ## ✨ O QUE FOI CRIADO
 
-Parabéns! Você tem em mãos um **planejamento completo nível AAA** para o site da Amélia Saúde Administradora de Benefícios. Este é um projeto premium com visual **preto e amarelo ouro**, inspirado em marcas de luxo como Apple, Tesla e Porsche.
+Parabéns! Você tem em mãos um **planejamento completo nível AAA** para o site da Amélia Saúde Operadora de Planos de Saúde. Este é um projeto premium com visual **preto e amarelo ouro**, inspirado em marcas de luxo como Apple, Tesla e Porsche.
 
 ---
 
@@ -422,7 +422,7 @@ Você tem em mãos um **planejamento nível mundial** para o site da Amélia Sa�
 
 **Agora é hora de executar!**
 
-Comece pelo design, depois desenvolvimento, teste rigorosamente e lance com confiança. Este site tem potencial para ser uma **referência no mercado de administradoras de benefícios**.
+Comece pelo design, depois desenvolvimento, teste rigorosamente e lance com confiança. Este site tem potencial para ser uma **referência no mercado de operadoras de planos de saúde**.
 
 ---
 

@@ -96,7 +96,7 @@ Capturar atenção em **3 segundos** e guiar o visitante para uma de duas açõe
 - **Alternativa:** Ilustração clean de profissionais de saúde + família
 
 #### Badge de Credibilidade (Opcional)
-- Ícone ANS + Texto: "Administradora Registrada na ANS"
+- Ícone ANS + Texto: "Operadora Registrada na ANS"
 - Posição: Canto inferior esquerdo do hero
 - Tamanho pequeno, discreto mas visível
 
@@ -160,7 +160,7 @@ Capturar atenção em **3 segundos** e guiar o visitante para uma de duas açõe
 **Recomendação:** Opção A (mais inclusiva)
 
 ### 4.2 Subheadline
-"Operadoras de confiança, coberturas completas e um time pronto para te ajudar a escolher"
+"Planos completos, coberturas amplas e um time pronto para te ajudar a escolher"
 
 ---
 
@@ -257,7 +257,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 
 #### Certificações e Parcerias
 - **Badge ANS:** "Registrada na ANS" (Agência Nacional de Saúde)
-- **Operadoras Parceiras:** Logos das principais operadoras (se permitido)
+- **Rede Credenciada:** Destaque da cobertura com hospitais, clínicas e laboratórios
 - **Certificados:** SSL, ISO (se aplicável)
 
 ---
@@ -297,9 +297,9 @@ Reduzir objeções e transmitir confiança através de números, certificações
 
 ---
 
-#### Pergunta 2: Quais operadoras de saúde vocês trabalham?
+#### Pergunta 2: Quais planos de saúde vocês oferecem?
 **Resposta:**
-"Trabalhamos com as principais operadoras do mercado, incluindo [listar 3-4 operadoras principais]. Entre em contato para saber qual está disponível na sua região."
+"Oferecemos planos individual, familiar, empresarial e coletivo por adesão, com rede credenciada ampla. Entre em contato para saber as opções disponíveis na sua região."
 
 ---
 
@@ -315,25 +315,31 @@ Reduzir objeções e transmitir confiança através de números, certificações
 
 ---
 
-#### Pergunta 5: Qual a diferença entre administradora e operadora?
+#### Pergunta 5: O que é a Amélia Saúde como operadora?
 **Resposta:**
-"A administradora (Amélia Saúde) cuida da gestão do seu plano, atendimento e suporte. A operadora é quem fornece a rede credenciada de médicos e hospitais. Trabalhamos com as melhores operadoras para garantir a melhor cobertura para você."
+"A Amélia Saúde é operadora de planos de saúde registrada na ANS. Criamos, gerenciamos e administramos planos de assistência médica, organizamos a rede credenciada (hospitais, clínicas e laboratórios) e garantimos a cobertura dos procedimentos contratados — assumindo o risco financeiro das despesas de saúde em troca da mensalidade. Diferente de uma administradora de benefícios, que apenas intermedia planos coletivos por adesão, somos a empresa responsável pelo plano e pelos custos da sua assistência."
 
 ---
 
-#### Pergunta 6: Posso incluir dependentes no meu plano?
+#### Pergunta 6: Qual a diferença entre operadora e administradora de benefícios?
+**Resposta:**
+"A operadora cria, gerencia e custeia o plano de saúde, com rede credenciada e cobertura dos procedimentos contratados. A administradora de benefícios funciona apenas como intermediária comercial na venda de planos coletivos por adesão (sindicatos ou associações). A Amélia Saúde é operadora — não administradora."
+
+---
+
+#### Pergunta 7: Posso incluir dependentes no meu plano?
 **Resposta:**
 "Sim! Nossos planos permitem a inclusão de dependentes (cônjuge, filhos, pais). Fale com nosso time para entender as condições e valores."
 
 ---
 
-#### Pergunta 7: Como entrar em contato com o suporte?
+#### Pergunta 8: Como entrar em contato com o suporte?
 **Resposta:**
 "Você pode falar conosco pelo WhatsApp (link), telefone (número) ou e-mail (endereço). Estamos sempre prontos para ajudar!"
 
 ---
 
-#### Pergunta 8: Qual o prazo de carência?
+#### Pergunta 9: Qual o prazo de carência?
 **Resposta:**
 "Os prazos de carência variam conforme o plano e o tipo de atendimento. Em casos de urgência e emergência, não há carência. Consulte nosso time para detalhes do seu plano."
 
@@ -404,7 +410,7 @@ Reduzir objeções e transmitir confiança através de números, certificações
 ---
 
 ### 9.3 Copyright
-**Texto:** "© 2026 Amélia Saúde Administradora de Benefícios. Todos os direitos reservados."
+**Texto:** "© 2026 Amélia Saúde Operadora de Planos de Saúde. Todos os direitos reservados."
 **Posição:** Centralizado na parte inferior do footer
 
 ---

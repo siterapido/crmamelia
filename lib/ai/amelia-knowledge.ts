@@ -14,7 +14,7 @@ export const ameliaKnowledge = {
         name: 'Amélia Saúde',
         tagline: 'Sua saúde em nossos planos',
         positioning:
-            'Administradora de benefícios de saúde com atendimento humano, transparência e agilidade — planos para você, sua família e sua empresa.',
+            'Operadora de planos de saúde com atendimento humano, transparência e agilidade — planos para você, sua família e sua empresa.',
     },
     benefits: [
         {
@@ -27,7 +27,7 @@ export const ameliaKnowledge = {
         },
         {
             title: 'Ampla cobertura',
-            description: 'Principais operadoras e opções na sua região.',
+            description: 'Rede credenciada ampla com opções na sua região.',
         },
         {
             title: 'Plano coletivo por adesão',
@@ -38,11 +38,10 @@ export const ameliaKnowledge = {
             description: 'Proteção para equipes com planos corporativos.',
         },
         {
-            title: 'Parcerias com operadoras',
-            description: 'Trabalhamos com Nova Saúde, Ônix e Hapvida Notre Dame.',
+            title: 'Rede credenciada',
+            description: 'Hospitais, clínicas e laboratórios credenciados em todo o Brasil.',
         },
     ],
-    operators: ['Nova Saúde', 'Ônix', 'Hapvida Notre Dame'],
     priceAnchor:
         'No site, planos são apresentados a partir de R$ 82,00. O valor final depende do perfil, região e quantidade de vidas — o consultor confirma na proposta.',
     planTypes: [
@@ -50,9 +49,31 @@ export const ameliaKnowledge = {
         'Plano empresarial (CNPJ)',
         'Plano coletivo por adesão',
     ],
-    administratorRole:
-        'A Amélia Saúde é administradora: cuida da gestão do plano, atendimento e suporte. As operadoras (Nova Saúde, Ônix, Hapvida Notre Dame) fornecem a rede credenciada de médicos e hospitais.',
+    companyRole:
+        'A Amélia Saúde é operadora de planos de saúde registrada na ANS: cria, gerencia e administra planos de assistência médica, organiza a rede credenciada e garante a cobertura dos procedimentos contratados, assumindo o risco financeiro das despesas de saúde em troca da mensalidade.',
+    operadora: {
+        definition:
+            'Operadora de planos de saúde é a empresa responsável por criar, gerenciar e administrar planos de assistência médica ou odontológica. Organiza a rede de atendimento (hospitais, clínicas e laboratórios) e garante a cobertura dos procedimentos contratados.',
+        financialRole:
+            'Assume o risco financeiro de custear as despesas de saúde do beneficiário em troca do pagamento mensal (mensalidade).',
+        regulation:
+            'Toda operadora que atua no Brasil deve ser autorizada e fiscalizada pela Agência Nacional de Saúde Suplementar (ANS), que define regras de cobertura mínima e reajustes.',
+        redeCredenciada:
+            'Conjunto de hospitais, médicos e laboratórios parceiros da operadora aos quais o beneficiário tem acesso conforme o plano contratado.',
+        vsAdministradora:
+            'A administradora de benefícios funciona apenas como intermediária comercial para vender planos coletivos por adesão (sindicatos ou associações). A operadora é a dona do plano que realmente arca com os custos da saúde do beneficiário. A Amélia Saúde é operadora — não administradora.',
+    },
     faq: [
+        {
+            question: 'O que é a Amélia Saúde como operadora?',
+            answer:
+                'Somos operadora de planos de saúde registrada na ANS: criamos e administramos os planos, organizamos a rede credenciada e garantimos a cobertura dos procedimentos contratados. Diferente de uma administradora de benefícios — que apenas intermedia planos coletivos por adesão —, somos a empresa responsável pelo plano e pelos custos da sua assistência.',
+        },
+        {
+            question: 'Qual a diferença entre operadora e administradora de benefícios?',
+            answer:
+                'A operadora cria, gerencia e custeia o plano de saúde, com rede credenciada e cobertura dos procedimentos. A administradora de benefícios atua só como intermediária comercial na venda de planos coletivos por adesão. A Amélia Saúde é operadora.',
+        },
         {
             question: 'Quando recebo minha carteirinha digital?',
             answer:
@@ -88,7 +109,7 @@ export const ameliaKnowledge = {
         clients: '5.000+ clientes atendidos',
         support: 'Suporte disponível',
         satisfaction: 'Alta taxa de satisfação dos clientes',
-        ans: 'Administradora registrada na ANS',
+        ans: 'Operadora registrada na ANS',
     },
     contacts: {
         phone0800: '0800-000-5123',
@@ -100,8 +121,9 @@ export const ameliaKnowledge = {
     boundaries: {
         canSay: [
             'Benefícios e tipos de plano listados acima',
-            'Operadoras parceiras (Nova Saúde, Ônix, Hapvida Notre Dame)',
-            'Papel administradora vs operadora',
+            'Conceito de operadora de planos de saúde e diferença em relação à administradora de benefícios',
+            'Papel da Amélia como operadora de planos de saúde',
+            'Rede credenciada e tipos de plano',
             'FAQ e prova social desta base',
             'Referência "a partir de R$ 82" com ressalva de confirmação pelo consultor',
         ],
@@ -130,13 +152,19 @@ ${k.brand.positioning}
 **Benefícios:**
 ${benefits}
 
-**Operadoras:** ${k.operators.join(', ')}
-
 **Tipos de plano:** ${k.planTypes.join('; ')}
 
 **Referência de preço:** ${k.priceAnchor}
 
-**Administradora vs operadora:** ${k.administratorRole}
+**Papel da Amélia:** ${k.companyRole}
+
+**O que é uma operadora:** ${k.operadora.definition} ${k.operadora.financialRole}
+
+**Regulação ANS:** ${k.operadora.regulation}
+
+**Rede credenciada:** ${k.operadora.redeCredenciada}
+
+**Operadora vs administradora:** ${k.operadora.vsAdministradora}
 
 **Prova social:** ${k.socialProof.years}; ${k.socialProof.clients}; ${k.socialProof.ans}
 

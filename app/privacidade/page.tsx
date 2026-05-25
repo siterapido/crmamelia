@@ -18,7 +18,7 @@ export default function PrivacidadePage() {
           1. Introducao
         </h2>
         <p>
-          A Amélia Saúde Administradora de Beneficios (&quot;Amélia Saúde&quot;, &quot;nos&quot; ou &quot;nosso&quot;) esta
+          A Amélia Saúde Operadora de Planos de Saude (&quot;Amélia Saúde&quot;, &quot;nos&quot; ou &quot;nosso&quot;) esta
           comprometida em proteger a privacidade e os dados pessoais de nossos clientes, parceiros
           e visitantes do site. Esta Politica de Privacidade descreve como coletamos, usamos,
           armazenamos e protegemos suas informacoes.
@@ -59,7 +59,7 @@ export default function PrivacidadePage() {
         </h2>
         <p className="mb-4">Utilizamos seus dados para:</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Prestacao dos servicos de administracao de beneficios de saude</li>
+          <li>Prestacao dos servicos de operacao de planos de saude</li>
           <li>Comunicacao sobre seu plano, pagamentos e atualizacoes</li>
           <li>Atendimento ao cliente e suporte tecnico</li>
           <li>Cumprimento de obrigacoes legais e regulatorias</li>
@@ -76,7 +76,6 @@ export default function PrivacidadePage() {
           Podemos compartilhar seus dados com:
         </p>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Operadoras de planos de saude parceiras</li>
           <li>Prestadores de servicos de saude da rede credenciada</li>
           <li>Orgaos reguladores (ANS) quando exigido por lei</li>
           <li>Prestadores de servicos de tecnologia e processamento de pagamentos</li>

@@ -1,7 +1,7 @@
 {
   "name": "Amélia Saúde - CRM",
   "short_name": "Amélia CRM",
-  "description": "CRM e CMS da Amélia Saúde - Administradora de Benefícios Premium",
+  "description": "CRM e CMS da Amélia Saúde - Operadora de Planos de Saúde",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0A0A0A",

@@ -93,7 +93,7 @@ export const Footer = () => {
                 </div>
               </Link>
               <p className="text-platinum text-sm leading-relaxed mb-6">
-                Administradora de benefícios 100% digital.
+                Operadora de planos de saúde 100% digital.
                 <br />
                 Av. Rio Branco, 1, Sala 1610
                 <br />
@@ -238,7 +238,7 @@ export const Footer = () => {
           >
             {/* Copyright */}
             <p className="text-platinum/70 text-sm text-center md:text-left">
-              {currentYear} Amélia Saúde Administradora de Benefícios S.A. Todos os direitos reservados.
+              {currentYear} Amélia Saúde Operadora de Planos de Saúde S.A. Todos os direitos reservados.
             </p>
 
             {/* ANS Registration */}
