@@ -15,6 +15,13 @@
       "when": 1774378449470,
       "tag": "0001_bouncy_black_crow",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786645673337,
+      "tag": "0002_late_the_liberteens",
+      "breakpoints": true
     }
   ]
 }

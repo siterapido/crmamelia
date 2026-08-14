@@ -3,7 +3,7 @@
  * Using Drizzle ORM with Neon PostgreSQL
  */
 
-import { pgTable, uuid, text, timestamp, boolean, integer, varchar, uniqueIndex } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, text, timestamp, boolean, integer, varchar, uniqueIndex, jsonb } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 // ==================== USERS ====================
@@ -196,6 +196,29 @@ export const aiInteractions = pgTable('ai_interactions', {
     createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
+// ==================== CRM: PUBLIC LEAD CAPTURES ====================
+export const leadCaptures = pgTable('lead_captures', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    requestId: uuid('request_id').notNull().unique(),
+    contactId: uuid('contact_id').references(() => contacts.id, { onDelete: 'set null' }),
+    dealId: uuid('deal_id').references(() => deals.id, { onDelete: 'set null' }),
+    city: varchar('city', { length: 120 }).notNull(),
+    ages: jsonb('ages').$type<number[]>().notNull(),
+    consentAt: timestamp('consent_at').notNull(),
+    pageUrl: text('page_url').notNull(),
+    referrer: text('referrer'),
+    utmSource: varchar('utm_source', { length: 200 }),
+    utmMedium: varchar('utm_medium', { length: 200 }),
+    utmCampaign: varchar('utm_campaign', { length: 200 }),
+    utmContent: varchar('utm_content', { length: 200 }),
+    utmTerm: varchar('utm_term', { length: 200 }),
+    gclid: varchar('gclid', { length: 255 }),
+    fbclid: varchar('fbclid', { length: 255 }),
+    status: varchar('status', { length: 30 }).default('pending').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
 // ==================== CRM: CONTACT FOLLOW-UPS ====================
 export const contactFollowups = pgTable('contact_followups', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -244,6 +267,7 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
     followups: many(contactFollowups),
     tags: many(contactTags),
     activities: many(contactActivities),
+    leadCaptures: many(leadCaptures),
 }))
 
 export const conversationsRelations = relations(conversations, ({ one, many }) => ({
@@ -270,10 +294,16 @@ export const messagesRelations = relations(messages, ({ one }) => ({
     conversation: one(conversations, { fields: [messages.conversationId], references: [conversations.id] }),
 }))
 
-export const dealsRelations = relations(deals, ({ one }) => ({
+export const dealsRelations = relations(deals, ({ one, many }) => ({
     contact: one(contacts, { fields: [deals.contactId], references: [contacts.id] }),
     stage: one(pipelineStages, { fields: [deals.stageId], references: [pipelineStages.id] }),
     assignedUser: one(users, { fields: [deals.assignedTo], references: [users.id] }),
+    leadCaptures: many(leadCaptures),
+}))
+
+export const leadCapturesRelations = relations(leadCaptures, ({ one }) => ({
+    contact: one(contacts, { fields: [leadCaptures.contactId], references: [contacts.id] }),
+    deal: one(deals, { fields: [leadCaptures.dealId], references: [deals.id] }),
 }))
 
 export const pipelineStagesRelations = relations(pipelineStages, ({ many }) => ({
@@ -321,3 +351,5 @@ export type QuickReply = typeof quickReplies.$inferSelect
 export type NewQuickReply = typeof quickReplies.$inferInsert
 export type ContactActivity = typeof contactActivities.$inferSelect
 export type NewContactActivity = typeof contactActivities.$inferInsert
+export type LeadCapture = typeof leadCaptures.$inferSelect
+export type NewLeadCapture = typeof leadCaptures.$inferInsert
