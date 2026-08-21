@@ -24,7 +24,7 @@ const optionalAttr = z.string().max(512).optional()
 
 export const leadCaptureSourceSchema = z.object({
     pageUrl: z.string().url().max(ATTRIBUTION_LIMITS.pageUrl),
-    referrer: z.union([z.string().url().max(ATTRIBUTION_LIMITS.referrer), z.literal('')]).optional(),
+    referrer: z.union([z.string().max(ATTRIBUTION_LIMITS.referrer), z.literal('')]).optional(),
     utmSource: optionalAttr,
     utmMedium: optionalAttr,
     utmCampaign: optionalAttr,
@@ -39,7 +39,10 @@ export const leadCaptureRequestSchema = z
         requestId: z.string().uuid(),
         name: z.string().trim().min(2).max(120),
         city: z.string().trim().min(2).max(120),
-        email: z.string().email().max(255),
+        email: z.union([
+            z.literal(''),
+            z.string().trim().email().max(255),
+        ]).optional(),
         whatsapp: z.string().min(1).max(40),
         livesCount: z.number().int().min(1).max(99),
         ages: z.array(z.number().int().min(0).max(120)).min(1).max(99),
@@ -75,7 +78,7 @@ export type NormalizedLeadCapture = {
     requestId: string
     name: string
     city: string
-    email: string
+    email: string | null
     whatsapp: string
     livesCount: number
     ages: number[]
@@ -211,7 +214,7 @@ export function parseLeadCapture(input: unknown): ParseLeadCaptureResult {
             requestId: parsed.data.requestId,
             name: parsed.data.name,
             city: parsed.data.city,
-            email: parsed.data.email.toLowerCase(),
+            email: parsed.data.email ? parsed.data.email.toLowerCase() : null,
             whatsapp,
             livesCount: parsed.data.livesCount,
             ages: parsed.data.ages,
@@ -270,12 +273,12 @@ export function pickBetterContactFields(
     },
     incoming: {
         name: string
-        email: string
+        email: string | null
         livesCount: number
     }
 ): {
     name: string
-    email: string
+    email: string | null
     livesCount: number
     planInterest: string
 } {
